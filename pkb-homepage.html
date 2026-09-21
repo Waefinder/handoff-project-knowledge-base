@@ -7,241 +7,188 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0a0a0f;
-      --card: #16161f;
-      --border: #252535;
-      --text: #e8e8ed;
-      --muted: #6b6b80;
-      --green: #4ade80;
-      --red: #f87171;
-      --amber: #fbbf24;
-      --blue: #60a5fa;
-      --road: #2c2c38;
-      --road-marking: #555;
-      --grass: #1e2e1e;
-      --crosswalk: rgba(255,255,255,0.25);
+      --bg:#0a0a0f; --card:#16161f; --border:#252535; --text:#e8e8ed; --muted:#6b6b80;
+      --green:#4ade80; --red:#f87171; --amber:#fbbf24; --blue:#60a5fa;
+      --road:#2c2c38; --road-mark:#555; --grass:#1e2e1e; --cw:rgba(255,255,255,0.25);
     }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body {
-      font-family: 'Inter','Noto Sans Thai',system-ui,sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height:100vh;
-      overflow:hidden;
-    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Inter','Noto Sans Thai',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow:hidden;}
 
-    /* ===== BACKGROUND: Roads fill most of screen ===== */
-    .bg {
-      position:fixed; inset:0; z-index:0; overflow:hidden;
-      background: var(--grass);
-    }
+    /* ===== BACKGROUND ===== */
+    .bg{position:fixed;inset:0;z-index:0;overflow:hidden;background:var(--grass);}
+    .rh{position:absolute;top:50%;left:0;right:0;height:200px;transform:translateY(-50%);background:var(--road);border-top:3px solid #1a1a25;border-bottom:3px solid #1a1a25;}
+    .rv{position:absolute;left:50%;top:0;bottom:0;width:200px;transform:translateX(-50%);background:var(--road);border-left:3px solid #1a1a25;border-right:3px solid #1a1a25;}
+    .rh::after{content:'';position:absolute;top:50%;left:0;right:0;height:3px;transform:translateY(-50%);background:repeating-linear-gradient(90deg,var(--road-mark) 0 25px,transparent 25px 50px);}
+    .rv::after{content:'';position:absolute;left:50%;top:0;bottom:0;width:3px;transform:translateX(-50%);background:repeating-linear-gradient(180deg,var(--road-mark) 0 25px,transparent 25px 50px);}
+    .rh::before{content:'';position:absolute;top:35%;left:0;right:0;height:1px;background:rgba(255,255,255,0.06);}
+    .rv::before{content:'';position:absolute;left:35%;top:0;bottom:0;width:1px;background:rgba(255,255,255,0.06);}
+    .ix{position:absolute;top:50%;left:50%;width:200px;height:200px;transform:translate(-50%,-50%);background:var(--road);z-index:2;}
+    .cw{position:absolute;z-index:3;}
+    .cw-n{top:calc(50% - 110px);left:calc(50% - 90px);width:180px;height:18px;background:repeating-linear-gradient(90deg,var(--cw) 0 12px,transparent 12px 22px);}
+    .cw-s{bottom:calc(50% - 110px);left:calc(50% - 90px);width:180px;height:18px;background:repeating-linear-gradient(90deg,var(--cw) 0 12px,transparent 12px 22px);}
+    .cw-e{right:calc(50% - 110px);top:calc(50% - 90px);width:18px;height:180px;background:repeating-linear-gradient(180deg,var(--cw) 0 12px,transparent 12px 22px);}
+    .cw-w{left:calc(50% - 110px);top:calc(50% - 90px);width:18px;height:180px;background:repeating-linear-gradient(180deg,var(--cw) 0 12px,transparent 12px 22px);}
 
-    /* Wide roads */
-    .rh { position:absolute; top:50%; left:0; right:0; height:160px; transform:translateY(-50%); background:var(--road); }
-    .rv { position:absolute; left:50%; top:0; bottom:0; width:160px; transform:translateX(-50%); background:var(--road); }
+    /* ===== 4 LARGE FACTORIES (only 1/4 visible) ===== */
+    .fac{position:absolute;z-index:1;border-radius:4px;box-shadow:2px 3px 10px rgba(0,0,0,0.5);overflow:hidden;}
+    .fac::after{content:'';position:absolute;border-radius:2px;background:rgba(255,200,50,0.2);}
+    .fac-ch{position:absolute;top:-18px;width:12px;height:18px;border-radius:2px 2px 0 0;}
+    .fac-sm{position:absolute;top:-30px;width:8px;height:8px;background:rgba(200,200,200,0.3);border-radius:50%;animation:sm 3s ease-out infinite;}
+    @keyframes sm{0%{opacity:.5;transform:translateY(0) scale(1);}100%{opacity:0;transform:translateY(-25px) scale(2.2);}}
 
-    /* Center line dashed */
-    .rh::after { content:''; position:absolute; top:50%; left:0; right:0; height:2px; transform:translateY(-50%); background:repeating-linear-gradient(90deg,var(--road-marking) 0 25px,transparent 25px 50px); }
-    .rv::after { content:''; position:absolute; left:50%; top:0; bottom:0; width:2px; transform:translateX(-50%); background:repeating-linear-gradient(180deg,var(--road-marking) 0 25px,transparent 25px 50px); }
+    /* Top-Left: huge factory, only bottom-right quarter visible */
+    .fac-tl{bottom:calc(50% + 100px);right:calc(50% + 100px);width:300px;height:250px;background:linear-gradient(135deg,#1e2a3a,#253545);}
+    .fac-tl::after{width:14px;height:16px;bottom:30px;right:30px;box-shadow:-24px 0 0 rgba(255,200,50,0.2),-48px 0 0 rgba(255,200,50,0.2),0 -28px 0 rgba(255,200,50,0.2),-24px -28px 0 rgba(255,200,50,0.2);}
+    .fac-tl .fac-ch{right:25px;bottom:15px;background:#2a3a4a;}
+    .fac-tl .fac-ch+.fac-sm{right:27px;bottom:28px;}
 
-    /* Lane divider (inner lanes) */
-    .rh::before { content:''; position:absolute; top:35%; left:0; right:0; height:1px; background:rgba(255,255,255,0.08); }
-    .rv::before { content:''; position:absolute; left:35%; top:0; bottom:0; width:1px; background:rgba(255,255,255,0.08); }
+    /* Top-Right */
+    .fac-tr{bottom:calc(50% + 100px);left:calc(50% + 100px);width:320px;height:260px;background:linear-gradient(135deg,#2a1e3a,#352545);}
+    .fac-tr::after{width:14px;height:16px;bottom:28px;left:30px;box-shadow:24px 0 0 rgba(255,200,50,0.2),48px 0 0 rgba(255,200,50,0.2),0 -26px 0 rgba(255,200,50,0.2);}
+    .fac-tr .fac-ch{left:20px;bottom:12px;background:#3a2a4a;}
+    .fac-tr .fac-ch+.fac-sm{left:22px;bottom:25px;}
 
-    /* Intersection */
-    .ix { position:absolute; top:50%; left:50%; width:160px; height:160px; transform:translate(-50%,-50%); background:var(--road); z-index:2; }
+    /* Bottom-Left */
+    .fac-bl{top:calc(50% + 100px);right:calc(50% + 100px);width:310px;height:270px;background:linear-gradient(135deg,#3a2a1e,#453525);}
+    .fac-bl::after{width:14px;height:16px;top:28px;right:28px;box-shadow:-24px 0 0 rgba(255,200,50,0.2),-48px 0 0 rgba(255,200,50,0.2),0 26px 0 rgba(255,200,50,0.2),-24px 26px 0 rgba(255,200,50,0.2);}
+    .fac-bl .fac-ch{right:22px;top:12px;background:#4a3a2a;}
+    .fac-bl .fac-ch+.fac-sm{right:24px;top:25px;}
 
-    /* Crosswalks */
-    .cw { position:absolute; z-index:3; }
-    .cw-n { top:calc(50% - 90px); left:calc(50% - 70px); width:140px; height:14px; background:repeating-linear-gradient(90deg,var(--crosswalk) 0 10px,transparent 10px 18px); }
-    .cw-s { bottom:calc(50% - 90px); left:calc(50% - 70px); width:140px; height:14px; background:repeating-linear-gradient(90deg,var(--crosswalk) 0 10px,transparent 10px 18px); }
-    .cw-e { right:calc(50% - 90px); top:calc(50% - 70px); width:14px; height:140px; background:repeating-linear-gradient(180deg,var(--crosswalk) 0 10px,transparent 10px 18px); }
-    .cw-w { left:calc(50% - 90px); top:calc(50% - 70px); width:14px; height:140px; background:repeating-linear-gradient(180deg,var(--crosswalk) 0 10px,transparent 10px 18px); }
+    /* Bottom-Right */
+    .fac-br{top:calc(50% + 100px);left:calc(50% + 100px);width:330px;height:280px;background:linear-gradient(135deg,#1e3a2a,#254535);}
+    .fac-br::after{width:14px;height:16px;top:30px;left:28px;box-shadow:24px 0 0 rgba(255,200,50,0.2),48px 0 0 rgba(255,200,50,0.2),72px 0 0 rgba(255,200,50,0.2),0 28px 0 rgba(255,200,50,0.2),24px 28px 0 rgba(255,200,50,0.2);}
+    .fac-br .fac-ch{left:25px;top:14px;background:#2a4a3a;}
+    .fac-br .fac-ch+.fac-sm{left:27px;top:27px;}
 
-    /* ===== FACTORIES along road edges ===== */
-    .bld { position:absolute; z-index:1; border-radius:3px; box-shadow:2px 2px 8px rgba(0,0,0,0.5); }
-    .bld::after { content:''; position:absolute; border-radius:2px; background:rgba(255,200,50,0.2); }
+    /* Trees (small decorations along road edges) */
+    .tree{position:absolute;z-index:1;border-radius:50%;box-shadow:0 0 4px rgba(0,60,0,0.4);}
 
-    /* Top-left buildings */
-    .bld-tl1 { top:4%; left:3%; width:120px; height:80px; background:#1a2535; }
-    .bld-tl1::after { width:10px; height:12px; top:10px; left:10px; box-shadow:18px 0 0 rgba(255,200,50,0.2),36px 0 0 rgba(255,200,50,0.2),0 22px 0 rgba(255,200,50,0.2); }
-    .bld-tl2 { top:4%; left:calc(3% + 130px); width:90px; height:60px; background:#252a3a; }
-    .bld-tl2::after { width:8px; height:10px; top:8px; left:8px; box-shadow:14px 0 0 rgba(255,200,50,0.2); }
+    /* ===== CARS ===== */
+    .car{position:absolute;z-index:4;will-change:left,top;}
+    .car .bh{width:54px;height:24px;background:var(--c);border-radius:5px 8px 5px 5px;position:relative;box-shadow:2px 2px 5px rgba(0,0,0,0.5);}
+    .car .bh::before{content:'';position:absolute;top:3px;left:12px;width:20px;height:18px;background:rgba(100,180,255,0.25);border-radius:2px 4px 2px 2px;border:1px solid rgba(255,255,255,0.08);}
+    .car .bh::after{content:'';position:absolute;top:3px;right:2px;width:4px;height:3px;background:#fff6;border-radius:1px;box-shadow:0 12px 0 #fff6;}
+    .car .bh .w{position:absolute;bottom:-4px;width:9px;height:9px;background:#1a1a1a;border-radius:50%;border:2px solid #333;}
+    .car .bh .wf{right:7px;}.car .bh .wr{left:7px;}
+    .car .bv{width:24px;height:54px;background:var(--c);border-radius:5px 5px 8px 5px;position:relative;box-shadow:2px 2px 5px rgba(0,0,0,0.5);}
+    .car .bv::before{content:'';position:absolute;left:3px;top:12px;width:18px;height:20px;background:rgba(100,180,255,0.25);border-radius:2px 2px 4px 2px;border:1px solid rgba(255,255,255,0.08);}
+    .car .bv::after{content:'';position:absolute;left:3px;top:2px;width:3px;height:4px;background:#fff6;border-radius:1px;box-shadow:12px 0 0 #fff6;}
+    .car .bv .w{position:absolute;width:9px;height:9px;background:#1a1a1a;border-radius:50%;border:2px solid #333;}
+    .car .bv .wf{bottom:7px;left:-4px;}.car .bv .wr{top:7px;left:-4px;}
 
-    /* Top-right buildings */
-    .bld-tr1 { top:4%; right:3%; width:110px; height:75px; background:#2a1e35; }
-    .bld-tr1::after { width:10px; height:12px; top:10px; left:10px; box-shadow:16px 0 0 rgba(255,200,50,0.2),32px 0 0 rgba(255,200,50,0.2); }
-    .bld-tr2 { top:calc(4% + 85px); right:3%; width:80px; height:55px; background:#1e2a2a; }
-    .bld-tr2::after { width:8px; height:10px; top:8px; left:8px; box-shadow:14px 0 0 rgba(255,200,50,0.2); }
+    /* ===== PORTAL ===== */
+    .portal{position:relative;z-index:10;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 24px 40px;gap:28px;}
+    .ph{position:fixed;top:0;left:0;right:0;background:rgba(10,10,15,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:14px 24px;z-index:100;text-align:center;}
+    .ph h1{font-size:18px;font-weight:700;display:inline-flex;align-items:center;gap:8px;}
+    .ps{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;}
+    .si{text-align:center;padding:16px 24px;background:rgba(22,22,31,0.95);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:14px;min-width:90px;}
+    .si .n{font-size:28px;font-weight:700;font-family:'JetBrains Mono',monospace;}
+    .si .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-top:4px;}
+    .pb{display:inline-flex;align-items:center;gap:10px;padding:18px 36px;background:rgba(22,22,31,0.95);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:14px;color:var(--text);font-family:inherit;font-size:16px;font-weight:600;text-decoration:none;cursor:pointer;transition:all 0.3s;}
+    .pb:hover{border-color:var(--blue);transform:translateY(-2px);box-shadow:0 8px 30px rgba(96,165,250,0.2);}
+    .pb .ic{font-size:20px;}.pb .ar{font-size:14px;opacity:0.6;transition:opacity 0.3s;}.pb:hover .ar{opacity:1;}
+    .pf{position:fixed;bottom:16px;font-size:11px;color:var(--muted);z-index:100;width:100%;text-align:center;}
 
-    /* Bottom-left buildings */
-    .bld-bl1 { bottom:4%; left:3%; width:130px; height:85px; background:#2a2520; }
-    .bld-bl1::after { width:10px; height:12px; top:10px; left:10px; box-shadow:18px 0 0 rgba(255,200,50,0.2),36px 0 0 rgba(255,200,50,0.2),0 22px 0 rgba(255,200,50,0.2); }
-    .bld-bl2 { bottom:calc(4% + 95px); left:3%; width:85px; height:60px; background:#1e2a35; }
-    .bld-bl2::after { width:8px; height:10px; top:8px; left:8px; box-shadow:14px 0 0 rgba(255,200,50,0.2); }
-
-    /* Bottom-right buildings */
-    .bld-br1 { bottom:4%; right:3%; width:120px; height:80px; background:#1a2a25; }
-    .bld-br1::after { width:10px; height:12px; top:10px; left:10px; box-shadow:18px 0 0 rgba(255,200,50,0.2),36px 0 0 rgba(255,200,50,0.2); }
-    .bld-br2 { bottom:calc(4% + 90px); right:3%; width:75px; height:55px; background:#252a35; }
-    .bld-br2::after { width:8px; height:10px; top:8px; left:8px; box-shadow:14px 0 0 rgba(255,200,50,0.2); }
-
-    /* Trees (small green dots along roads) */
-    .tree { position:absolute; z-index:1; width:14px; height:14px; background:#2a4a2a; border-radius:50%; box-shadow:0 0 4px rgba(0,80,0,0.4); }
-
-    /* ===== CARS (JS) ===== */
-    .car { position:absolute; z-index:4; will-change:left,top; }
-    .car .bh { width:48px; height:22px; background:var(--c); border-radius:5px 8px 5px 5px; position:relative; box-shadow:2px 2px 5px rgba(0,0,0,0.5); }
-    .car .bh::before { content:''; position:absolute; top:3px; left:10px; width:20px; height:16px; background:rgba(100,180,255,0.25); border-radius:2px 4px 2px 2px; border:1px solid rgba(255,255,255,0.08); }
-    .car .bh::after { content:''; position:absolute; top:3px; right:2px; width:4px; height:3px; background:#fff6; border-radius:1px; box-shadow:0 12px 0 #fff6; }
-    .car .bh .w { position:absolute; bottom:-4px; width:8px; height:8px; background:#1a1a1a; border-radius:50%; border:2px solid #333; }
-    .car .bh .wf { right:6px; } .car .bh .wr { left:6px; }
-
-    .car .bv { width:22px; height:48px; background:var(--c); border-radius:5px 5px 8px 5px; position:relative; box-shadow:2px 2px 5px rgba(0,0,0,0.5); }
-    .car .bv::before { content:''; position:absolute; left:3px; top:10px; width:16px; height:20px; background:rgba(100,180,255,0.25); border-radius:2px 2px 4px 2px; border:1px solid rgba(255,255,255,0.08); }
-    .car .bv::after { content:''; position:absolute; left:3px; top:2px; width:3px; height:4px; background:#fff6; border-radius:1px; box-shadow:12px 0 0 #fff6; }
-    .car .bv .w { position:absolute; width:8px; height:8px; background:#1a1a1a; border-radius:50%; border:2px solid #333; }
-    .car .bv .wf { bottom:6px; left:-4px; } .car .bv .wr { top:6px; left:-4px; }
-
-    /* ===== PORTAL CONTENT ===== */
-    .portal { position:relative; z-index:10; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:80px 24px 40px; gap:28px; }
-    .ph { position:fixed; top:0; left:0; right:0; background:rgba(10,10,15,0.92); backdrop-filter:blur(20px); border-bottom:1px solid var(--border); padding:14px 24px; z-index:100; text-align:center; }
-    .ph h1 { font-size:18px; font-weight:700; display:inline-flex; align-items:center; gap:8px; }
-    .ps { display:flex; gap:16px; flex-wrap:wrap; justify-content:center; }
-    .si { text-align:center; padding:16px 24px; background:rgba(22,22,31,0.95); backdrop-filter:blur(10px); border:1px solid var(--border); border-radius:14px; min-width:90px; }
-    .si .n { font-size:28px; font-weight:700; font-family:'JetBrains Mono',monospace; }
-    .si .l { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px; margin-top:4px; }
-    .pb { display:inline-flex; align-items:center; gap:10px; padding:18px 36px; background:rgba(22,22,31,0.95); backdrop-filter:blur(10px); border:1px solid var(--border); border-radius:14px; color:var(--text); font-family:inherit; font-size:16px; font-weight:600; text-decoration:none; cursor:pointer; transition:all 0.3s; }
-    .pb:hover { border-color:var(--blue); transform:translateY(-2px); box-shadow:0 8px 30px rgba(96,165,250,0.2); }
-    .pb .ic { font-size:20px; } .pb .ar { font-size:14px; opacity:0.6; transition:opacity 0.3s; } .pb:hover .ar { opacity:1; }
-
-    /* ===== WRENCH: CSS Illustration with 3D rotation ===== */
-    .ws { width:100px; height:220px; perspective:600px; }
-    .wr3d {
-      width:100%; height:100%; position:relative;
-      transform-style:preserve-3d;
-      animation:ws 8s cubic-bezier(0.4,0,0.2,1) infinite;
-    }
-    @keyframes ws {
-      0%  { transform:rotateX(-8deg) rotateY(0deg); }
-      25% { transform:rotateX(4deg) rotateY(90deg); }
-      50% { transform:rotateX(-6deg) rotateY(180deg); }
-      75% { transform:rotateX(-12deg) rotateY(270deg); }
-      100%{ transform:rotateX(-8deg) rotateY(360deg); }
+    /* ===== WRENCH: 2.5D illustration with CSS transforms ===== */
+    .ws{width:120px;height:240px;perspective:800px;}
+    .wr3d{width:100%;height:100%;position:relative;transform-style:preserve-3d;animation:ws 8s cubic-bezier(0.4,0,0.2,1) infinite;}
+    @keyframes ws{
+      0%{transform:rotateX(-8deg) rotateY(-12deg);}
+      25%{transform:rotateX(4deg) rotateY(12deg);}
+      50%{transform:rotateX(-6deg) rotateY(-8deg);}
+      75%{transform:rotateX(6deg) rotateY(10deg);}
+      100%{transform:rotateX(-8deg) rotateY(-12deg);}
     }
 
-    /* Wrench shape using clip-path + gradients */
-    .wrench-face {
-      position:absolute;
-      transform-style:preserve-3d;
-      backface-visibility:visible;
-    }
-    /* Each face is a CSS-drawn wrench shape */
-    .wf-front, .wf-back {
-      width:100px; height:220px;
-    }
-    .wf-left, .wf-right {
-      width:20px; height:220px;
-    }
-    .wf-top, .wf-bottom {
-      width:100px; height:20px;
-    }
+    .wf{position:absolute;backface-visibility:visible;}
 
-    /* Front face: wrench shape */
-    .wf-front {
-      background: linear-gradient(135deg,#6b7a8d 0%,#4a5568 30%,#5a6577 60%,#3d4654 100%);
-      clip-path: polygon(
-        25% 0%, 30% 0%, 32% 8%, 28% 10%, 25% 8%,  /* jaw left */
-        25% 12%, 22% 14%, 22% 18%, 28% 18%,         /* jaw inner left */
-        38% 18%, 38% 14%, 32% 12%, 28% 12%,          /* gap */
-        38% 12%, 42% 14%, 42% 18%, 48% 18%,          /* jaw inner right */
-        52% 18%, 58% 18%, 58% 14%, 62% 12%,          /* gap right */
-        68% 12%, 72% 12%, 68% 14%, 72% 18%,          /* jaw right */
-        78% 18%, 78% 14%, 75% 12%, 75% 8%,           /* jaw outer right */
-        72% 10%, 68% 8%, 70% 0%, 75% 0%,             /* top right */
-        65% 22%, 58% 26%, 58% 30%,                    /* head to neck transition */
-        55% 32%, 55% 100%, 45% 100%, 45% 32%,        /* handle */
-        42% 30%, 42% 26%, 35% 22%                     /* neck left */
+    /* Wrench front face — full illustration with shading */
+    .wf-f{width:120px;height:240px;transform:rotateY(0deg) translateZ(8px);
+      background:
+        /* Handle highlight */
+        linear-gradient(90deg,rgba(255,255,255,0.08) 0%,rgba(255,255,255,0.15) 40%,rgba(255,255,255,0.08) 60%,rgba(0,0,0,0.1) 100%),
+        /* Base gradient */
+        linear-gradient(180deg,#7a8a9d 0%,#5a6577 15%,#4a5568 30%,#5a6577 50%,#4a5568 70%,#5a6577 85%,#7a8a9d 100%);
+      clip-path:polygon(
+        /* Jaw left */
+        30% 0%,34% 0%,36% 4%,36% 8%,33% 10%,30% 10%,
+        27% 12%,27% 16%,33% 16%,
+        /* Head top */
+        40% 16%,40% 12%,36% 10%,
+        /* Gap */
+        36% 12%,40% 16%,
+        /* Inner left */
+        42% 16%,42% 13%,48% 13%,
+        48% 16%,
+        /* Inner right */
+        52% 16%,52% 13%,58% 13%,
+        58% 16%,
+        /* Gap right */
+        60% 12%,64% 10%,
+        /* Head top right */
+        60% 12%,60% 16%,67% 16%,
+        73% 16%,73% 12%,70% 10%,67% 10%,64% 8%,64% 4%,66% 0%,70% 0%,
+        /* Head bottom right */
+        70% 20%,65% 24%,60% 26%,
+        /* Neck right */
+        58% 28%,56% 30%,
+        /* Handle right */
+        56% 95%,54% 100%,46% 100%,44% 95%,
+        /* Handle left */
+        44% 30%,42% 28%,
+        /* Neck left */
+        40% 26%,35% 24%,30% 20%
       );
-      transform:rotateY(0deg) translateZ(10px);
     }
-
     /* Back face */
-    .wf-back {
-      background: linear-gradient(225deg,#3d4654 0%,#2d3748 30%,#4a5568 60%,#2d3748 100%);
-      clip-path: polygon(
-        25% 0%, 30% 0%, 32% 8%, 28% 10%, 25% 8%,
-        25% 12%, 22% 14%, 22% 18%, 28% 18%,
-        38% 18%, 38% 14%, 32% 12%, 28% 12%,
-        38% 12%, 42% 14%, 42% 18%, 48% 18%,
-        52% 18%, 58% 18%, 58% 14%, 62% 12%,
-        68% 12%, 72% 12%, 68% 14%, 72% 18%,
-        78% 18%, 78% 14%, 75% 12%, 75% 8%,
-        72% 10%, 68% 8%, 70% 0%, 75% 0%,
-        65% 22%, 58% 26%, 58% 30%,
-        55% 32%, 55% 100%, 45% 100%, 45% 32%,
-        42% 30%, 42% 26%, 35% 22%
+    .wf-b{width:120px;height:240px;transform:rotateY(180deg) translateZ(8px);
+      background:linear-gradient(180deg,#4a5568 0%,#3d4654 30%,#2d3748 60%,#4a5568 100%);
+      clip-path:polygon(
+        30% 0%,34% 0%,36% 4%,36% 8%,33% 10%,30% 10%,27% 12%,27% 16%,33% 16%,
+        40% 16%,40% 12%,36% 10%,36% 12%,40% 16%,
+        42% 16%,42% 13%,48% 13%,48% 16%,52% 16%,52% 13%,58% 13%,58% 16%,
+        60% 12%,64% 10%,60% 12%,60% 16%,67% 16%,73% 16%,73% 12%,70% 10%,67% 10%,64% 8%,64% 4%,66% 0%,70% 0%,
+        70% 20%,65% 24%,60% 26%,58% 28%,56% 30%,56% 95%,54% 100%,46% 100%,44% 95%,
+        44% 30%,42% 28%,40% 26%,35% 24%,30% 20%
       );
-      transform:rotateY(180deg) translateZ(10px);
     }
-
-    /* Right side: thickness strip */
-    .wf-right {
-      background: linear-gradient(180deg,#5a6577,#3d4654,#5a6577);
-      transform:rotateY(90deg) translateZ(50px);
-    }
-
-    /* Left side: thickness strip */
-    .wf-left {
-      background: linear-gradient(180deg,#3d4654,#2d3748,#3d4654);
-      transform:rotateY(-90deg) translateZ(50px);
-    }
-
+    /* Right side (thickness) */
+    .wf-r{width:16px;height:240px;background:linear-gradient(180deg,#5a6577,#3d4654,#5a6577);transform:rotateY(90deg) translateZ(60px);}
+    /* Left side */
+    .wf-l{width:16px;height:240px;background:linear-gradient(180deg,#3d4654,#2d3748,#3d4654);transform:rotateY(-90deg) translateZ(60px);}
     /* Top cap */
-    .wf-top {
-      background:#6b7a8d;
-      transform:rotateX(90deg) translateZ(110px);
-    }
-
+    .wf-t{width:120px;height:16px;background:#6b7a8d;transform:rotateX(90deg) translateZ(120px);}
     /* Bottom cap */
-    .wf-bottom {
-      background:#2d3748;
-      transform:rotateX(-90deg) translateZ(110px);
-    }
+    .wf-bo{width:120px;height:16px;background:#2d3748;transform:rotateX(-90deg) translateZ(120px);}
 
-    /* Shadow under wrench */
-    .wsh { position:absolute; bottom:0; left:50%; transform:translateX(-50%); width:80px; height:12px; background:radial-gradient(ellipse,rgba(0,0,0,0.35) 0%,transparent 70%); animation:sp 8s cubic-bezier(0.4,0,0.2,1) infinite; }
-    @keyframes sp { 0%,100%{transform:translateX(-50%) scaleX(1);opacity:.5;} 50%{transform:translateX(-50%) scaleX(1.15);opacity:.3;} }
+    .wsh{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:90px;height:14px;background:radial-gradient(ellipse,rgba(0,0,0,0.35) 0%,transparent 70%);animation:sp 8s cubic-bezier(0.4,0,0.2,1) infinite;}
+    @keyframes sp{0%,100%{transform:translateX(-50%) scaleX(1);opacity:.5;}50%{transform:translateX(-50%) scaleX(1.15);opacity:.3;}}
 
-    .pf { position:fixed; bottom:16px; font-size:11px; color:var(--muted); z-index:100; width:100%; text-align:center; }
-
-    @media(max-width:600px){ .ps{gap:8px;} .si{min-width:70px;padding:10px 14px;} .si .n{font-size:22px;} .ws{width:80px;height:170px;} }
+    @media(max-width:600px){.ps{gap:8px;}.si{min-width:70px;padding:10px 14px;}.si .n{font-size:22px;}.ws{width:90px;height:180px;}}
   </style>
 </head>
 <body>
 
 <div class="bg">
-  <!-- Roads -->
-  <div class="rh"></div>
-  <div class="rv"></div>
-  <div class="ix"></div>
-  <!-- Crosswalks -->
+  <div class="rh"></div><div class="rv"></div><div class="ix"></div>
   <div class="cw cw-n"></div><div class="cw cw-s"></div><div class="cw cw-e"></div><div class="cw cw-w"></div>
-  <!-- Buildings -->
-  <div class="bld bld-tl1"></div><div class="bld bld-tl2"></div>
-  <div class="bld bld-tr1"></div><div class="bld bld-tr2"></div>
-  <div class="bld bld-bl1"></div><div class="bld bld-bl2"></div>
-  <div class="bld bld-br1"></div><div class="bld bld-br2"></div>
-  <!-- Trees -->
-  <div class="tree" style="top:25%;left:calc(50% - 95px)"></div>
-  <div class="tree" style="top:70%;left:calc(50% - 95px)"></div>
-  <div class="tree" style="top:25%;right:calc(50% - 95px)"></div>
-  <div class="tree" style="top:70%;right:calc(50% - 95px)"></div>
-  <div class="tree" style="top:calc(50% - 95px);left:25%"></div>
-  <div class="tree" style="top:calc(50% + 95px);left:25%"></div>
-  <div class="tree" style="top:calc(50% - 95px);right:25%"></div>
-  <div class="tree" style="top:calc(50% + 95px);right:25%"></div>
-  <!-- Cars (JS) -->
+
+  <!-- 4 HUGE Factories (only 1/4 visible at intersection corners) -->
+  <div class="fac fac-tl"><div class="fac-ch"></div><div class="fac-sm"></div></div>
+  <div class="fac fac-tr"><div class="fac-ch"></div><div class="fac-sm"></div></div>
+  <div class="fac fac-bl"><div class="fac-ch"></div><div class="fac-sm"></div></div>
+  <div class="fac fac-br"><div class="fac-ch"></div><div class="fac-sm"></div></div>
+
+  <!-- Trees along road edges -->
+  <div class="tree" style="width:16px;height:16px;background:#2a4a2a;top:calc(50% - 105px);left:calc(50% - 115px);"></div>
+  <div class="tree" style="width:12px;height:12px;background:#1e3a1e;top:calc(50% + 95px);left:calc(50% - 115px);"></div>
+  <div class="tree" style="width:14px;height:14px;background:#2a4a2a;top:calc(50% - 105px);right:calc(50% - 115px);"></div>
+  <div class="tree" style="width:16px;height:16px;background:#1e3a1e;top:calc(50% + 95px);right:calc(50% - 115px);"></div>
+  <div class="tree" style="width:14px;height:14px;background:#2a4a2a;top:calc(50% - 115px);left:calc(50% + 95px);"></div>
+  <div class="tree" style="width:12px;height:12px;background:#1e3a1e;top:calc(50% + 105px);left:calc(50% + 95px);"></div>
+  <div class="tree" style="width:16px;height:16px;background:#2a4a2a;top:calc(50% - 115px);right:calc(50% + 95px);"></div>
+  <div class="tree" style="width:12px;height:12px;background:#1e3a1e;top:calc(50% + 105px);right:calc(50% + 95px);"></div>
+
   <div id="cc"></div>
 </div>
 
@@ -257,19 +204,17 @@
 
   <div class="ws">
     <div class="wr3d">
-      <div class="wrench-face wf-front"></div>
-      <div class="wrench-face wf-back"></div>
-      <div class="wrench-face wf-right"></div>
-      <div class="wrench-face wf-left"></div>
-      <div class="wrench-face wf-top"></div>
-      <div class="wrench-face wf-bottom"></div>
+      <div class="wf wf-f"></div>
+      <div class="wf wf-b"></div>
+      <div class="wf wf-r"></div>
+      <div class="wf wf-l"></div>
+      <div class="wf wf-t"></div>
+      <div class="wf wf-bo"></div>
     </div>
     <div class="wsh"></div>
   </div>
 
-  <a href="project-knowledge-base.html" class="pb">
-    <span class="ic">📋</span> View All Projects <span class="ar">→</span>
-  </a>
+  <a href="project-knowledge-base.html" class="pb"><span class="ic">📋</span> View All Projects <span class="ar">→</span></a>
 </div>
 
 <div class="pf">Ampas Industries Co., Ltd. — Process Engineering Hub</div>
@@ -277,29 +222,26 @@
 <script>
 const cc=document.getElementById('cc');
 const ct=[
-  {d:'r',b:'bh',s:[6,10],t:'calc(50% - 28px)',c:['#e74c3c','#f1c40f','#ecf0f1','#3498db']},
+  {d:'r',b:'bh',s:[6,10],t:'calc(50% - 30px)',c:['#e74c3c','#f1c40f','#ecf0f1','#3498db']},
   {d:'l',b:'bh',s:[7,11],t:'calc(50% + 16px)',c:['#2ecc71','#e67e22','#ecf0f1','#9b59b6']},
   {d:'d',b:'bv',s:[7,11],l:'calc(50% + 16px)',c:['#f39c12','#e74c3c','#ecf0f1','#1abc9c']},
-  {d:'u',b:'bv',s:[8,12],l:'calc(50% - 28px)',c:['#3498db','#2ecc71','#f1c40f','#e67e22']},
+  {d:'u',b:'bv',s:[8,12],l:'calc(50% - 30px)',c:['#3498db','#2ecc71','#f1c40f','#e67e22']},
 ];
 function rn(a,b){return Math.random()*(b-a)+a;}
 function sp(){
   const t=ct[Math.floor(Math.random()*ct.length)];
   const color=t.c[Math.floor(Math.random()*t.c.length)];
   const speed=rn(t.s[0],t.s[1]);
-  const car=document.createElement('div');
-  car.className='car';
-  car.style.setProperty('--c',color);
-  const body=document.createElement('div');
-  body.className=t.b;
+  const car=document.createElement('div');car.className='car';car.style.setProperty('--c',color);
+  const body=document.createElement('div');body.className=t.b;
   body.innerHTML='<div class="w wf"></div><div class="w wr"></div>';
   car.appendChild(body);
   if(t.d==='r'||t.d==='l')car.style.top=t.t;else car.style.left=t.l;
   const vw=innerWidth,vh=innerHeight;
-  if(t.d==='r'){car.style.left='-60px';cc.appendChild(car);requestAnimationFrame(()=>{car.style.transition=`left ${speed}s linear`;car.style.left=(vw+60)+'px';});setTimeout(()=>car.remove(),speed*1e3+500);}
-  else if(t.d==='l'){car.style.left=(vw+60)+'px';cc.appendChild(car);requestAnimationFrame(()=>{car.style.transition=`left ${speed}s linear`;car.style.left='-60px';});setTimeout(()=>car.remove(),speed*1e3+500);}
-  else if(t.d==='d'){car.style.top='-60px';cc.appendChild(car);requestAnimationFrame(()=>{car.style.transition=`top ${speed}s linear`;car.style.top=(vh+60)+'px';});setTimeout(()=>car.remove(),speed*1e3+500);}
-  else{car.style.top=(vh+60)+'px';cc.appendChild(car);requestAnimationFrame(()=>{car.style.transition=`top ${speed}s linear`;car.style.top='-60px';});setTimeout(()=>car.remove(),speed*1e3+500);}
+  if(t.d==='r'){car.style.left='-70px';cc.appendChild(car);requestAnimationFrame(()=>{car.style.transition=`left ${speed}s linear`;car.style.left=(vw+70)+'px';});setTimeout(()=>car.remove(),speed*1e3+500);}
+  else if(t.d==='l'){car.style.left=(vw+70)+'px';cc.appendChild(car);requestAnimationFrame(()=>{car.style.transition=`left ${speed}s linear`;car.style.left='-70px';});setTimeout(()=>car.remove(),speed*1e3+500);}
+  else if(t.d==='d'){car.style.top='-70px';cc.appendChild(car);requestAnimationFrame(()=>{car.style.transition=`top ${speed}s linear`;car.style.top=(vh+70)+'px';});setTimeout(()=>car.remove(),speed*1e3+500);}
+  else{car.style.top=(vh+70)+'px';cc.appendChild(car);requestAnimationFrame(()=>{car.style.transition=`top ${speed}s linear`;car.style.top='-70px';});setTimeout(()=>car.remove(),speed*1e3+500);}
 }
 function ss(){sp();setTimeout(ss,rn(1200,3500));}
 setTimeout(ss,300);setTimeout(ss,1000);setTimeout(ss,1800);
