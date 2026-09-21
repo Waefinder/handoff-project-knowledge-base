@@ -16,670 +16,293 @@
       --red: #f87171;
       --amber: #fbbf24;
       --blue: #60a5fa;
-      --road: #333340;
-      --road-line: #555568;
-      --road-edge: #222230;
-      --grass: #1a2a1a;
-      --crosswalk: #dddddd;
+      --road: #2c2c38;
+      --road-marking: #555;
+      --grass: #1e2e1e;
+      --crosswalk: rgba(255,255,255,0.25);
     }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { margin:0; padding:0; box-sizing:border-box; }
     body {
-      font-family: 'Inter', 'Noto Sans Thai', system-ui, -apple-system, sans-serif;
+      font-family: 'Inter','Noto Sans Thai',system-ui,sans-serif;
       background: var(--bg);
       color: var(--text);
-      min-height: 100vh;
-      overflow: hidden;
+      min-height:100vh;
+      overflow:hidden;
     }
 
-    /* ===== BIRD'S EYE VIEW BACKGROUND ===== */
-    .bg-scene {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      z-index: 0;
-      overflow: hidden;
+    /* ===== BACKGROUND: Roads fill most of screen ===== */
+    .bg {
+      position:fixed; inset:0; z-index:0; overflow:hidden;
       background: var(--grass);
     }
 
-    /* -- Wide Roads -- */
-    .road-h {
-      position: absolute;
-      top: 50%;
-      left: 0; right: 0;
-      height: 120px;
-      transform: translateY(-50%);
-      background: var(--road);
-      border-top: 3px solid var(--road-edge);
-      border-bottom: 3px solid var(--road-edge);
-    }
-    .road-v {
-      position: absolute;
-      left: 50%;
-      top: 0; bottom: 0;
-      width: 120px;
-      transform: translateX(-50%);
-      background: var(--road);
-      border-left: 3px solid var(--road-edge);
-      border-right: 3px solid var(--road-edge);
-    }
-    /* Center dashed lines */
-    .road-h::after {
-      content: '';
-      position: absolute;
-      top: 50%; left: 0; right: 0;
-      height: 3px;
-      transform: translateY(-50%);
-      background: repeating-linear-gradient(90deg, var(--road-line) 0px, var(--road-line) 30px, transparent 30px, transparent 60px);
-    }
-    .road-v::after {
-      content: '';
-      position: absolute;
-      left: 50%; top: 0; bottom: 0;
-      width: 3px;
-      transform: translateX(-50%);
-      background: repeating-linear-gradient(180deg, var(--road-line) 0px, var(--road-line) 30px, transparent 30px, transparent 60px);
-    }
-    /* Lane dividers */
-    .road-h::before {
-      content: '';
-      position: absolute;
-      top: 25%; left: 0; right: 0;
-      height: 1px;
-      background: repeating-linear-gradient(90deg, rgba(255,255,255,0.15) 0px, rgba(255,255,255,0.15) 15px, transparent 15px, transparent 40px);
-    }
-    .road-v::before {
-      content: '';
-      position: absolute;
-      left: 25%; top: 0; bottom: 0;
-      width: 1px;
-      background: repeating-linear-gradient(180deg, rgba(255,255,255,0.15) 0px, rgba(255,255,255,0.15) 15px, transparent 15px, transparent 40px);
-    }
+    /* Wide roads */
+    .rh { position:absolute; top:50%; left:0; right:0; height:160px; transform:translateY(-50%); background:var(--road); }
+    .rv { position:absolute; left:50%; top:0; bottom:0; width:160px; transform:translateX(-50%); background:var(--road); }
+
+    /* Center line dashed */
+    .rh::after { content:''; position:absolute; top:50%; left:0; right:0; height:2px; transform:translateY(-50%); background:repeating-linear-gradient(90deg,var(--road-marking) 0 25px,transparent 25px 50px); }
+    .rv::after { content:''; position:absolute; left:50%; top:0; bottom:0; width:2px; transform:translateX(-50%); background:repeating-linear-gradient(180deg,var(--road-marking) 0 25px,transparent 25px 50px); }
+
+    /* Lane divider (inner lanes) */
+    .rh::before { content:''; position:absolute; top:35%; left:0; right:0; height:1px; background:rgba(255,255,255,0.08); }
+    .rv::before { content:''; position:absolute; left:35%; top:0; bottom:0; width:1px; background:rgba(255,255,255,0.08); }
 
     /* Intersection */
-    .intersection {
-      position: absolute;
-      top: 50%; left: 50%;
-      width: 120px; height: 120px;
-      transform: translate(-50%, -50%);
-      background: var(--road);
-      z-index: 2;
-    }
+    .ix { position:absolute; top:50%; left:50%; width:160px; height:160px; transform:translate(-50%,-50%); background:var(--road); z-index:2; }
+
     /* Crosswalks */
-    .crosswalk {
-      position: absolute;
-      z-index: 3;
-    }
-    .crosswalk-n { top: calc(50% - 70px); left: calc(50% - 55px); width: 110px; height: 12px; }
-    .crosswalk-s { bottom: calc(50% - 70px); left: calc(50% - 55px); width: 110px; height: 12px; }
-    .crosswalk-e { right: calc(50% - 70px); top: calc(50% - 55px); width: 12px; height: 110px; }
-    .crosswalk-w { left: calc(50% - 70px); top: calc(50% - 55px); width: 12px; height: 110px; }
-    .crosswalk-n, .crosswalk-s {
-      background: repeating-linear-gradient(90deg, var(--crosswalk) 0px, var(--crosswalk) 10px, transparent 10px, transparent 18px);
-      opacity: 0.3;
-    }
-    .crosswalk-e, .crosswalk-w {
-      background: repeating-linear-gradient(180deg, var(--crosswalk) 0px, var(--crosswalk) 10px, transparent 10px, transparent 18px);
-      opacity: 0.3;
-    }
+    .cw { position:absolute; z-index:3; }
+    .cw-n { top:calc(50% - 90px); left:calc(50% - 70px); width:140px; height:14px; background:repeating-linear-gradient(90deg,var(--crosswalk) 0 10px,transparent 10px 18px); }
+    .cw-s { bottom:calc(50% - 90px); left:calc(50% - 70px); width:140px; height:14px; background:repeating-linear-gradient(90deg,var(--crosswalk) 0 10px,transparent 10px 18px); }
+    .cw-e { right:calc(50% - 90px); top:calc(50% - 70px); width:14px; height:140px; background:repeating-linear-gradient(180deg,var(--crosswalk) 0 10px,transparent 10px 18px); }
+    .cw-w { left:calc(50% - 90px); top:calc(50% - 70px); width:14px; height:140px; background:repeating-linear-gradient(180deg,var(--crosswalk) 0 10px,transparent 10px 18px); }
 
-    /* ===== LARGE FACTORIES (4 quadrants) ===== */
-    .factory {
-      position: absolute;
-      z-index: 1;
-    }
-    .factory-body {
-      position: relative;
-      border-radius: 4px;
-      box-shadow: 2px 2px 8px rgba(0,0,0,0.4);
-    }
-    .factory-body::after {
-      content: '';
-      position: absolute;
-      background: rgba(255,200,50,0.25);
-      border-radius: 2px;
-    }
-    .factory-chimney {
-      position: absolute;
-      top: -20px;
-      width: 14px;
-      height: 20px;
-      border-radius: 3px 3px 0 0;
-    }
-    .factory-smoke {
-      position: absolute;
-      top: -35px;
-      width: 10px;
-      height: 10px;
-      background: rgba(200,200,200,0.3);
-      border-radius: 50%;
-      animation: smoke 3s ease-out infinite;
-    }
-    @keyframes smoke {
-      0% { opacity: 0.6; transform: translateY(0) scale(1); }
-      100% { opacity: 0; transform: translateY(-30px) scale(2.5); }
-    }
-    /* Loading dock */
-    .factory-dock {
-      position: absolute;
-      bottom: -8px;
-      background: #1a1a25;
-      border-radius: 2px;
-    }
-    /* Parking lot lines */
-    .factory-parking {
-      position: absolute;
-      bottom: -20px;
-      height: 16px;
-      background: repeating-linear-gradient(90deg, rgba(255,255,255,0.08) 0px, rgba(255,255,255,0.08) 1px, transparent 1px, transparent 18px);
-    }
+    /* ===== FACTORIES along road edges ===== */
+    .bld { position:absolute; z-index:1; border-radius:3px; box-shadow:2px 2px 8px rgba(0,0,0,0.5); }
+    .bld::after { content:''; position:absolute; border-radius:2px; background:rgba(255,200,50,0.2); }
 
-    /* Top-Left Factory */
-    .factory-tl { top: 5%; left: 5%; }
-    .factory-tl .factory-body { width: 160px; height: 120px; background: linear-gradient(135deg, #1e2a3a, #253545); }
-    .factory-tl .factory-body::after { width: 16px; height: 18px; top: 12px; left: 12px; box-shadow: 24px 0 0 rgba(255,200,50,0.25), 48px 0 0 rgba(255,200,50,0.25), 0 28px 0 rgba(255,200,50,0.25), 24px 28px 0 rgba(255,200,50,0.25); }
-    .factory-tl .factory-chimney { left: 15px; background: #2a3a4a; }
-    .factory-tl .factory-chimney + .factory-smoke { left: 17px; }
-    .factory-tl .factory-dock { left: 20px; width: 40px; height: 8px; }
-    .factory-tl .factory-parking { left: 0; width: 160px; }
+    /* Top-left buildings */
+    .bld-tl1 { top:4%; left:3%; width:120px; height:80px; background:#1a2535; }
+    .bld-tl1::after { width:10px; height:12px; top:10px; left:10px; box-shadow:18px 0 0 rgba(255,200,50,0.2),36px 0 0 rgba(255,200,50,0.2),0 22px 0 rgba(255,200,50,0.2); }
+    .bld-tl2 { top:4%; left:calc(3% + 130px); width:90px; height:60px; background:#252a3a; }
+    .bld-tl2::after { width:8px; height:10px; top:8px; left:8px; box-shadow:14px 0 0 rgba(255,200,50,0.2); }
 
-    /* Top-Right Factory */
-    .factory-tr { top: 8%; right: 6%; }
-    .factory-tr .factory-body { width: 140px; height: 110px; background: linear-gradient(135deg, #2a1e3a, #352545); }
-    .factory-tr .factory-body::after { width: 14px; height: 16px; top: 12px; left: 12px; box-shadow: 22px 0 0 rgba(255,200,50,0.25), 44px 0 0 rgba(255,200,50,0.25), 0 26px 0 rgba(255,200,50,0.25); }
-    .factory-tr .factory-chimney { right: 15px; background: #3a2a4a; }
-    .factory-tr .factory-chimney + .factory-smoke { right: 17px; }
-    .factory-tr .factory-dock { right: 20px; width: 36px; height: 8px; }
-    .factory-tr .factory-parking { left: 0; width: 140px; }
+    /* Top-right buildings */
+    .bld-tr1 { top:4%; right:3%; width:110px; height:75px; background:#2a1e35; }
+    .bld-tr1::after { width:10px; height:12px; top:10px; left:10px; box-shadow:16px 0 0 rgba(255,200,50,0.2),32px 0 0 rgba(255,200,50,0.2); }
+    .bld-tr2 { top:calc(4% + 85px); right:3%; width:80px; height:55px; background:#1e2a2a; }
+    .bld-tr2::after { width:8px; height:10px; top:8px; left:8px; box-shadow:14px 0 0 rgba(255,200,50,0.2); }
 
-    /* Bottom-Left Factory */
-    .factory-bl { bottom: 8%; left: 6%; }
-    .factory-bl .factory-body { width: 150px; height: 115px; background: linear-gradient(135deg, #3a2a1e, #453525); }
-    .factory-bl .factory-body::after { width: 15px; height: 17px; top: 12px; left: 12px; box-shadow: 23px 0 0 rgba(255,200,50,0.25), 46px 0 0 rgba(255,200,50,0.25), 0 27px 0 rgba(255,200,50,0.25), 23px 27px 0 rgba(255,200,50,0.25); }
-    .factory-bl .factory-chimney { left: 12px; background: #4a3a2a; }
-    .factory-bl .factory-chimney + .factory-smoke { left: 14px; }
-    .factory-bl .factory-dock { left: 18px; width: 38px; height: 8px; }
-    .factory-bl .factory-parking { left: 0; width: 150px; }
+    /* Bottom-left buildings */
+    .bld-bl1 { bottom:4%; left:3%; width:130px; height:85px; background:#2a2520; }
+    .bld-bl1::after { width:10px; height:12px; top:10px; left:10px; box-shadow:18px 0 0 rgba(255,200,50,0.2),36px 0 0 rgba(255,200,50,0.2),0 22px 0 rgba(255,200,50,0.2); }
+    .bld-bl2 { bottom:calc(4% + 95px); left:3%; width:85px; height:60px; background:#1e2a35; }
+    .bld-bl2::after { width:8px; height:10px; top:8px; left:8px; box-shadow:14px 0 0 rgba(255,200,50,0.2); }
 
-    /* Bottom-Right Factory */
-    .factory-br { bottom: 5%; right: 5%; }
-    .factory-br .factory-body { width: 170px; height: 125px; background: linear-gradient(135deg, #1e3a2a, #254535); }
-    .factory-br .factory-body::after { width: 17px; height: 19px; top: 12px; left: 12px; box-shadow: 25px 0 0 rgba(255,200,50,0.25), 50px 0 0 rgba(255,200,50,0.25), 75px 0 0 rgba(255,200,50,0.25), 0 29px 0 rgba(255,200,50,0.25), 25px 29px 0 rgba(255,200,50,0.25); }
-    .factory-br .factory-chimney { right: 18px; background: #2a4a3a; }
-    .factory-br .factory-chimney + .factory-smoke { right: 20px; }
-    .factory-br .factory-dock { right: 25px; width: 44px; height: 8px; }
-    .factory-br .factory-parking { left: 0; width: 170px; }
+    /* Bottom-right buildings */
+    .bld-br1 { bottom:4%; right:3%; width:120px; height:80px; background:#1a2a25; }
+    .bld-br1::after { width:10px; height:12px; top:10px; left:10px; box-shadow:18px 0 0 rgba(255,200,50,0.2),36px 0 0 rgba(255,200,50,0.2); }
+    .bld-br2 { bottom:calc(4% + 90px); right:3%; width:75px; height:55px; background:#252a35; }
+    .bld-br2::after { width:8px; height:10px; top:8px; left:8px; box-shadow:14px 0 0 rgba(255,200,50,0.2); }
 
-    /* ===== CARS (JS generated) ===== */
-    .car {
-      position: absolute;
-      z-index: 4;
-      will-change: left, top;
-    }
-    /* Horizontal car (bird's eye - wider than tall) */
-    .car .body-h {
-      width: 52px;
-      height: 26px;
-      background: var(--car-color);
-      border-radius: 6px 10px 6px 6px;
-      position: relative;
-      box-shadow: 2px 2px 6px rgba(0,0,0,0.5);
-    }
-    /* Cabin (windshield area) */
-    .car .body-h::before {
-      content: '';
-      position: absolute;
-      top: 3px; left: 12px;
-      width: 22px; height: 20px;
-      background: rgba(100,180,255,0.3);
-      border-radius: 3px 5px 2px 2px;
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-    /* Headlights */
-    .car .body-h::after {
-      content: '';
-      position: absolute;
-      top: 4px; right: 2px;
-      width: 5px; height: 4px;
-      background: #fff8;
-      border-radius: 2px;
-      box-shadow: 0 14px 0 #fff8;
-    }
-    .car .body-h .wheel {
-      position: absolute;
-      bottom: -5px;
-      width: 10px; height: 10px;
-      background: #1a1a1a;
-      border-radius: 50%;
-      border: 2px solid #333;
-    }
-    .car .body-h .wf { right: 8px; }
-    .car .body-h .wr { left: 8px; }
+    /* Trees (small green dots along roads) */
+    .tree { position:absolute; z-index:1; width:14px; height:14px; background:#2a4a2a; border-radius:50%; box-shadow:0 0 4px rgba(0,80,0,0.4); }
 
-    /* Vertical car (bird's eye - taller than wide) */
-    .car .body-v {
-      width: 26px;
-      height: 52px;
-      background: var(--car-color);
-      border-radius: 6px 6px 10px 6px;
-      position: relative;
-      box-shadow: 2px 2px 6px rgba(0,0,0,0.5);
-    }
-    .car .body-v::before {
-      content: '';
-      position: absolute;
-      left: 3px; top: 12px;
-      width: 20px; height: 22px;
-      background: rgba(100,180,255,0.3);
-      border-radius: 2px 2px 5px 3px;
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-    .car .body-v::after {
-      content: '';
-      position: absolute;
-      left: 4px; top: 2px;
-      width: 4px; height: 5px;
-      background: #fff8;
-      border-radius: 2px;
-      box-shadow: 14px 0 0 #fff8;
-    }
-    .car .body-v .wheel {
-      position: absolute;
-      width: 10px; height: 10px;
-      background: #1a1a1a;
-      border-radius: 50%;
-      border: 2px solid #333;
-    }
-    .car .body-v .wf { bottom: 8px; left: -5px; }
-    .car .body-v .wr { top: 8px; left: -5px; }
+    /* ===== CARS (JS) ===== */
+    .car { position:absolute; z-index:4; will-change:left,top; }
+    .car .bh { width:48px; height:22px; background:var(--c); border-radius:5px 8px 5px 5px; position:relative; box-shadow:2px 2px 5px rgba(0,0,0,0.5); }
+    .car .bh::before { content:''; position:absolute; top:3px; left:10px; width:20px; height:16px; background:rgba(100,180,255,0.25); border-radius:2px 4px 2px 2px; border:1px solid rgba(255,255,255,0.08); }
+    .car .bh::after { content:''; position:absolute; top:3px; right:2px; width:4px; height:3px; background:#fff6; border-radius:1px; box-shadow:0 12px 0 #fff6; }
+    .car .bh .w { position:absolute; bottom:-4px; width:8px; height:8px; background:#1a1a1a; border-radius:50%; border:2px solid #333; }
+    .car .bh .wf { right:6px; } .car .bh .wr { left:6px; }
+
+    .car .bv { width:22px; height:48px; background:var(--c); border-radius:5px 5px 8px 5px; position:relative; box-shadow:2px 2px 5px rgba(0,0,0,0.5); }
+    .car .bv::before { content:''; position:absolute; left:3px; top:10px; width:16px; height:20px; background:rgba(100,180,255,0.25); border-radius:2px 2px 4px 2px; border:1px solid rgba(255,255,255,0.08); }
+    .car .bv::after { content:''; position:absolute; left:3px; top:2px; width:3px; height:4px; background:#fff6; border-radius:1px; box-shadow:12px 0 0 #fff6; }
+    .car .bv .w { position:absolute; width:8px; height:8px; background:#1a1a1a; border-radius:50%; border:2px solid #333; }
+    .car .bv .wf { bottom:6px; left:-4px; } .car .bv .wr { top:6px; left:-4px; }
 
     /* ===== PORTAL CONTENT ===== */
-    .portal-overlay {
-      position: relative;
-      z-index: 10;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 80px 24px 40px;
-      gap: 28px;
-    }
-    .portal-header {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      background: rgba(10,10,15,0.92);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border);
-      padding: 14px 24px;
-      z-index: 100;
-      text-align: center;
-    }
-    .portal-header h1 {
-      font-size: 18px;
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .portal-stats {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    .stat-item {
-      text-align: center;
-      padding: 16px 24px;
-      background: rgba(22,22,31,0.95);
-      backdrop-filter: blur(10px);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      min-width: 90px;
-    }
-    .stat-item .num {
-      font-size: 28px;
-      font-weight: 700;
-      font-family: 'JetBrains Mono', monospace;
-    }
-    .stat-item .label {
-      font-size: 11px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-top: 4px;
-    }
-    .portal-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 18px 36px;
-      background: rgba(22,22,31,0.95);
-      backdrop-filter: blur(10px);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      color: var(--text);
-      font-family: inherit;
-      font-size: 16px;
-      font-weight: 600;
-      text-decoration: none;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-    .portal-btn:hover {
-      border-color: var(--blue);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(96,165,250,0.2);
-    }
-    .portal-btn .icon { font-size: 20px; }
-    .portal-btn .arrow { font-size: 14px; opacity: 0.6; transition: opacity 0.3s; }
-    .portal-btn:hover .arrow { opacity: 1; }
+    .portal { position:relative; z-index:10; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:80px 24px 40px; gap:28px; }
+    .ph { position:fixed; top:0; left:0; right:0; background:rgba(10,10,15,0.92); backdrop-filter:blur(20px); border-bottom:1px solid var(--border); padding:14px 24px; z-index:100; text-align:center; }
+    .ph h1 { font-size:18px; font-weight:700; display:inline-flex; align-items:center; gap:8px; }
+    .ps { display:flex; gap:16px; flex-wrap:wrap; justify-content:center; }
+    .si { text-align:center; padding:16px 24px; background:rgba(22,22,31,0.95); backdrop-filter:blur(10px); border:1px solid var(--border); border-radius:14px; min-width:90px; }
+    .si .n { font-size:28px; font-weight:700; font-family:'JetBrains Mono',monospace; }
+    .si .l { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px; margin-top:4px; }
+    .pb { display:inline-flex; align-items:center; gap:10px; padding:18px 36px; background:rgba(22,22,31,0.95); backdrop-filter:blur(10px); border:1px solid var(--border); border-radius:14px; color:var(--text); font-family:inherit; font-size:16px; font-weight:600; text-decoration:none; cursor:pointer; transition:all 0.3s; }
+    .pb:hover { border-color:var(--blue); transform:translateY(-2px); box-shadow:0 8px 30px rgba(96,165,250,0.2); }
+    .pb .ic { font-size:20px; } .pb .ar { font-size:14px; opacity:0.6; transition:opacity 0.3s; } .pb:hover .ar { opacity:1; }
 
-    /* ===== TRUE 3D WRENCH (correct transforms) ===== */
-    .wrench-stage {
-      width: 120px;
-      height: 220px;
-      perspective: 600px;
+    /* ===== WRENCH: CSS Illustration with 3D rotation ===== */
+    .ws { width:100px; height:220px; perspective:600px; }
+    .wr3d {
+      width:100%; height:100%; position:relative;
+      transform-style:preserve-3d;
+      animation:ws 8s cubic-bezier(0.4,0,0.2,1) infinite;
     }
-    .wrench-3d {
-      width: 100%;
-      height: 100%;
-      position: relative;
-      transform-style: preserve-3d;
-      animation: wrenchSpin 8s cubic-bezier(0.4,0,0.2,1) infinite;
-    }
-    @keyframes wrenchSpin {
-      0%   { transform: rotateX(-15deg) rotateY(0deg); }
-      25%  { transform: rotateX(5deg) rotateY(90deg); }
-      50%  { transform: rotateX(-10deg) rotateY(180deg); }
-      75%  { transform: rotateX(-20deg) rotateY(270deg); }
-      100% { transform: rotateX(-15deg) rotateY(360deg); }
+    @keyframes ws {
+      0%  { transform:rotateX(-8deg) rotateY(0deg); }
+      25% { transform:rotateX(4deg) rotateY(90deg); }
+      50% { transform:rotateX(-6deg) rotateY(180deg); }
+      75% { transform:rotateX(-12deg) rotateY(270deg); }
+      100%{ transform:rotateX(-8deg) rotateY(360deg); }
     }
 
-    /* Each part uses: rotateY(angle) translateZ(halfDepth) */
-    .wrench-part {
-      position: absolute;
-      transform-style: preserve-3d;
+    /* Wrench shape using clip-path + gradients */
+    .wrench-face {
+      position:absolute;
+      transform-style:preserve-3d;
+      backface-visibility:visible;
     }
-    .wrench-part .face {
-      position: absolute;
-      backface-visibility: visible;
+    /* Each face is a CSS-drawn wrench shape */
+    .wf-front, .wf-back {
+      width:100px; height:220px;
     }
-
-    /* HEAD: 60x44x20 (w x h x d) → translateZ = 10px */
-    .part-head {
-      top: 18px; left: 50%; transform: translateX(-50%);
-      width: 60px; height: 44px;
+    .wf-left, .wf-right {
+      width:20px; height:220px;
     }
-    .part-head .face { width: 60px; height: 44px; }
-    .part-head .f-front  { background: linear-gradient(135deg,#718096,#4a5568,#5a6577); transform: rotateY(0deg) translateZ(10px); border-radius: 8px 8px 2px 2px; }
-    .part-head .f-back   { background: linear-gradient(135deg,#4a5568,#2d3748); transform: rotateY(180deg) translateZ(10px); border-radius: 8px 8px 2px 2px; }
-    .part-head .f-right  { width: 20px; background: linear-gradient(180deg,#6b7a8d,#4a5568); transform: rotateY(90deg) translateZ(30px); }
-    .part-head .f-left   { width: 20px; background: linear-gradient(180deg,#3d4654,#2d3748); transform: rotateY(-90deg) translateZ(30px); }
-    .part-head .f-top    { width: 60px; height: 20px; background: linear-gradient(90deg,#718096,#5a6577,#718096); transform: rotateX(90deg) translateZ(22px); border-radius: 8px 8px 0 0; }
-    .part-head .f-bottom { width: 60px; height: 20px; background: #3d4654; transform: rotateX(-90deg) translateZ(22px); }
-
-    /* JAW LEFT: 14x30x20 → translateZ = 10px */
-    .part-jaw-l {
-      top: -8px; left: 4px;
-      width: 14px; height: 30px;
-    }
-    .part-jaw-l .face { width: 14px; height: 30px; }
-    .part-jaw-l .f-front  { background: linear-gradient(180deg,#718096,#5a6577); transform: rotateY(0deg) translateZ(10px); border-radius: 6px 2px 2px 2px; }
-    .part-jaw-l .f-back   { background: #3d4654; transform: rotateY(180deg) translateZ(10px); border-radius: 6px 2px 2px 2px; }
-    .part-jaw-l .f-right  { width: 20px; background: #5a6577; transform: rotateY(90deg) translateZ(7px); }
-    .part-jaw-l .f-left   { width: 20px; background: #3d4654; transform: rotateY(-90deg) translateZ(7px); }
-    .part-jaw-l .f-top    { width: 14px; height: 20px; background: #6b7a8d; transform: rotateX(90deg) translateZ(15px); border-radius: 6px 6px 0 0; }
-
-    /* JAW RIGHT: 14x30x20 → translateZ = 10px */
-    .part-jaw-r {
-      top: -8px; right: 4px;
-      width: 14px; height: 30px;
-    }
-    .part-jaw-r .face { width: 14px; height: 30px; }
-    .part-jaw-r .f-front  { background: linear-gradient(180deg,#718096,#5a6577); transform: rotateY(0deg) translateZ(10px); border-radius: 2px 6px 2px 2px; }
-    .part-jaw-r .f-back   { background: #3d4654; transform: rotateY(180deg) translateZ(10px); border-radius: 2px 6px 2px 2px; }
-    .part-jaw-r .f-right  { width: 20px; background: #5a6577; transform: rotateY(90deg) translateZ(7px); }
-    .part-jaw-r .f-left   { width: 20px; background: #3d4654; transform: rotateY(-90deg) translateZ(7px); }
-    .part-jaw-r .f-top    { width: 14px; height: 20px; background: #6b7a8d; transform: rotateX(90deg) translateZ(15px); border-radius: 6px 6px 0 0; }
-
-    /* JAW INNER: 28x12x22 → translateZ = 11px */
-    .part-jaw-inner {
-      top: 8px; left: 50%; transform: translateX(-50%);
-      width: 28px; height: 12px;
-    }
-    .part-jaw-inner .face { width: 28px; height: 12px; }
-    .part-jaw-inner .f-front { background: #0a0a0f; transform: rotateY(0deg) translateZ(11px); border-radius: 2px; }
-    .part-jaw-inner .f-back  { background: #050508; transform: rotateY(180deg) translateZ(11px); border-radius: 2px; }
-
-    /* NECK: 26x14x20 → translateZ = 10px (connects head to handle) */
-    .part-neck {
-      top: 60px; left: 50%; transform: translateX(-50%);
-      width: 26px; height: 14px;
-    }
-    .part-neck .face { width: 26px; height: 14px; }
-    .part-neck .f-front  { background: linear-gradient(180deg,#5a6577,#4a5568); transform: rotateY(0deg) translateZ(10px); clip-path: polygon(10% 0%,90% 0%,100% 100%,0% 100%); }
-    .part-neck .f-back   { background: #3d4654; transform: rotateY(180deg) translateZ(10px); clip-path: polygon(10% 0%,90% 0%,100% 100%,0% 100%); }
-    .part-neck .f-right  { width: 20px; background: #5a6577; transform: rotateY(90deg) translateZ(13px); clip-path: polygon(0% 0%,100% 0%,100% 100%,30% 100%); }
-    .part-neck .f-left   { width: 20px; background: #3d4654; transform: rotateY(-90deg) translateZ(13px); clip-path: polygon(0% 0%,100% 0%,70% 100%,0% 100%); }
-
-    /* HANDLE: 20x120x20 → translateZ = 10px */
-    .part-handle {
-      top: 72px; left: 50%; transform: translateX(-50%);
-      width: 20px; height: 120px;
-    }
-    .part-handle .face { width: 20px; height: 120px; }
-    .part-handle .f-front  { background: linear-gradient(180deg,#5a6577,#3d4654,#5a6577); transform: rotateY(0deg) translateZ(10px); border-radius: 3px; }
-    .part-handle .f-back   { background: linear-gradient(180deg,#4a5568,#2d3748,#4a5568); transform: rotateY(180deg) translateZ(10px); border-radius: 3px; }
-    .part-handle .f-right  { width: 20px; background: linear-gradient(180deg,#6b7a8d,#4a5568,#6b7a8d); transform: rotateY(90deg) translateZ(10px); }
-    .part-handle .f-left   { width: 20px; background: linear-gradient(180deg,#3d4654,#2d3748,#3d4654); transform: rotateY(-90deg) translateZ(10px); }
-    .part-handle .f-top    { width: 20px; height: 20px; background: #718096; transform: rotateX(90deg) translateZ(60px); border-radius: 3px 3px 0 0; }
-    .part-handle .f-bottom { width: 20px; height: 20px; background: #2d3748; transform: rotateX(-90deg) translateZ(60px); border-radius: 0 0 3px 3px; }
-
-    .wrench-shadow {
-      position: absolute;
-      bottom: 0; left: 50%;
-      transform: translateX(-50%);
-      width: 80px; height: 14px;
-      background: radial-gradient(ellipse, rgba(0,0,0,0.35) 0%, transparent 70%);
-      animation: shadowPulse 8s cubic-bezier(0.4,0,0.2,1) infinite;
-    }
-    @keyframes shadowPulse {
-      0%,100% { transform: translateX(-50%) scaleX(1); opacity: 0.5; }
-      50% { transform: translateX(-50%) scaleX(1.15); opacity: 0.3; }
+    .wf-top, .wf-bottom {
+      width:100px; height:20px;
     }
 
-    .portal-footer {
-      position: fixed;
-      bottom: 16px;
-      font-size: 11px;
-      color: var(--muted);
-      z-index: 100;
-      width: 100%;
-      text-align: center;
+    /* Front face: wrench shape */
+    .wf-front {
+      background: linear-gradient(135deg,#6b7a8d 0%,#4a5568 30%,#5a6577 60%,#3d4654 100%);
+      clip-path: polygon(
+        25% 0%, 30% 0%, 32% 8%, 28% 10%, 25% 8%,  /* jaw left */
+        25% 12%, 22% 14%, 22% 18%, 28% 18%,         /* jaw inner left */
+        38% 18%, 38% 14%, 32% 12%, 28% 12%,          /* gap */
+        38% 12%, 42% 14%, 42% 18%, 48% 18%,          /* jaw inner right */
+        52% 18%, 58% 18%, 58% 14%, 62% 12%,          /* gap right */
+        68% 12%, 72% 12%, 68% 14%, 72% 18%,          /* jaw right */
+        78% 18%, 78% 14%, 75% 12%, 75% 8%,           /* jaw outer right */
+        72% 10%, 68% 8%, 70% 0%, 75% 0%,             /* top right */
+        65% 22%, 58% 26%, 58% 30%,                    /* head to neck transition */
+        55% 32%, 55% 100%, 45% 100%, 45% 32%,        /* handle */
+        42% 30%, 42% 26%, 35% 22%                     /* neck left */
+      );
+      transform:rotateY(0deg) translateZ(10px);
     }
 
-    @media (max-width: 600px) {
-      .portal-stats { gap: 8px; }
-      .stat-item { min-width: 70px; padding: 10px 14px; }
-      .stat-item .num { font-size: 22px; }
-      .wrench-stage { width: 90px; height: 170px; }
+    /* Back face */
+    .wf-back {
+      background: linear-gradient(225deg,#3d4654 0%,#2d3748 30%,#4a5568 60%,#2d3748 100%);
+      clip-path: polygon(
+        25% 0%, 30% 0%, 32% 8%, 28% 10%, 25% 8%,
+        25% 12%, 22% 14%, 22% 18%, 28% 18%,
+        38% 18%, 38% 14%, 32% 12%, 28% 12%,
+        38% 12%, 42% 14%, 42% 18%, 48% 18%,
+        52% 18%, 58% 18%, 58% 14%, 62% 12%,
+        68% 12%, 72% 12%, 68% 14%, 72% 18%,
+        78% 18%, 78% 14%, 75% 12%, 75% 8%,
+        72% 10%, 68% 8%, 70% 0%, 75% 0%,
+        65% 22%, 58% 26%, 58% 30%,
+        55% 32%, 55% 100%, 45% 100%, 45% 32%,
+        42% 30%, 42% 26%, 35% 22%
+      );
+      transform:rotateY(180deg) translateZ(10px);
     }
+
+    /* Right side: thickness strip */
+    .wf-right {
+      background: linear-gradient(180deg,#5a6577,#3d4654,#5a6577);
+      transform:rotateY(90deg) translateZ(50px);
+    }
+
+    /* Left side: thickness strip */
+    .wf-left {
+      background: linear-gradient(180deg,#3d4654,#2d3748,#3d4654);
+      transform:rotateY(-90deg) translateZ(50px);
+    }
+
+    /* Top cap */
+    .wf-top {
+      background:#6b7a8d;
+      transform:rotateX(90deg) translateZ(110px);
+    }
+
+    /* Bottom cap */
+    .wf-bottom {
+      background:#2d3748;
+      transform:rotateX(-90deg) translateZ(110px);
+    }
+
+    /* Shadow under wrench */
+    .wsh { position:absolute; bottom:0; left:50%; transform:translateX(-50%); width:80px; height:12px; background:radial-gradient(ellipse,rgba(0,0,0,0.35) 0%,transparent 70%); animation:sp 8s cubic-bezier(0.4,0,0.2,1) infinite; }
+    @keyframes sp { 0%,100%{transform:translateX(-50%) scaleX(1);opacity:.5;} 50%{transform:translateX(-50%) scaleX(1.15);opacity:.3;} }
+
+    .pf { position:fixed; bottom:16px; font-size:11px; color:var(--muted); z-index:100; width:100%; text-align:center; }
+
+    @media(max-width:600px){ .ps{gap:8px;} .si{min-width:70px;padding:10px 14px;} .si .n{font-size:22px;} .ws{width:80px;height:170px;} }
   </style>
 </head>
 <body>
 
-  <!-- BIRD'S EYE VIEW BACKGROUND -->
-  <div class="bg-scene">
-    <!-- Roads -->
-    <div class="road-h"></div>
-    <div class="road-v"></div>
-    <div class="intersection"></div>
+<div class="bg">
+  <!-- Roads -->
+  <div class="rh"></div>
+  <div class="rv"></div>
+  <div class="ix"></div>
+  <!-- Crosswalks -->
+  <div class="cw cw-n"></div><div class="cw cw-s"></div><div class="cw cw-e"></div><div class="cw cw-w"></div>
+  <!-- Buildings -->
+  <div class="bld bld-tl1"></div><div class="bld bld-tl2"></div>
+  <div class="bld bld-tr1"></div><div class="bld bld-tr2"></div>
+  <div class="bld bld-bl1"></div><div class="bld bld-bl2"></div>
+  <div class="bld bld-br1"></div><div class="bld bld-br2"></div>
+  <!-- Trees -->
+  <div class="tree" style="top:25%;left:calc(50% - 95px)"></div>
+  <div class="tree" style="top:70%;left:calc(50% - 95px)"></div>
+  <div class="tree" style="top:25%;right:calc(50% - 95px)"></div>
+  <div class="tree" style="top:70%;right:calc(50% - 95px)"></div>
+  <div class="tree" style="top:calc(50% - 95px);left:25%"></div>
+  <div class="tree" style="top:calc(50% + 95px);left:25%"></div>
+  <div class="tree" style="top:calc(50% - 95px);right:25%"></div>
+  <div class="tree" style="top:calc(50% + 95px);right:25%"></div>
+  <!-- Cars (JS) -->
+  <div id="cc"></div>
+</div>
 
-    <!-- Crosswalks -->
-    <div class="crosswalk crosswalk-n"></div>
-    <div class="crosswalk crosswalk-s"></div>
-    <div class="crosswalk crosswalk-e"></div>
-    <div class="crosswalk crosswalk-w"></div>
+<div class="ph"><h1><span>🏠</span> Ampas Industries Portal</h1></div>
 
-    <!-- 4 Large Factories -->
-    <div class="factory factory-tl">
-      <div class="factory-chimney"></div>
-      <div class="factory-smoke"></div>
-      <div class="factory-body"></div>
-      <div class="factory-dock"></div>
-      <div class="factory-parking"></div>
-    </div>
-    <div class="factory factory-tr">
-      <div class="factory-chimney"></div>
-      <div class="factory-smoke"></div>
-      <div class="factory-body"></div>
-      <div class="factory-dock"></div>
-      <div class="factory-parking"></div>
-    </div>
-    <div class="factory factory-bl">
-      <div class="factory-chimney"></div>
-      <div class="factory-smoke"></div>
-      <div class="factory-body"></div>
-      <div class="factory-dock"></div>
-      <div class="factory-parking"></div>
-    </div>
-    <div class="factory factory-br">
-      <div class="factory-chimney"></div>
-      <div class="factory-smoke"></div>
-      <div class="factory-body"></div>
-      <div class="factory-dock"></div>
-      <div class="factory-parking"></div>
-    </div>
-
-    <!-- Cars container (JS) -->
-    <div id="carContainer"></div>
+<div class="portal">
+  <div class="ps">
+    <div class="si"><div class="n" style="color:var(--blue)">18</div><div class="l">Projects</div></div>
+    <div class="si"><div class="n" style="color:var(--green)">15</div><div class="l">Worked</div></div>
+    <div class="si"><div class="n" style="color:var(--red)">1</div><div class="l">Failed</div></div>
+    <div class="si"><div class="n" style="color:var(--amber)">2</div><div class="l">Pitfall</div></div>
   </div>
 
-  <!-- PORTAL HEADER -->
-  <div class="portal-header">
-    <h1><span>🏠</span> Ampas Industries Portal</h1>
+  <div class="ws">
+    <div class="wr3d">
+      <div class="wrench-face wf-front"></div>
+      <div class="wrench-face wf-back"></div>
+      <div class="wrench-face wf-right"></div>
+      <div class="wrench-face wf-left"></div>
+      <div class="wrench-face wf-top"></div>
+      <div class="wrench-face wf-bottom"></div>
+    </div>
+    <div class="wsh"></div>
   </div>
 
-  <!-- PORTAL CONTENT -->
-  <div class="portal-overlay">
-    <div class="portal-stats">
-      <div class="stat-item"><div class="num" style="color:var(--blue)">18</div><div class="label">Projects</div></div>
-      <div class="stat-item"><div class="num" style="color:var(--green)">15</div><div class="label">Worked</div></div>
-      <div class="stat-item"><div class="num" style="color:var(--red)">1</div><div class="label">Failed</div></div>
-      <div class="stat-item"><div class="num" style="color:var(--amber)">2</div><div class="label">Pitfall</div></div>
-    </div>
+  <a href="project-knowledge-base.html" class="pb">
+    <span class="ic">📋</span> View All Projects <span class="ar">→</span>
+  </a>
+</div>
 
-    <!-- TRUE 3D WRENCH (correct CSS 3D transforms) -->
-    <div class="wrench-stage">
-      <div class="wrench-3d">
-        <!-- Head: 6 faces -->
-        <div class="wrench-part part-head">
-          <div class="face f-front"></div><div class="face f-back"></div>
-          <div class="face f-right"></div><div class="face f-left"></div>
-          <div class="face f-top"></div><div class="face f-bottom"></div>
-        </div>
-        <!-- Jaw Left: 5 faces -->
-        <div class="wrench-part part-jaw-l">
-          <div class="face f-front"></div><div class="face f-back"></div>
-          <div class="face f-right"></div><div class="face f-left"></div>
-          <div class="face f-top"></div>
-        </div>
-        <!-- Jaw Right: 5 faces -->
-        <div class="wrench-part part-jaw-r">
-          <div class="face f-front"></div><div class="face f-back"></div>
-          <div class="face f-right"></div><div class="face f-left"></div>
-          <div class="face f-top"></div>
-        </div>
-        <!-- Jaw Inner: 2 faces -->
-        <div class="wrench-part part-jaw-inner">
-          <div class="face f-front"></div><div class="face f-back"></div>
-        </div>
-        <!-- Neck: 4 faces (connects head to handle) -->
-        <div class="wrench-part part-neck">
-          <div class="face f-front"></div><div class="face f-back"></div>
-          <div class="face f-right"></div><div class="face f-left"></div>
-        </div>
-        <!-- Handle: 6 faces -->
-        <div class="wrench-part part-handle">
-          <div class="face f-front"></div><div class="face f-back"></div>
-          <div class="face f-right"></div><div class="face f-left"></div>
-          <div class="face f-top"></div><div class="face f-bottom"></div>
-        </div>
-      </div>
-      <div class="wrench-shadow"></div>
-    </div>
+<div class="pf">Ampas Industries Co., Ltd. — Process Engineering Hub</div>
 
-    <a href="project-knowledge-base.html" class="portal-btn">
-      <span class="icon">📋</span>
-      View All Projects
-      <span class="arrow">→</span>
-    </a>
-  </div>
-
-  <div class="portal-footer">Ampas Industries Co., Ltd. — Process Engineering Hub</div>
-
-  <script>
-    // ===== Random Car Spawner (bird's eye view) =====
-    const carContainer = document.getElementById('carContainer');
-
-    const carTypes = [
-      { dir:'right', body:'body-h', speed:[6,10], top:'calc(50% - 32px)', colors:['#e74c3c','#f1c40f','#ecf0f1','#3498db'] },
-      { dir:'left',  body:'body-h', speed:[7,11], top:'calc(50% + 18px)', colors:['#2ecc71','#e67e22','#ecf0f1','#9b59b6'] },
-      { dir:'down',  body:'body-v', speed:[7,11], left:'calc(50% + 18px)', colors:['#f39c12','#e74c3c','#ecf0f1','#1abc9c'] },
-      { dir:'up',    body:'body-v', speed:[8,12], left:'calc(50% - 32px)', colors:['#3498db','#2ecc71','#f1c40f','#e67e22'] },
-    ];
-
-    function rand(a,b){ return Math.random()*(b-a)+a; }
-
-    function spawnCar(){
-      const t = carTypes[Math.floor(Math.random()*carTypes.length)];
-      const color = t.colors[Math.floor(Math.random()*t.colors.length)];
-      const speed = rand(t.speed[0], t.speed[1]);
-
-      const car = document.createElement('div');
-      car.className = 'car';
-      car.style.setProperty('--car-color', color);
-
-      const body = document.createElement('div');
-      body.className = t.body;
-      body.innerHTML = '<div class="wheel wf"></div><div class="wheel wr"></div>';
-      car.appendChild(body);
-
-      if(t.dir==='right' || t.dir==='left') car.style.top = t.top;
-      else car.style.left = t.left;
-
-      const vw = window.innerWidth, vh = window.innerHeight;
-
-      if(t.dir==='right'){
-        car.style.left = '-70px';
-        carContainer.appendChild(car);
-        requestAnimationFrame(()=>{ car.style.transition = `left ${speed}s linear`; car.style.left = (vw+70)+'px'; });
-        setTimeout(()=>car.remove(), speed*1000+500);
-      } else if(t.dir==='left'){
-        car.style.left = (vw+70)+'px';
-        carContainer.appendChild(car);
-        requestAnimationFrame(()=>{ car.style.transition = `left ${speed}s linear`; car.style.left = '-70px'; });
-        setTimeout(()=>car.remove(), speed*1000+500);
-      } else if(t.dir==='down'){
-        car.style.top = '-70px';
-        carContainer.appendChild(car);
-        requestAnimationFrame(()=>{ car.style.transition = `top ${speed}s linear`; car.style.top = (vh+70)+'px'; });
-        setTimeout(()=>car.remove(), speed*1000+500);
-      } else {
-        car.style.top = (vh+70)+'px';
-        carContainer.appendChild(car);
-        requestAnimationFrame(()=>{ car.style.transition = `top ${speed}s linear`; car.style.top = '-70px'; });
-        setTimeout(()=>car.remove(), speed*1000+500);
-      }
-    }
-
-    function scheduleSpawn(){
-      spawnCar();
-      setTimeout(scheduleSpawn, rand(1200, 3500));
-    }
-    setTimeout(scheduleSpawn, 300);
-    setTimeout(scheduleSpawn, 1000);
-    setTimeout(scheduleSpawn, 1800);
-  </script>
-
+<script>
+const cc=document.getElementById('cc');
+const ct=[
+  {d:'r',b:'bh',s:[6,10],t:'calc(50% - 28px)',c:['#e74c3c','#f1c40f','#ecf0f1','#3498db']},
+  {d:'l',b:'bh',s:[7,11],t:'calc(50% + 16px)',c:['#2ecc71','#e67e22','#ecf0f1','#9b59b6']},
+  {d:'d',b:'bv',s:[7,11],l:'calc(50% + 16px)',c:['#f39c12','#e74c3c','#ecf0f1','#1abc9c']},
+  {d:'u',b:'bv',s:[8,12],l:'calc(50% - 28px)',c:['#3498db','#2ecc71','#f1c40f','#e67e22']},
+];
+function rn(a,b){return Math.random()*(b-a)+a;}
+function sp(){
+  const t=ct[Math.floor(Math.random()*ct.length)];
+  const color=t.c[Math.floor(Math.random()*t.c.length)];
+  const speed=rn(t.s[0],t.s[1]);
+  const car=document.createElement('div');
+  car.className='car';
+  car.style.setProperty('--c',color);
+  const body=document.createElement('div');
+  body.className=t.b;
+  body.innerHTML='<div class="w wf"></div><div class="w wr"></div>';
+  car.appendChild(body);
+  if(t.d==='r'||t.d==='l')car.style.top=t.t;else car.style.left=t.l;
+  const vw=innerWidth,vh=innerHeight;
+  if(t.d==='r'){car.style.left='-60px';cc.appendChild(car);requestAnimationFrame(()=>{car.style.transition=`left ${speed}s linear`;car.style.left=(vw+60)+'px';});setTimeout(()=>car.remove(),speed*1e3+500);}
+  else if(t.d==='l'){car.style.left=(vw+60)+'px';cc.appendChild(car);requestAnimationFrame(()=>{car.style.transition=`left ${speed}s linear`;car.style.left='-60px';});setTimeout(()=>car.remove(),speed*1e3+500);}
+  else if(t.d==='d'){car.style.top='-60px';cc.appendChild(car);requestAnimationFrame(()=>{car.style.transition=`top ${speed}s linear`;car.style.top=(vh+60)+'px';});setTimeout(()=>car.remove(),speed*1e3+500);}
+  else{car.style.top=(vh+60)+'px';cc.appendChild(car);requestAnimationFrame(()=>{car.style.transition=`top ${speed}s linear`;car.style.top='-60px';});setTimeout(()=>car.remove(),speed*1e3+500);}
+}
+function ss(){sp();setTimeout(ss,rn(1200,3500));}
+setTimeout(ss,300);setTimeout(ss,1000);setTimeout(ss,1800);
+</script>
 </body>
 </html>
