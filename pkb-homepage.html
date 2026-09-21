@@ -11,15 +11,16 @@
       --card: #16161f;
       --border: #252535;
       --text: #e8e8ed;
-      --text-secondary: #a0a0b0;
       --muted: #6b6b80;
       --green: #4ade80;
       --red: #f87171;
       --amber: #fbbf24;
       --blue: #60a5fa;
-      --road: #2a2a3a;
-      --road-line: #4a4a5a;
+      --road: #333340;
+      --road-line: #555568;
+      --road-edge: #222230;
       --grass: #1a2a1a;
+      --crosswalk: #dddddd;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -30,7 +31,7 @@
       overflow: hidden;
     }
 
-    /* ===== ANIMATED BACKGROUND (Fixed) ===== */
+    /* ===== BIRD'S EYE VIEW BACKGROUND ===== */
     .bg-scene {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -39,203 +40,256 @@
       background: var(--grass);
     }
 
-    /* -- Roads -- */
+    /* -- Wide Roads -- */
     .road-h {
       position: absolute;
       top: 50%;
       left: 0; right: 0;
-      height: 60px;
+      height: 120px;
       transform: translateY(-50%);
       background: var(--road);
+      border-top: 3px solid var(--road-edge);
+      border-bottom: 3px solid var(--road-edge);
     }
     .road-v {
       position: absolute;
       left: 50%;
       top: 0; bottom: 0;
-      width: 60px;
+      width: 120px;
       transform: translateX(-50%);
       background: var(--road);
+      border-left: 3px solid var(--road-edge);
+      border-right: 3px solid var(--road-edge);
     }
+    /* Center dashed lines */
     .road-h::after {
       content: '';
       position: absolute;
       top: 50%; left: 0; right: 0;
-      height: 2px;
+      height: 3px;
       transform: translateY(-50%);
-      background: repeating-linear-gradient(90deg, var(--road-line) 0px, var(--road-line) 20px, transparent 20px, transparent 40px);
+      background: repeating-linear-gradient(90deg, var(--road-line) 0px, var(--road-line) 30px, transparent 30px, transparent 60px);
     }
     .road-v::after {
       content: '';
       position: absolute;
       left: 50%; top: 0; bottom: 0;
-      width: 2px;
+      width: 3px;
       transform: translateX(-50%);
-      background: repeating-linear-gradient(180deg, var(--road-line) 0px, var(--road-line) 20px, transparent 20px, transparent 40px);
+      background: repeating-linear-gradient(180deg, var(--road-line) 0px, var(--road-line) 30px, transparent 30px, transparent 60px);
     }
+    /* Lane dividers */
+    .road-h::before {
+      content: '';
+      position: absolute;
+      top: 25%; left: 0; right: 0;
+      height: 1px;
+      background: repeating-linear-gradient(90deg, rgba(255,255,255,0.15) 0px, rgba(255,255,255,0.15) 15px, transparent 15px, transparent 40px);
+    }
+    .road-v::before {
+      content: '';
+      position: absolute;
+      left: 25%; top: 0; bottom: 0;
+      width: 1px;
+      background: repeating-linear-gradient(180deg, rgba(255,255,255,0.15) 0px, rgba(255,255,255,0.15) 15px, transparent 15px, transparent 40px);
+    }
+
+    /* Intersection */
     .intersection {
       position: absolute;
       top: 50%; left: 50%;
-      width: 60px; height: 60px;
+      width: 120px; height: 120px;
       transform: translate(-50%, -50%);
       background: var(--road);
       z-index: 2;
     }
+    /* Crosswalks */
+    .crosswalk {
+      position: absolute;
+      z-index: 3;
+    }
+    .crosswalk-n { top: calc(50% - 70px); left: calc(50% - 55px); width: 110px; height: 12px; }
+    .crosswalk-s { bottom: calc(50% - 70px); left: calc(50% - 55px); width: 110px; height: 12px; }
+    .crosswalk-e { right: calc(50% - 70px); top: calc(50% - 55px); width: 12px; height: 110px; }
+    .crosswalk-w { left: calc(50% - 70px); top: calc(50% - 55px); width: 12px; height: 110px; }
+    .crosswalk-n, .crosswalk-s {
+      background: repeating-linear-gradient(90deg, var(--crosswalk) 0px, var(--crosswalk) 10px, transparent 10px, transparent 18px);
+      opacity: 0.3;
+    }
+    .crosswalk-e, .crosswalk-w {
+      background: repeating-linear-gradient(180deg, var(--crosswalk) 0px, var(--crosswalk) 10px, transparent 10px, transparent 18px);
+      opacity: 0.3;
+    }
 
-    /* ===== FACTORIES (8 factories) ===== */
+    /* ===== LARGE FACTORIES (4 quadrants) ===== */
     .factory {
       position: absolute;
       z-index: 1;
     }
     .factory-body {
-      border-radius: 4px;
       position: relative;
+      border-radius: 4px;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.4);
     }
     .factory-body::after {
       content: '';
       position: absolute;
-      background: rgba(255,200,50,0.3);
+      background: rgba(255,200,50,0.25);
       border-radius: 2px;
     }
     .factory-chimney {
       position: absolute;
-      top: -15px;
-      width: 10px;
-      height: 15px;
-      border-radius: 2px 2px 0 0;
+      top: -20px;
+      width: 14px;
+      height: 20px;
+      border-radius: 3px 3px 0 0;
     }
     .factory-smoke {
       position: absolute;
-      top: -25px;
-      width: 8px;
-      height: 8px;
+      top: -35px;
+      width: 10px;
+      height: 10px;
       background: rgba(200,200,200,0.3);
       border-radius: 50%;
       animation: smoke 3s ease-out infinite;
     }
     @keyframes smoke {
-      0% { opacity: 0.5; transform: translateY(0) scale(1); }
-      100% { opacity: 0; transform: translateY(-20px) scale(2); }
+      0% { opacity: 0.6; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-30px) scale(2.5); }
+    }
+    /* Loading dock */
+    .factory-dock {
+      position: absolute;
+      bottom: -8px;
+      background: #1a1a25;
+      border-radius: 2px;
+    }
+    /* Parking lot lines */
+    .factory-parking {
+      position: absolute;
+      bottom: -20px;
+      height: 16px;
+      background: repeating-linear-gradient(90deg, rgba(255,255,255,0.08) 0px, rgba(255,255,255,0.08) 1px, transparent 1px, transparent 18px);
     }
 
-    /* Factory 1 - top left */
-    .factory-1 { top: 8%; left: 8%; }
-    .factory-1 .factory-body { width: 80px; height: 55px; background: #1e2a3a; }
-    .factory-1 .factory-body::after { width: 12px; height: 14px; top: 8px; left: 8px; box-shadow: 18px 0 0 rgba(255,200,50,0.3), 36px 0 0 rgba(255,200,50,0.3), 0 20px 0 rgba(255,200,50,0.3), 18px 20px 0 rgba(255,200,50,0.3); }
-    .factory-1 .factory-chimney { left: 10px; background: #2a3a4a; }
-    .factory-1 .factory-chimney + .factory-smoke { left: 12px; }
+    /* Top-Left Factory */
+    .factory-tl { top: 5%; left: 5%; }
+    .factory-tl .factory-body { width: 160px; height: 120px; background: linear-gradient(135deg, #1e2a3a, #253545); }
+    .factory-tl .factory-body::after { width: 16px; height: 18px; top: 12px; left: 12px; box-shadow: 24px 0 0 rgba(255,200,50,0.25), 48px 0 0 rgba(255,200,50,0.25), 0 28px 0 rgba(255,200,50,0.25), 24px 28px 0 rgba(255,200,50,0.25); }
+    .factory-tl .factory-chimney { left: 15px; background: #2a3a4a; }
+    .factory-tl .factory-chimney + .factory-smoke { left: 17px; }
+    .factory-tl .factory-dock { left: 20px; width: 40px; height: 8px; }
+    .factory-tl .factory-parking { left: 0; width: 160px; }
 
-    /* Factory 2 - top right */
-    .factory-2 { top: 10%; right: 8%; }
-    .factory-2 .factory-body { width: 70px; height: 50px; background: #2a1e3a; }
-    .factory-2 .factory-body::after { width: 10px; height: 12px; top: 8px; left: 8px; box-shadow: 16px 0 0 rgba(255,200,50,0.3), 32px 0 0 rgba(255,200,50,0.3); }
-    .factory-2 .factory-chimney { right: 10px; background: #3a2a4a; }
+    /* Top-Right Factory */
+    .factory-tr { top: 8%; right: 6%; }
+    .factory-tr .factory-body { width: 140px; height: 110px; background: linear-gradient(135deg, #2a1e3a, #352545); }
+    .factory-tr .factory-body::after { width: 14px; height: 16px; top: 12px; left: 12px; box-shadow: 22px 0 0 rgba(255,200,50,0.25), 44px 0 0 rgba(255,200,50,0.25), 0 26px 0 rgba(255,200,50,0.25); }
+    .factory-tr .factory-chimney { right: 15px; background: #3a2a4a; }
+    .factory-tr .factory-chimney + .factory-smoke { right: 17px; }
+    .factory-tr .factory-dock { right: 20px; width: 36px; height: 8px; }
+    .factory-tr .factory-parking { left: 0; width: 140px; }
 
-    /* Factory 3 - bottom left */
-    .factory-3 { bottom: 10%; left: 8%; }
-    .factory-3 .factory-body { width: 75px; height: 52px; background: #3a2a1e; }
-    .factory-3 .factory-body::after { width: 11px; height: 13px; top: 8px; left: 8px; box-shadow: 17px 0 0 rgba(255,200,50,0.3), 34px 0 0 rgba(255,200,50,0.3), 0 20px 0 rgba(255,200,50,0.3); }
-    .factory-3 .factory-chimney { left: 8px; background: #4a3a2a; }
+    /* Bottom-Left Factory */
+    .factory-bl { bottom: 8%; left: 6%; }
+    .factory-bl .factory-body { width: 150px; height: 115px; background: linear-gradient(135deg, #3a2a1e, #453525); }
+    .factory-bl .factory-body::after { width: 15px; height: 17px; top: 12px; left: 12px; box-shadow: 23px 0 0 rgba(255,200,50,0.25), 46px 0 0 rgba(255,200,50,0.25), 0 27px 0 rgba(255,200,50,0.25), 23px 27px 0 rgba(255,200,50,0.25); }
+    .factory-bl .factory-chimney { left: 12px; background: #4a3a2a; }
+    .factory-bl .factory-chimney + .factory-smoke { left: 14px; }
+    .factory-bl .factory-dock { left: 18px; width: 38px; height: 8px; }
+    .factory-bl .factory-parking { left: 0; width: 150px; }
 
-    /* Factory 4 - bottom right */
-    .factory-4 { bottom: 8%; right: 8%; }
-    .factory-4 .factory-body { width: 65px; height: 48px; background: #1e3a2a; }
-    .factory-4 .factory-body::after { width: 10px; height: 12px; top: 8px; left: 8px; box-shadow: 15px 0 0 rgba(255,200,50,0.3), 30px 0 0 rgba(255,200,50,0.3); }
-    .factory-4 .factory-chimney { right: 8px; background: #2a4a3a; }
+    /* Bottom-Right Factory */
+    .factory-br { bottom: 5%; right: 5%; }
+    .factory-br .factory-body { width: 170px; height: 125px; background: linear-gradient(135deg, #1e3a2a, #254535); }
+    .factory-br .factory-body::after { width: 17px; height: 19px; top: 12px; left: 12px; box-shadow: 25px 0 0 rgba(255,200,50,0.25), 50px 0 0 rgba(255,200,50,0.25), 75px 0 0 rgba(255,200,50,0.25), 0 29px 0 rgba(255,200,50,0.25), 25px 29px 0 rgba(255,200,50,0.25); }
+    .factory-br .factory-chimney { right: 18px; background: #2a4a3a; }
+    .factory-br .factory-chimney + .factory-smoke { right: 20px; }
+    .factory-br .factory-dock { right: 25px; width: 44px; height: 8px; }
+    .factory-br .factory-parking { left: 0; width: 170px; }
 
-    /* Factory 5 - top center-left */
-    .factory-5 { top: 12%; left: 22%; }
-    .factory-5 .factory-body { width: 60px; height: 45px; background: #2a2a3a; }
-    .factory-5 .factory-body::after { width: 10px; height: 12px; top: 8px; left: 8px; box-shadow: 16px 0 0 rgba(255,200,50,0.3); }
-    .factory-5 .factory-chimney { left: 8px; background: #3a3a4a; }
-
-    /* Factory 6 - top center-right */
-    .factory-6 { top: 15%; right: 20%; }
-    .factory-6 .factory-body { width: 55px; height: 42px; background: #3a2a3a; }
-    .factory-6 .factory-body::after { width: 10px; height: 12px; top: 8px; left: 8px; box-shadow: 14px 0 0 rgba(255,200,50,0.3), 28px 0 0 rgba(255,200,50,0.3); }
-    .factory-6 .factory-chimney { right: 8px; background: #4a3a3a; }
-
-    /* Factory 7 - bottom center-left */
-    .factory-7 { bottom: 15%; left: 22%; }
-    .factory-7 .factory-body { width: 68px; height: 48px; background: #2a3a2a; }
-    .factory-7 .factory-body::after { width: 11px; height: 13px; top: 8px; left: 8px; box-shadow: 17px 0 0 rgba(255,200,50,0.3), 0 20px 0 rgba(255,200,50,0.3); }
-    .factory-7 .factory-chimney { left: 8px; background: #3a4a3a; }
-
-    /* Factory 8 - bottom center-right */
-    .factory-8 { bottom: 12%; right: 18%; }
-    .factory-8 .factory-body { width: 72px; height: 50px; background: #1e2a2a; }
-    .factory-8 .factory-body::after { width: 12px; height: 14px; top: 8px; left: 8px; box-shadow: 18px 0 0 rgba(255,200,50,0.3), 36px 0 0 rgba(255,200,50,0.3); }
-    .factory-8 .factory-chimney { right: 10px; background: #2a3a3a; }
-
-    /* ===== CARS - Generated by JS ===== */
+    /* ===== CARS (JS generated) ===== */
     .car {
       position: absolute;
-      z-index: 3;
-      will-change: transform;
+      z-index: 4;
+      will-change: left, top;
     }
-    /* Horizontal car body */
+    /* Horizontal car (bird's eye - wider than tall) */
     .car .body-h {
-      width: 44px;
-      height: 18px;
-      border-radius: 4px 8px 4px 4px;
+      width: 52px;
+      height: 26px;
+      background: var(--car-color);
+      border-radius: 6px 10px 6px 6px;
       position: relative;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+      box-shadow: 2px 2px 6px rgba(0,0,0,0.5);
     }
+    /* Cabin (windshield area) */
     .car .body-h::before {
       content: '';
       position: absolute;
-      top: -7px; left: 10px;
-      width: 20px; height: 12px;
-      border-radius: 4px 6px 0 0;
+      top: 3px; left: 12px;
+      width: 22px; height: 20px;
+      background: rgba(100,180,255,0.3);
+      border-radius: 3px 5px 2px 2px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    /* Headlights */
+    .car .body-h::after {
+      content: '';
+      position: absolute;
+      top: 4px; right: 2px;
+      width: 5px; height: 4px;
+      background: #fff8;
+      border-radius: 2px;
+      box-shadow: 0 14px 0 #fff8;
     }
     .car .body-h .wheel {
       position: absolute;
-      bottom: -4px;
-      width: 8px; height: 8px;
-      background: #222;
+      bottom: -5px;
+      width: 10px; height: 10px;
+      background: #1a1a1a;
       border-radius: 50%;
-      border: 2px solid #444;
+      border: 2px solid #333;
     }
-    .car .body-h .wf { right: 6px; }
-    .car .body-h .wr { left: 6px; }
+    .car .body-h .wf { right: 8px; }
+    .car .body-h .wr { left: 8px; }
 
-    /* Vertical car body */
+    /* Vertical car (bird's eye - taller than wide) */
     .car .body-v {
-      width: 18px;
-      height: 40px;
-      border-radius: 4px 4px 8px 4px;
+      width: 26px;
+      height: 52px;
+      background: var(--car-color);
+      border-radius: 6px 6px 10px 6px;
       position: relative;
-      box-shadow: 2px 0 4px rgba(0,0,0,0.4);
+      box-shadow: 2px 2px 6px rgba(0,0,0,0.5);
     }
     .car .body-v::before {
       content: '';
       position: absolute;
-      top: 8px; left: -7px;
-      width: 11px; height: 18px;
-      border-radius: 4px 0 0 6px;
+      left: 3px; top: 12px;
+      width: 20px; height: 22px;
+      background: rgba(100,180,255,0.3);
+      border-radius: 2px 2px 5px 3px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .car .body-v::after {
+      content: '';
+      position: absolute;
+      left: 4px; top: 2px;
+      width: 4px; height: 5px;
+      background: #fff8;
+      border-radius: 2px;
+      box-shadow: 14px 0 0 #fff8;
     }
     .car .body-v .wheel {
       position: absolute;
-      width: 8px; height: 8px;
-      background: #222;
+      width: 10px; height: 10px;
+      background: #1a1a1a;
       border-radius: 50%;
-      border: 2px solid #444;
+      border: 2px solid #333;
     }
-    .car .body-v .wf { bottom: 6px; left: -6px; }
-    .car .body-v .wr { top: 6px; left: -6px; }
-
-    /* Car colors */
-    .car-red .body-h { background: #e74c3c; }
-    .car-red .body-h::before { background: #c0392b; }
-    .car-blue .body-h { background: #3498db; }
-    .car-blue .body-h::before { background: #2980b9; }
-    .car-orange .body-v { background: #f39c12; }
-    .car-orange .body-v::before { background: #e67e22; }
-    .car-purple .body-v { background: #9b59b6; }
-    .car-purple .body-v::before { background: #8e44ad; }
-    .car-green .body-h { background: #27ae60; }
-    .car-green .body-h::before { background: #1e8449; }
-    .car-teal .body-v { background: #1abc9c; }
-    .car-teal .body-v::before { background: #16a085; }
+    .car .body-v .wf { bottom: 8px; left: -5px; }
+    .car .body-v .wr { top: 8px; left: -5px; }
 
     /* ===== PORTAL CONTENT ===== */
     .portal-overlay {
@@ -319,11 +373,11 @@
     .portal-btn .arrow { font-size: 14px; opacity: 0.6; transition: opacity 0.3s; }
     .portal-btn:hover .arrow { opacity: 1; }
 
-    /* ===== TRUE 3D WRENCH ===== */
+    /* ===== TRUE 3D WRENCH (correct transforms) ===== */
     .wrench-stage {
-      width: 140px;
-      height: 240px;
-      perspective: 900px;
+      width: 120px;
+      height: 220px;
+      perspective: 600px;
     }
     .wrench-3d {
       width: 100%;
@@ -333,60 +387,92 @@
       animation: wrenchSpin 8s cubic-bezier(0.4,0,0.2,1) infinite;
     }
     @keyframes wrenchSpin {
-      0%   { transform: rotateX(-10deg) rotateY(0deg); }
+      0%   { transform: rotateX(-15deg) rotateY(0deg); }
       25%  { transform: rotateX(5deg) rotateY(90deg); }
       50%  { transform: rotateX(-10deg) rotateY(180deg); }
       75%  { transform: rotateX(-20deg) rotateY(270deg); }
-      100% { transform: rotateX(-10deg) rotateY(360deg); }
+      100% { transform: rotateX(-15deg) rotateY(360deg); }
     }
 
-    /* -- Head (6 faces) -- */
-    .head { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); width: 60px; height: 50px; transform-style: preserve-3d; }
-    .head .f { position: absolute; backface-visibility: visible; }
-    .head .front  { width: 60px; height: 50px; background: linear-gradient(135deg,#718096,#4a5568,#5a6577); transform: translateZ(10px); border-radius: 8px 8px 3px 3px; }
-    .head .back   { width: 60px; height: 50px; background: linear-gradient(135deg,#4a5568,#2d3748); transform: translateZ(-10px) rotateY(180deg); border-radius: 8px 8px 3px 3px; }
-    .head .left   { width: 20px; height: 50px; background: #3d4654; transform: translateX(-10px) rotateY(-90deg); transform-origin: left center; }
-    .head .right  { width: 20px; height: 50px; background: #6b7a8d; transform: translateX(60px) rotateY(90deg); transform-origin: left center; }
-    .head .top    { width: 60px; height: 20px; background: linear-gradient(90deg,#718096,#5a6577,#718096); transform: translateY(-10px) rotateX(90deg); transform-origin: top center; border-radius: 8px 8px 0 0; }
-    .head .bottom { width: 60px; height: 20px; background: #3d4654; transform: translateY(50px) rotateX(-90deg); transform-origin: bottom center; }
+    /* Each part uses: rotateY(angle) translateZ(halfDepth) */
+    .wrench-part {
+      position: absolute;
+      transform-style: preserve-3d;
+    }
+    .wrench-part .face {
+      position: absolute;
+      backface-visibility: visible;
+    }
 
-    /* -- Jaw Left (3 faces) -- */
-    .jaw-l { position: absolute; top: -10px; left: 2px; width: 16px; height: 35px; transform-style: preserve-3d; }
-    .jaw-l .f { position: absolute; backface-visibility: visible; }
-    .jaw-l .front { width: 16px; height: 35px; background: linear-gradient(180deg,#718096,#5a6577); transform: translateZ(10px); border-radius: 6px 2px 2px 3px; }
-    .jaw-l .back  { width: 16px; height: 35px; background: #3d4654; transform: translateZ(-10px) rotateY(180deg); border-radius: 6px 2px 2px 3px; }
-    .jaw-l .top   { width: 16px; height: 20px; background: #6b7a8d; transform: translateY(-10px) rotateX(90deg); transform-origin: top center; border-radius: 6px 6px 0 0; }
+    /* HEAD: 60x44x20 (w x h x d) → translateZ = 10px */
+    .part-head {
+      top: 18px; left: 50%; transform: translateX(-50%);
+      width: 60px; height: 44px;
+    }
+    .part-head .face { width: 60px; height: 44px; }
+    .part-head .f-front  { background: linear-gradient(135deg,#718096,#4a5568,#5a6577); transform: rotateY(0deg) translateZ(10px); border-radius: 8px 8px 2px 2px; }
+    .part-head .f-back   { background: linear-gradient(135deg,#4a5568,#2d3748); transform: rotateY(180deg) translateZ(10px); border-radius: 8px 8px 2px 2px; }
+    .part-head .f-right  { width: 20px; background: linear-gradient(180deg,#6b7a8d,#4a5568); transform: rotateY(90deg) translateZ(30px); }
+    .part-head .f-left   { width: 20px; background: linear-gradient(180deg,#3d4654,#2d3748); transform: rotateY(-90deg) translateZ(30px); }
+    .part-head .f-top    { width: 60px; height: 20px; background: linear-gradient(90deg,#718096,#5a6577,#718096); transform: rotateX(90deg) translateZ(22px); border-radius: 8px 8px 0 0; }
+    .part-head .f-bottom { width: 60px; height: 20px; background: #3d4654; transform: rotateX(-90deg) translateZ(22px); }
 
-    /* -- Jaw Right (3 faces) -- */
-    .jaw-r { position: absolute; top: -10px; right: 2px; width: 16px; height: 35px; transform-style: preserve-3d; }
-    .jaw-r .f { position: absolute; backface-visibility: visible; }
-    .jaw-r .front { width: 16px; height: 35px; background: linear-gradient(180deg,#718096,#5a6577); transform: translateZ(10px); border-radius: 2px 6px 3px 2px; }
-    .jaw-r .back  { width: 16px; height: 35px; background: #3d4654; transform: translateZ(-10px) rotateY(180deg); border-radius: 2px 6px 3px 2px; }
-    .jaw-r .top   { width: 16px; height: 20px; background: #6b7a8d; transform: translateY(-10px) rotateX(90deg); transform-origin: top center; border-radius: 6px 6px 0 0; }
+    /* JAW LEFT: 14x30x20 → translateZ = 10px */
+    .part-jaw-l {
+      top: -8px; left: 4px;
+      width: 14px; height: 30px;
+    }
+    .part-jaw-l .face { width: 14px; height: 30px; }
+    .part-jaw-l .f-front  { background: linear-gradient(180deg,#718096,#5a6577); transform: rotateY(0deg) translateZ(10px); border-radius: 6px 2px 2px 2px; }
+    .part-jaw-l .f-back   { background: #3d4654; transform: rotateY(180deg) translateZ(10px); border-radius: 6px 2px 2px 2px; }
+    .part-jaw-l .f-right  { width: 20px; background: #5a6577; transform: rotateY(90deg) translateZ(7px); }
+    .part-jaw-l .f-left   { width: 20px; background: #3d4654; transform: rotateY(-90deg) translateZ(7px); }
+    .part-jaw-l .f-top    { width: 14px; height: 20px; background: #6b7a8d; transform: rotateX(90deg) translateZ(15px); border-radius: 6px 6px 0 0; }
 
-    /* -- Jaw Inner (2 faces) -- */
-    .jaw-inner { position: absolute; top: 5px; left: 50%; transform: translateX(-50%); width: 28px; height: 15px; transform-style: preserve-3d; }
-    .jaw-inner .f { position: absolute; backface-visibility: visible; }
-    .jaw-inner .front { width: 28px; height: 15px; background: #0a0a0f; transform: translateZ(11px); border-radius: 2px; }
-    .jaw-inner .back  { width: 28px; height: 15px; background: #050508; transform: translateZ(-11px) rotateY(180deg); border-radius: 2px; }
+    /* JAW RIGHT: 14x30x20 → translateZ = 10px */
+    .part-jaw-r {
+      top: -8px; right: 4px;
+      width: 14px; height: 30px;
+    }
+    .part-jaw-r .face { width: 14px; height: 30px; }
+    .part-jaw-r .f-front  { background: linear-gradient(180deg,#718096,#5a6577); transform: rotateY(0deg) translateZ(10px); border-radius: 2px 6px 2px 2px; }
+    .part-jaw-r .f-back   { background: #3d4654; transform: rotateY(180deg) translateZ(10px); border-radius: 2px 6px 2px 2px; }
+    .part-jaw-r .f-right  { width: 20px; background: #5a6577; transform: rotateY(90deg) translateZ(7px); }
+    .part-jaw-r .f-left   { width: 20px; background: #3d4654; transform: rotateY(-90deg) translateZ(7px); }
+    .part-jaw-r .f-top    { width: 14px; height: 20px; background: #6b7a8d; transform: rotateX(90deg) translateZ(15px); border-radius: 6px 6px 0 0; }
 
-    /* -- Neck (2 faces) -- connecting head to handle */
-    .neck { position: absolute; top: 68px; left: 50%; transform: translateX(-50%); width: 30px; height: 16px; transform-style: preserve-3d; }
-    .neck .f { position: absolute; backface-visibility: visible; }
-    .neck .front { width: 30px; height: 16px; background: linear-gradient(180deg,#5a6577,#4a5568); transform: translateZ(10px); clip-path: polygon(15% 0%,85% 0%,100% 100%,0% 100%); }
-    .neck .back  { width: 30px; height: 16px; background: #3d4654; transform: translateZ(-10px) rotateY(180deg); clip-path: polygon(15% 0%,85% 0%,100% 100%,0% 100%); }
-    .neck .left  { width: 20px; height: 16px; background: #3d4654; transform: translateX(-15px) rotateY(-90deg); transform-origin: left center; clip-path: polygon(0% 0%,50% 0%,100% 100%,0% 100%); }
-    .neck .right { width: 20px; height: 16px; background: #6b7a8d; transform: translateX(30px) rotateY(90deg); transform-origin: left center; clip-path: polygon(50% 0%,100% 0%,100% 100%,0% 100%); }
+    /* JAW INNER: 28x12x22 → translateZ = 11px */
+    .part-jaw-inner {
+      top: 8px; left: 50%; transform: translateX(-50%);
+      width: 28px; height: 12px;
+    }
+    .part-jaw-inner .face { width: 28px; height: 12px; }
+    .part-jaw-inner .f-front { background: #0a0a0f; transform: rotateY(0deg) translateZ(11px); border-radius: 2px; }
+    .part-jaw-inner .f-back  { background: #050508; transform: rotateY(180deg) translateZ(11px); border-radius: 2px; }
 
-    /* -- Handle (6 faces) -- */
-    .handle { position: absolute; top: 82px; left: 50%; transform: translateX(-50%); width: 22px; height: 130px; transform-style: preserve-3d; }
-    .handle .f { position: absolute; backface-visibility: visible; }
-    .handle .front  { width: 22px; height: 130px; background: linear-gradient(180deg,#5a6577,#3d4654,#5a6577); transform: translateZ(10px); border-radius: 3px; }
-    .handle .back   { width: 22px; height: 130px; background: linear-gradient(180deg,#4a5568,#2d3748,#4a5568); transform: translateZ(-10px) rotateY(180deg); border-radius: 3px; }
-    .handle .left   { width: 20px; height: 130px; background: linear-gradient(180deg,#3d4654,#2d3748); transform: translateX(-11px) rotateY(-90deg); transform-origin: left center; }
-    .handle .right  { width: 20px; height: 130px; background: linear-gradient(180deg,#6b7a8d,#4a5568); transform: translateX(22px) rotateY(90deg); transform-origin: left center; }
-    .handle .top    { width: 22px; height: 20px; background: #718096; transform: translateY(-10px) rotateX(90deg); transform-origin: top center; border-radius: 3px 3px 0 0; }
-    .handle .bottom { width: 22px; height: 20px; background: #2d3748; transform: translateY(130px) rotateX(-90deg); transform-origin: bottom center; border-radius: 0 0 3px 3px; }
+    /* NECK: 26x14x20 → translateZ = 10px (connects head to handle) */
+    .part-neck {
+      top: 60px; left: 50%; transform: translateX(-50%);
+      width: 26px; height: 14px;
+    }
+    .part-neck .face { width: 26px; height: 14px; }
+    .part-neck .f-front  { background: linear-gradient(180deg,#5a6577,#4a5568); transform: rotateY(0deg) translateZ(10px); clip-path: polygon(10% 0%,90% 0%,100% 100%,0% 100%); }
+    .part-neck .f-back   { background: #3d4654; transform: rotateY(180deg) translateZ(10px); clip-path: polygon(10% 0%,90% 0%,100% 100%,0% 100%); }
+    .part-neck .f-right  { width: 20px; background: #5a6577; transform: rotateY(90deg) translateZ(13px); clip-path: polygon(0% 0%,100% 0%,100% 100%,30% 100%); }
+    .part-neck .f-left   { width: 20px; background: #3d4654; transform: rotateY(-90deg) translateZ(13px); clip-path: polygon(0% 0%,100% 0%,70% 100%,0% 100%); }
+
+    /* HANDLE: 20x120x20 → translateZ = 10px */
+    .part-handle {
+      top: 72px; left: 50%; transform: translateX(-50%);
+      width: 20px; height: 120px;
+    }
+    .part-handle .face { width: 20px; height: 120px; }
+    .part-handle .f-front  { background: linear-gradient(180deg,#5a6577,#3d4654,#5a6577); transform: rotateY(0deg) translateZ(10px); border-radius: 3px; }
+    .part-handle .f-back   { background: linear-gradient(180deg,#4a5568,#2d3748,#4a5568); transform: rotateY(180deg) translateZ(10px); border-radius: 3px; }
+    .part-handle .f-right  { width: 20px; background: linear-gradient(180deg,#6b7a8d,#4a5568,#6b7a8d); transform: rotateY(90deg) translateZ(10px); }
+    .part-handle .f-left   { width: 20px; background: linear-gradient(180deg,#3d4654,#2d3748,#3d4654); transform: rotateY(-90deg) translateZ(10px); }
+    .part-handle .f-top    { width: 20px; height: 20px; background: #718096; transform: rotateX(90deg) translateZ(60px); border-radius: 3px 3px 0 0; }
+    .part-handle .f-bottom { width: 20px; height: 20px; background: #2d3748; transform: rotateX(-90deg) translateZ(60px); border-radius: 0 0 3px 3px; }
 
     .wrench-shadow {
       position: absolute;
@@ -415,61 +501,56 @@
       .portal-stats { gap: 8px; }
       .stat-item { min-width: 70px; padding: 10px 14px; }
       .stat-item .num { font-size: 22px; }
-      .wrench-stage { width: 100px; height: 180px; }
+      .wrench-stage { width: 90px; height: 170px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- ANIMATED BACKGROUND -->
+  <!-- BIRD'S EYE VIEW BACKGROUND -->
   <div class="bg-scene">
+    <!-- Roads -->
     <div class="road-h"></div>
     <div class="road-v"></div>
     <div class="intersection"></div>
 
-    <!-- Factories -->
-    <div class="factory factory-1">
+    <!-- Crosswalks -->
+    <div class="crosswalk crosswalk-n"></div>
+    <div class="crosswalk crosswalk-s"></div>
+    <div class="crosswalk crosswalk-e"></div>
+    <div class="crosswalk crosswalk-w"></div>
+
+    <!-- 4 Large Factories -->
+    <div class="factory factory-tl">
       <div class="factory-chimney"></div>
       <div class="factory-smoke"></div>
       <div class="factory-body"></div>
+      <div class="factory-dock"></div>
+      <div class="factory-parking"></div>
     </div>
-    <div class="factory factory-2">
+    <div class="factory factory-tr">
       <div class="factory-chimney"></div>
       <div class="factory-smoke"></div>
       <div class="factory-body"></div>
+      <div class="factory-dock"></div>
+      <div class="factory-parking"></div>
     </div>
-    <div class="factory factory-3">
+    <div class="factory factory-bl">
       <div class="factory-chimney"></div>
       <div class="factory-smoke"></div>
       <div class="factory-body"></div>
+      <div class="factory-dock"></div>
+      <div class="factory-parking"></div>
     </div>
-    <div class="factory factory-4">
+    <div class="factory factory-br">
       <div class="factory-chimney"></div>
       <div class="factory-smoke"></div>
       <div class="factory-body"></div>
-    </div>
-    <div class="factory factory-5">
-      <div class="factory-chimney"></div>
-      <div class="factory-smoke"></div>
-      <div class="factory-body"></div>
-    </div>
-    <div class="factory factory-6">
-      <div class="factory-chimney"></div>
-      <div class="factory-smoke"></div>
-      <div class="factory-body"></div>
-    </div>
-    <div class="factory factory-7">
-      <div class="factory-chimney"></div>
-      <div class="factory-smoke"></div>
-      <div class="factory-body"></div>
-    </div>
-    <div class="factory factory-8">
-      <div class="factory-chimney"></div>
-      <div class="factory-smoke"></div>
-      <div class="factory-body"></div>
+      <div class="factory-dock"></div>
+      <div class="factory-parking"></div>
     </div>
 
-    <!-- Cars container (JS generates) -->
+    <!-- Cars container (JS) -->
     <div id="carContainer"></div>
   </div>
 
@@ -487,37 +568,41 @@
       <div class="stat-item"><div class="num" style="color:var(--amber)">2</div><div class="label">Pitfall</div></div>
     </div>
 
-    <!-- TRUE 3D WRENCH -->
+    <!-- TRUE 3D WRENCH (correct CSS 3D transforms) -->
     <div class="wrench-stage">
       <div class="wrench-3d">
         <!-- Head: 6 faces -->
-        <div class="head">
-          <div class="f front"></div><div class="f back"></div>
-          <div class="f left"></div><div class="f right"></div>
-          <div class="f top"></div><div class="f bottom"></div>
+        <div class="wrench-part part-head">
+          <div class="face f-front"></div><div class="face f-back"></div>
+          <div class="face f-right"></div><div class="face f-left"></div>
+          <div class="face f-top"></div><div class="face f-bottom"></div>
         </div>
-        <!-- Jaw Left: 3 faces -->
-        <div class="jaw-l">
-          <div class="f front"></div><div class="f back"></div><div class="f top"></div>
+        <!-- Jaw Left: 5 faces -->
+        <div class="wrench-part part-jaw-l">
+          <div class="face f-front"></div><div class="face f-back"></div>
+          <div class="face f-right"></div><div class="face f-left"></div>
+          <div class="face f-top"></div>
         </div>
-        <!-- Jaw Right: 3 faces -->
-        <div class="jaw-r">
-          <div class="f front"></div><div class="f back"></div><div class="f top"></div>
+        <!-- Jaw Right: 5 faces -->
+        <div class="wrench-part part-jaw-r">
+          <div class="face f-front"></div><div class="face f-back"></div>
+          <div class="face f-right"></div><div class="face f-left"></div>
+          <div class="face f-top"></div>
         </div>
         <!-- Jaw Inner: 2 faces -->
-        <div class="jaw-inner">
-          <div class="f front"></div><div class="f back"></div>
+        <div class="wrench-part part-jaw-inner">
+          <div class="face f-front"></div><div class="face f-back"></div>
         </div>
-        <!-- Neck: 2 faces -->
-        <div class="neck">
-          <div class="f front"></div><div class="f back"></div>
-          <div class="f left"></div><div class="f right"></div>
+        <!-- Neck: 4 faces (connects head to handle) -->
+        <div class="wrench-part part-neck">
+          <div class="face f-front"></div><div class="face f-back"></div>
+          <div class="face f-right"></div><div class="face f-left"></div>
         </div>
         <!-- Handle: 6 faces -->
-        <div class="handle">
-          <div class="f front"></div><div class="f back"></div>
-          <div class="f left"></div><div class="f right"></div>
-          <div class="f top"></div><div class="f bottom"></div>
+        <div class="wrench-part part-handle">
+          <div class="face f-front"></div><div class="face f-back"></div>
+          <div class="face f-right"></div><div class="face f-left"></div>
+          <div class="face f-top"></div><div class="face f-bottom"></div>
         </div>
       </div>
       <div class="wrench-shadow"></div>
@@ -533,101 +618,67 @@
   <div class="portal-footer">Ampas Industries Co., Ltd. — Process Engineering Hub</div>
 
   <script>
-    // ===== Random Car Spawner =====
+    // ===== Random Car Spawner (bird's eye view) =====
     const carContainer = document.getElementById('carContainer');
-    
-    // Car templates with direction, color, speed, lane position
+
     const carTypes = [
-      { dir: 'right', color: 'car-red',    body: 'body-h', speed: [8,14],  top: 'calc(50% - 22px)' },
-      { dir: 'left',  color: 'car-blue',   body: 'body-h', speed: [9,15],  top: 'calc(50% + 6px)' },
-      { dir: 'down',  color: 'car-orange', body: 'body-v', speed: [9,14],  left: 'calc(50% + 6px)' },
-      { dir: 'up',    color: 'car-purple', body: 'body-v', speed: [10,16], left: 'calc(50% - 24px)' },
-      { dir: 'right', color: 'car-green',  body: 'body-h', speed: [10,16], top: 'calc(50% - 22px)' },
-      { dir: 'down',  color: 'car-teal',   body: 'body-v', speed: [8,13],  left: 'calc(50% + 6px)' },
-      { dir: 'left',  color: 'car-red',    body: 'body-h', speed: [11,17], top: 'calc(50% + 6px)' },
-      { dir: 'up',    color: 'car-blue',   body: 'body-v', speed: [9,14],  left: 'calc(50% - 24px)' },
+      { dir:'right', body:'body-h', speed:[6,10], top:'calc(50% - 32px)', colors:['#e74c3c','#f1c40f','#ecf0f1','#3498db'] },
+      { dir:'left',  body:'body-h', speed:[7,11], top:'calc(50% + 18px)', colors:['#2ecc71','#e67e22','#ecf0f1','#9b59b6'] },
+      { dir:'down',  body:'body-v', speed:[7,11], left:'calc(50% + 18px)', colors:['#f39c12','#e74c3c','#ecf0f1','#1abc9c'] },
+      { dir:'up',    body:'body-v', speed:[8,12], left:'calc(50% - 32px)', colors:['#3498db','#2ecc71','#f1c40f','#e67e22'] },
     ];
 
-    function rand(min, max) { return Math.random() * (max - min) + min; }
+    function rand(a,b){ return Math.random()*(b-a)+a; }
 
-    function spawnCar(template) {
+    function spawnCar(){
+      const t = carTypes[Math.floor(Math.random()*carTypes.length)];
+      const color = t.colors[Math.floor(Math.random()*t.colors.length)];
+      const speed = rand(t.speed[0], t.speed[1]);
+
       const car = document.createElement('div');
-      car.className = `car ${template.color}`;
-      
-      const bodyDiv = document.createElement('div');
-      bodyDiv.className = template.body;
-      
-      const wf = document.createElement('div');
-      wf.className = 'wheel wf';
-      const wr = document.createElement('div');
-      wr.className = 'wheel wr';
-      bodyDiv.appendChild(wf);
-      bodyDiv.appendChild(wr);
-      car.appendChild(bodyDiv);
+      car.className = 'car';
+      car.style.setProperty('--car-color', color);
 
-      // Position
-      if (template.dir === 'right' || template.dir === 'left') {
-        car.style.top = template.top;
+      const body = document.createElement('div');
+      body.className = t.body;
+      body.innerHTML = '<div class="wheel wf"></div><div class="wheel wr"></div>';
+      car.appendChild(body);
+
+      if(t.dir==='right' || t.dir==='left') car.style.top = t.top;
+      else car.style.left = t.left;
+
+      const vw = window.innerWidth, vh = window.innerHeight;
+
+      if(t.dir==='right'){
+        car.style.left = '-70px';
+        carContainer.appendChild(car);
+        requestAnimationFrame(()=>{ car.style.transition = `left ${speed}s linear`; car.style.left = (vw+70)+'px'; });
+        setTimeout(()=>car.remove(), speed*1000+500);
+      } else if(t.dir==='left'){
+        car.style.left = (vw+70)+'px';
+        carContainer.appendChild(car);
+        requestAnimationFrame(()=>{ car.style.transition = `left ${speed}s linear`; car.style.left = '-70px'; });
+        setTimeout(()=>car.remove(), speed*1000+500);
+      } else if(t.dir==='down'){
+        car.style.top = '-70px';
+        carContainer.appendChild(car);
+        requestAnimationFrame(()=>{ car.style.transition = `top ${speed}s linear`; car.style.top = (vh+70)+'px'; });
+        setTimeout(()=>car.remove(), speed*1000+500);
       } else {
-        car.style.left = template.left;
-      }
-
-      const speed = rand(template.speed[0], template.speed[1]);
-      const vw = window.innerWidth;
-      const vh = window.innerHeight;
-
-      // Set initial position and animation
-      if (template.dir === 'right') {
-        car.style.left = '-60px';
-        car.style.transition = 'none';
+        car.style.top = (vh+70)+'px';
         carContainer.appendChild(car);
-        requestAnimationFrame(() => {
-          car.style.transition = `left ${speed}s linear`;
-          car.style.left = (vw + 60) + 'px';
-        });
-        setTimeout(() => { car.remove(); }, speed * 1000 + 500);
-      } else if (template.dir === 'left') {
-        car.style.left = (vw + 60) + 'px';
-        car.style.transition = 'none';
-        carContainer.appendChild(car);
-        requestAnimationFrame(() => {
-          car.style.transition = `left ${speed}s linear`;
-          car.style.left = '-60px';
-        });
-        setTimeout(() => { car.remove(); }, speed * 1000 + 500);
-      } else if (template.dir === 'down') {
-        car.style.top = '-60px';
-        car.style.transition = 'none';
-        carContainer.appendChild(car);
-        requestAnimationFrame(() => {
-          car.style.transition = `top ${speed}s linear`;
-          car.style.top = (vh + 60) + 'px';
-        });
-        setTimeout(() => { car.remove(); }, speed * 1000 + 500);
-      } else if (template.dir === 'up') {
-        car.style.top = (vh + 60) + 'px';
-        car.style.transition = 'none';
-        carContainer.appendChild(car);
-        requestAnimationFrame(() => {
-          car.style.transition = `top ${speed}s linear`;
-          car.style.top = '-60px';
-        });
-        setTimeout(() => { car.remove(); }, speed * 1000 + 500);
+        requestAnimationFrame(()=>{ car.style.transition = `top ${speed}s linear`; car.style.top = '-70px'; });
+        setTimeout(()=>car.remove(), speed*1000+500);
       }
     }
 
-    // Spawn cars at random intervals
-    function scheduleSpawn() {
-      const template = carTypes[Math.floor(Math.random() * carTypes.length)];
-      spawnCar(template);
-      // Next car in 1-4 seconds
-      setTimeout(scheduleSpawn, rand(1000, 4000));
+    function scheduleSpawn(){
+      spawnCar();
+      setTimeout(scheduleSpawn, rand(1200, 3500));
     }
-
-    // Start spawning after short delay
-    setTimeout(scheduleSpawn, 500);
-    setTimeout(scheduleSpawn, 1200);
-    setTimeout(scheduleSpawn, 2000);
+    setTimeout(scheduleSpawn, 300);
+    setTimeout(scheduleSpawn, 1000);
+    setTimeout(scheduleSpawn, 1800);
   </script>
 
 </body>
