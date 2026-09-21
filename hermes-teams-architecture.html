@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hermes x Teams — Installation & Message Flow Architecture</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --bg2: #12121a;
+      --bg3: #1a1a26;
+      --card: #16161f;
+      --card-hover: #1e1e2e;
+      --border: #252535;
+      --border-light: #35354a;
+      --text: #e8e8ed;
+      --text2: #a0a0b0;
+      --muted: #6b6b80;
+      --green: #4ade80;
+      --green-dim: rgba(74,222,128,0.10);
+      --red: #f87171;
+      --red-dim: rgba(248,113,113,0.10);
+      --amber: #fbbf24;
+      --amber-dim: rgba(251,191,36,0.10);
+      --blue: #60a5fa;
+      --blue-dim: rgba(96,165,250,0.10);
+      --purple: #c084fc;
+      --purple-dim: rgba(192,132,252,0.10);
+      --cyan: #22d3ee;
+      --cyan-dim: rgba(34,211,238,0.10);
+      --pink: #f472b6;
+      --pink-dim: rgba(244,114,182,0.10);
+      --teal: #2dd4bf;
+      --teal-dim: rgba(45,212,191,0.10);
+      --gradient: linear-gradient(135deg, #0f0c29 0%, #1a1040 40%, #24243e 100%);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', 'Noto Sans Thai', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.7;
+    }
+    /* Header */
+    .header {
+      background: rgba(18,18,26,0.92);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .header h1 {
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: -0.3px;
+    }
+    .nav-tabs {
+      display: flex;
+      gap: 4px;
+    }
+    .nav-tab {
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      border: none;
+      background: none;
+      font-family: inherit;
+    }
+    .nav-tab:hover { color: var(--text); background: var(--card); }
+    .nav-tab.active { color: var(--blue); background: var(--blue-dim); }
+
+    /* Pages */
+    .page { display: none; max-width: 1200px; margin: 0 auto; padding: 24px; }
+    .page.active { display: block; }
+
+    /* Hero */
+    .hero {
+      background: var(--gradient);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px;
+      margin-bottom: 32px;
+      text-align: center;
+    }
+    .hero h2 { font-size: 28px; font-weight: 800; margin-bottom: 8px; }
+    .hero p { color: var(--text2); font-size: 15px; max-width: 600px; margin: 0 auto; }
+
+    /* Section */
+    .section {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .section h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Steps */
+    .step-list { counter-reset: step; }
+    .step {
+      position: relative;
+      padding: 16px 16px 16px 56px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 12px;
+      background: var(--card);
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .step:hover { border-color: var(--blue); background: var(--card-hover); }
+    .step::before {
+      counter-increment: step;
+      content: counter(step);
+      position: absolute;
+      left: 16px;
+      top: 16px;
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: var(--blue-dim);
+      color: var(--blue);
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .step-title { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+    .step-desc { font-size: 13px; color: var(--text2); }
+    .step-detail {
+      display: none;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+    .step.expanded .step-detail { display: block; }
+
+    /* Code block */
+    .code-block {
+      background: #0d1117;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      line-height: 1.6;
+      overflow-x: auto;
+      color: #c9d1d9;
+      margin: 8px 0;
+    }
+    .code-block .comment { color: #6e7681; }
+    .code-block .keyword { color: #ff7b72; }
+    .code-block .string { color: #a5d6ff; }
+    .code-block .func { color: #d2a8ff; }
+    .code-block .cmd { color: #79c0ff; }
+
+    /* Flow diagram */
+    .flow-container {
+      overflow-x: auto;
+      padding: 20px 0;
+    }
+    .flow-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      min-width: 900px;
+      padding: 0 20px;
+    }
+    .flow-node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      min-width: 130px;
+      max-width: 160px;
+      flex-shrink: 0;
+    }
+    .flow-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      margin-bottom: 8px;
+      border: 2px solid var(--border);
+      background: var(--bg3);
+      transition: all 0.3s;
+    }
+    .flow-icon.user { border-color: var(--blue); background: var(--blue-dim); }
+    .flow-icon.teams { border-color: var(--purple); background: var(--purple-dim); }
+    .flow-icon.azure { border-color: #0078d4; background: rgba(0,120,212,0.12); }
+    .flow-icon.tunnel { border-color: var(--amber); background: var(--amber-dim); }
+    .flow-icon.fastapi { border-color: var(--teal); background: var(--teal-dim); }
+    .flow-icon.hermes { border-color: var(--cyan); background: var(--cyan-dim); }
+    .flow-icon.ai { border-color: var(--purple); background: var(--purple-dim); }
+    .flow-icon.firewall { border-color: var(--red); background: var(--red-dim); }
+    .flow-icon.output { border-color: var(--green); background: var(--green-dim); }
+
+    .flow-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); margin-bottom: 2px; }
+    .flow-name { font-size: 13px; font-weight: 600; color: var(--text); }
+    .flow-detail { font-size: 11px; color: var(--text2); line-height: 1.3; margin-top: 2px; }
+    .flow-arrow { font-size: 22px; color: var(--border-light); flex-shrink: 0; margin: 0 2px; padding-bottom: 24px; }
+    .flow-arrow.reverse { transform: scaleX(-1); }
+
+    /* Firewall badge */
+    .fw-badge {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-top: 4px;
+      display: inline-block;
+    }
+    .fw-badge.passed { color: var(--green); background: var(--green-dim); }
+    .fw-badge.blocked { color: var(--red); background: var(--red-dim); }
+    .fw-badge.workaround { color: var(--amber); background: var(--amber-dim); }
+
+    /* Detail panel */
+    .detail-panel {
+      display: none;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 16px;
+    }
+    .detail-panel.active { display: block; }
+    .detail-panel h4 { font-size: 14px; font-weight: 700; margin-bottom: 12px; color: var(--blue); }
+
+    /* Stats */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+    }
+    .stat-value { font-size: 28px; font-weight: 800; }
+    .stat-label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+    /* Info box */
+    .info-box {
+      background: var(--blue-dim);
+      border: 1px solid rgba(96,165,250,0.2);
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-size: 13px;
+      color: var(--blue);
+      margin: 12px 0;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .warn-box {
+      background: var(--amber-dim);
+      border: 1px solid rgba(251,191,36,0.2);
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-size: 13px;
+      color: var(--amber);
+      margin: 12px 0;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .fail-box {
+      background: var(--red-dim);
+      border: 1px solid rgba(248,113,113,0.2);
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-size: 13px;
+      color: var(--red);
+      margin: 12px 0;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    /* Table */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin: 12px 0;
+    }
+    .data-table th {
+      text-align: left;
+      padding: 10px 12px;
+      background: var(--bg3);
+      border-bottom: 2px solid var(--border);
+      font-weight: 600;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--muted);
+    }
+    .data-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text2);
+    }
+    .data-table tr:hover td { background: var(--card); }
+
+    /* Tabs inside sections */
+    .inner-tabs { display: flex; gap: 4px; margin-bottom: 16px; flex-wrap: wrap; }
+    .inner-tab {
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: none;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+    .inner-tab:hover { color: var(--text); border-color: var(--border-light); }
+    .inner-tab.active { color: var(--cyan); border-color: var(--cyan); background: var(--cyan-dim); }
+
+    /* Timeline */
+    .timeline { position: relative; padding-left: 28px; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 8px;
+      top: 4px;
+      bottom: 4px;
+      width: 2px;
+      background: var(--border);
+    }
+    .tl-entry { position: relative; padding: 0 0 20px 0; }
+    .tl-entry:last-child { padding-bottom: 0; }
+    .tl-dot {
+      position: absolute;
+      left: -24px;
+      top: 4px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: var(--bg3);
+    }
+    .tl-dot.success { border-color: var(--green); background: var(--green); }
+    .tl-dot.fail { border-color: var(--red); background: var(--red); }
+    .tl-dot.info { border-color: var(--blue); background: var(--blue); }
+    .tl-dot.warn { border-color: var(--amber); background: var(--amber); }
+    .tl-date { font-size: 11px; color: var(--muted); font-family: 'JetBrains Mono', monospace; margin-bottom: 2px; }
+    .tl-title { font-size: 14px; font-weight: 600; }
+    .tl-desc { font-size: 13px; color: var(--text2); }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .flow-row { flex-direction: column; min-width: auto; }
+      .flow-arrow { transform: rotate(90deg); padding-bottom: 0; margin: 4px 0; }
+      .flow-node { min-width: 100%; max-width: 100%; }
+      .hero { padding: 24px; }
+      .hero h2 { font-size: 22px; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* Collapse toggle */
+    .collapse-toggle {
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .collapse-toggle .arrow { transition: transform 0.2s; font-size: 12px; }
+    .collapse-toggle.open .arrow { transform: rotate(90deg); }
+    .collapse-content { display: none; }
+    .collapse-content.open { display: block; }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-inner">
+    <h1>🤖 Hermes × Teams — Architecture</h1>
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="switchPage('install')">📦 Installation</button>
+      <button class="nav-tab" onclick="switchPage('flow')">🔄 Message Flow</button>
+      <button class="nav-tab" onclick="switchPage('code')">💻 Code Walkthrough</button>
+      <button class="nav-tab" onclick="switchPage('pitfalls')">⚠️ Pitfalls</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== PAGE 1: INSTALLATION ========== -->
+<div class="page active" id="page-install">
+  <div class="hero">
+    <h2>📦 การติดตั้ง Hermes Agent</h2>
+    <p>ตั้งแต่เริ่มต้นจนพร้อมรับ message จาก Microsoft Teams — ทุกขั้นตอนอย่างละเอียด</p>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-value" style="color:var(--blue)">5</div><div class="stat-label">Prerequisites</div></div>
+    <div class="stat-card"><div class="stat-value" style="color:var(--green)">8</div><div class="stat-label">Install Steps</div></div>
+    <div class="stat-card"><div class="stat-value" style="color:var(--purple)">3</div><div class="stat-label">Config Files</div></div>
+    <div class="stat-card"><div class="stat-value" style="color:var(--amber)">2</div><div class="stat-label">External Services</div></div>
+  </div>
+
+  <!-- Prerequisites -->
+  <div class="section">
+    <h3>🔧 Prerequisites (สิ่งที่ต้องมีก่อน)</h3>
+    <div class="step-list">
+      <div class="step" onclick="toggleStep(this)">
+        <div class="step-title">Python 3.11+ (UV package manager)</div>
+        <div class="step-desc">Hermes ใช้ Python เป็น core runtime — ต้องมี version 3.11 ขึ้นไป</div>
+        <div class="step-detail">
+          <div class="code-block"><span class="comment"># Hermes installer จะติดตั้ง uv + Python + venv ให้อัตโนมัติ</span>
+<span class="comment"># ถ้าติดตั้งเอง:</span>
+<span class="cmd">winget</span> install astral-sh.uv    <span class="comment"># Windows</span>
+<span class="cmd">curl</span> -LsSf https://astral.sh/uv/install.sh | sh  <span class="comment"># Linux/Mac</span></div>
+        </div>
+      </div>
+
+      <div class="step" onclick="toggleStep(this)">
+        <div class="step-title">Node.js v22+ (สำหรับ Desktop App)</div>
+        <div class="step-desc">Hermes Desktop ใช้ Electron — ต้องมี Node.js</div>
+        <div class="step-detail">
+          <div class="code-block"><span class="cmd">winget</span> install OpenJS.NodeJS.LTS  <span class="comment"># Windows</span>
+<span class="cmd">nvm</span> install 22                <span class="comment"># Linux/Mac</span></div>
+        </div>
+      </div>
+
+      <div class="step" onclick="toggleStep(this)">
+        <div class="step-title">Git (version control)</div>
+        <div class="step-desc">ใช้สำหรับ clone Hermes source + update</div>
+        <div class="step-detail">
+          <div class="code-block"><span class="cmd">winget</span> install Git.Git  <span class="comment"># Windows</span>
+<span class="cmd">sudo apt</span> install git   <span class="comment"># Linux</span></div>
+        </div>
+      </div>
+
+      <div class="step" onclick="toggleStep(this)">
+        <div class="step-title">Microsoft Azure Account (Free)</div>
+        <div class="step-desc">ต้องมี Azure account เพื่อ register Bot Application — ใช้ Free Trial ได้</div>
+        <div class="step-detail">
+          <p style="font-size:13px;color:var(--text2);margin-bottom:8px">ต้องสร้าง 3 อย่างใน Azure:</p>
+          <table class="data-table">
+            <tr><th>Item</th><th>Where</th><th>Purpose</th></tr>
+            <tr><td><strong>Tenant ID</strong></td><td>Microsoft Entra ID</td><td>Identify your organization</td></tr>
+            <tr><td><strong>Client ID</strong></td><td>App registrations</td><td>Identify your bot app</td></tr>
+            <tr><td><strong>Client Secret</strong></td><td>Certificates & secrets</td><td>Authenticate bot → Azure</td></tr>
+          </table>
+          <div class="warn-box">⚠️ ถ้า company IT block Azure Portal — ใช้ personal Microsoft account หรือ developer tenant แทน</div>
+        </div>
+      </div>
+
+      <div class="step" onclick="toggleStep(this)">
+        <div class="step-title">AI Provider (Local หรือ Cloud)</div>
+        <div class="step-desc">เลือก 1: LM Studio (local, ฟรี) หรือ Cloud API (Xiaomi MiMo, Gemini, OpenAI)</div>
+        <div class="step-detail">
+          <table class="data-table">
+            <tr><th>Provider</th><th>Cost</th><th>Quality</th><th>Setup</th></tr>
+            <tr><td style="color:var(--green)">LM Studio (local)</td><td>ฟรี</td><td>ดี (7B-70B)</td><td>ติดตั้ง + load model</td></tr>
+            <tr><td style="color:var(--blue)">Xiaomi MiMo</td><td>~$16/mo</td><td>ดีมาก</td><td>API key</td></tr>
+            <tr><td style="color:var(--purple)">Gemini Flash</td><td>Free tier</td><td>ดี</td><td>API key</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Installation Steps -->
+  <div class="section">
+    <h3>🚀 Installation Steps (8 ขั้นตอน)</h3>
+    <div class="step-list">
+      <div class="step" onclick="toggleStep(this)">
+        <div class="step-title">ติดตั้ง Hermes Agent</div>
+        <div class="step-desc">คำสั่งเดียว — installer จะ setup uv, Python venv, launcher ให้ครบ</div>
+        <div class="step-detail">
+          <div class="code-block"><span class="comment"># Linux / macOS / WSL2:</span>
+<span class="cmd">curl</span> -fsSL https://hermes-agent.nousresearch.com/install.sh | bash
+
+<span class="comment"># Windows (native):</span>
+<span class="comment"># ดาวน์โหลด installer จาก https://hermes-agent.nousresearch.com/docs/getting-started/installation</span>
+<span class="comment"># หรือใช้ winget:</span>
+<span class="cmd">winget</span> install NousResearch.HermesAgent</div>
+          <div class="info-box">💡 หลังติดตั้ง — ทดสอบด้วย <code>hermes --help</code> ถ้าเห็น help text = สำเร็จ</div>
+        </div>
+      </div>
+
+      <div class="step" onclick="toggleStep(this)">
+        <div class="step-title">Setup Wizard — เลือก Model + Provider</div>
+        <div class="step-desc">hermes setup จะถาม model, provider, API key — กรอกตามขั้นตอน</div>
+        <div class="step-detail">
+          <div class="code-block"><span class="cmd">hermes</span> setup          <span class="comment"># interactive wizard</span>
+<span class="cmd">hermes</span> model          <span class="comment"># เปลี่ยน model ทีหลัง</span>
+<span class="cmd">hermes</span> doctor         <span class="comment"># health check — ตรวจว่าทุกอย่าง OK</span></div>
+        </div>
+      </div>
+
+      <div class="step" onclick="toggleStep(this)">
+        <div class="step-title">สร้าง Bot Profile (pe-bot)</div>
+        <div class="step-desc">Profile = isolated bot instance — แยก config, memory, skills จาก profile อื่น</div>
+        <div class="step-detail">
+          <div class="code-block"><span class="comment"># สร้าง profile ใหม่</span>
+<span class="cmd">hermes</span> -p pe-bot -q "Hello"
+
+<span class="comment"># ตั้ง model สำหรับ profile นี้</span>
+<span class="cmd">hermes</span> -p pe-bot config set model.provider lmstudio
+<span class="cmd">hermes</span> -p pe-bot config set model.default "qwen3-8b"
+
+<span class="comment"># Profile directory:</span>
+<span class="comment"># ~/.hermes/profiles/pe-bot/</span>
+<span class="comment">#   ├── config.yaml    (settings)</span>
+<span class="comment">#   ├── .env           (API keys)</span>
+<span class="comment">#   ├── memories/      (persistent memory)</span>
+<span class="comment">#   ├── skills/        (bot skills)</span>
+<span class="comment">#   └── SOUL.md        (bot persona)</span></div>
+        </div>
+      </div>
+
+      <div class="step" onclick="toggleStep(this)">
+        <div class="step-title">เขียน SOUL.md (Bot Persona)</div>
+        <div class="step-desc">กำหนด personality, rules, response style ของ bot — สำคัญมาก!</div>
+        <div class="step-detail">
+          <div class="code-block"><span class="comment"># ~/.hermes/profiles/pe-bot/SOUL.md</span>
+
+<span class="keyword">You are</span> PE Self-Audit Assistant <span class="keyword">for</span> Ampas Industries.
+
+<span class="keyword">Rules:</span>
+- ตอบเป็นภาษาไทยเท่านั้น
+- ห้ามเปิดเผย internal paths หรือ developer info
+- ห้าม fabricate ข้อมูล — ถ้าไม่รู้ให้บอกตรงๆ
+- ประเมิน PASS/FAIL เฉพาะเมื่อมี evidence เพียงพอ
+- เข้าใจ context ของ machine assembly (ด้านนึงต้องเปิด)</div>
+        </div>
+      </div>
+
+      <div class="step" onclick="toggleStep(this)">
+        <div class="step-title">สร้าง Azure App Registration</div>
+        <div class="step-desc">Register bot ใน Microsoft Entra — ได้ App ID, Password, Tenant ID</div>
+        <div class="step-detail">
+          <div class="timeline">
+            <div class="tl-entry">
+              <div class="tl-dot info"></div>
+              <div class="tl-title">ไปที่ portal.azure.com → Microsoft Entra ID → App registrations</div>
+            </div>
+            <div class="tl-entry">
+              <div class="tl-dot info"></div>
+              <div class="tl-title">กด "+ New registration"</div>
+              <div class="tl-desc">Name: "PE Audit Bot"<br>Accounts: <strong>Multitenant</strong> (สำคัญ! — ป้องกัน AADSTS700016)</div>
+            </div>
+            <div class="tl-entry">
+              <div class="tl-dot info"></div>
+              <div class="tl-title">Copy Application (client) ID</div>
+              <div class="tl-desc">= TEAMS_APP_ID</div>
+            </div>
+            <div class="tl-entry">
+              <div class="tl-dot info"></div>
+              <div class="tl-title">Certificates & secrets → + New client secret</div>
+              <div class="tl-desc">Copy <strong>Value</strong> (ไม่ใช่ Secret ID!) = TEAMS_APP_PASSWORD</div>
+            </div>
+            <div class="tl-entry">
+              <div class="tl-dot info"></div>
+              <div class="tl-title">Copy Directory (tenant) ID</div>
+              <div class="tl-desc">= TEAMS_TENANT_ID</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step" onclick="toggleStep(this)">
+        <div class="step-title">สร้าง FastAPI Bot Server (app.py)</div>
+        <div class="step-desc">Backend ที่รับ message จาก Azure Bot Service → ส่งให้ Hermes → ส่งกลับ</div>
+        <div class="step-detail">
+          <div class="code-block"><span class="comment"># ติดตั้ง dependencies</span>
+<span class="cmd">pip</span> install fastapi uvicorn botbuilder-core requests python-dotenv
+
+<span class="comment"># สร้าง app.py — ดู tab "Code Walkthrough" สำหรับ full code</span>
+<span class="comment"># สร้าง .env:</span>
+<span class="string">TEAMS_APP_ID</span>=your-client-id
+<span class="string">TEAMS_APP_PASSWORD</span>=your-client-secret
+<span class="string">TEAMS_TENANT_ID</span>=your-tenant-id</div>
+        </div>
+      </div>
+
+      <div class="step" onclick="toggleStep(this)">
+        <div class="step-title">เปิด Tunnel (ngrok / Cloudflare)</div>
+        <div class="step-desc">เปิด local FastAPI ออก internet — ให้ Azure Bot Service เรียกเข้ามาได้</div>
+        <div class="step-detail">
+          <div class="code-block"><span class="comment"># Option A: ngrok (URL เปลี่ยนทุกครั้งที่ restart)</span>
+<span class="cmd">ngrok</span> http 8000
+<span class="comment"># → Forwarding: https://abc123.ngrok-free.app → http://localhost:8000</span>
+
+<span class="comment"># Option B: Cloudflare Tunnel (URL คงที่, ฟรี)</span>
+<span class="cmd">cloudflared</span> tunnel --url http://localhost:8000
+<span class="comment"># → https://random-name.trycloudflare.com</span></div>
+          <div class="warn-box">⚠️ ngrok free: URL เปลี่ยนทุก restart → ต้อง update Azure Bot endpoint ทุกครั้ง<br>Cloudflare Tunnel: URL คงที่กว่า แต่ต้อง setup เพิ่ม</div>
+        </div>
+      </div>
+
+      <div class="step" onclick="toggleStep(this)">
+        <div class="step-title">สร้าง Teams App Package + Sideload</div>
+        <div class="step-desc">สร้าง manifest.json + icons → zip → upload เข้า Teams</div>
+        <div class="step-detail">
+          <div class="code-block"><span class="comment"># สร้างโฟลเดอร์ teams-app/</span>
+teams-app/
+├── manifest.json      <span class="comment"># Bot ID, valid domains</span>
+├── color.png          <span class="comment"># 192×192 icon</span>
+└── outline.png        <span class="comment"># 32×32 icon</span>
+
+<span class="comment"># Zip แล้ว upload ใน Teams:</span>
+<span class="comment"># Apps → Manage your apps → Upload an app → Upload a custom app</span></div>
+          <div class="info-box">💡 manifest.json ต้องมี <code>"bots"</code> section ที่อ้าง <code>botId</code> = Client ID และ <code>validDomains</code> = tunnel URL</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Config Files -->
+  <div class="section">
+    <h3>⚙️ Config Files ที่เกี่ยวข้อง</h3>
+    <table class="data-table">
+      <tr><th>File</th><th>Location</th><th>Purpose</th></tr>
+      <tr><td><strong>config.yaml</strong></td><td><code>~/.hermes/profiles/pe-bot/config.yaml</code></td><td>Model, provider, tools, settings</td></tr>
+      <tr><td><strong>.env</strong></td><td><code>~/.hermes/profiles/pe-bot/.env</code></td><td>API keys (Hermes side)</td></tr>
+      <tr><td><strong>SOUL.md</strong></td><td><code>~/.hermes/profiles/pe-bot/SOUL.md</code></td><td>Bot persona & rules</td></tr>
+      <tr><td><strong>.env</strong></td><td><code>C:\Users\chavagorn\pe-audit-bot\.env</code></td><td>Azure credentials (bot side)</td></tr>
+      <tr><td><strong>app.py</strong></td><td><code>C:\Users\chavagorn\pe-audit-bot\app.py</code></td><td>FastAPI server + bot logic</td></tr>
+      <tr><td><strong>manifest.json</strong></td><td><code>teams-app/manifest.json</code></td><td>Teams app package manifest</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ========== PAGE 2: MESSAGE FLOW ========== -->
+<div class="page" id="page-flow">
+  <div class="hero">
+    <h2>🔄 Message Flow Architecture</h2>
+    <p>เส้นทางของข้อความตั้งแต่ผู้ใช้พิมพ์ใน Teams จนได้รับคำตอบ — ทุก step อย่างละเอียด</p>
+  </div>
+
+  <!-- Forward Path -->
+  <div class="section">
+    <h3>📤 Forward Path — ส่งข้อความไป AI</h3>
+    <div class="flow-container">
+      <div class="flow-row">
+        <div class="flow-node">
+          <div class="flow-icon user">👤</div>
+          <div class="flow-label">User</div>
+          <div class="flow-name">PE Engineer</div>
+          <div class="flow-detail">พิมพ์ใน Teams Chat<br>หรือส่ง Excel/Video</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">
+          <div class="flow-icon teams">💬</div>
+          <div class="flow-label">Platform</div>
+          <div class="flow-name">MS Teams</div>
+          <div class="flow-detail">Serialize เป็น<br>Activity JSON</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">
+          <div class="flow-icon azure">☁️</div>
+          <div class="flow-label">Service</div>
+          <div class="flow-name">Azure Bot</div>
+          <div class="flow-detail">Route message<br>ไปยัง registered<br>endpoint URL</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">
+          <div class="flow-icon tunnel">🌐</div>
+          <div class="flow-label">Tunnel</div>
+          <div class="flow-name">ngrok / CF</div>
+          <div class="flow-detail">Forward HTTPS<br>→ localhost:8000</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">
+          <div class="flow-icon fastapi">⚡</div>
+          <div class="flow-label">Server</div>
+          <div class="flow-name">FastAPI</div>
+          <div class="flow-detail">รับที่ /api/messages<br>Deserialize Activity<br>Download attachments</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">
+          <div class="flow-icon hermes">🤖</div>
+          <div class="flow-label">Agent</div>
+          <div class="flow-name">Hermes</div>
+          <div class="flow-detail">Profile: pe-bot<br>Load SOUL.md<br>Inject history</div>
+        </div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node">
+          <div class="flow-icon ai">🧠</div>
+          <div class="flow-label">AI Model</div>
+          <div class="flow-name">LM Studio /<br>MiMo / Gemini</div>
+          <div class="flow-detail">Generate response<br>จาก prompt +<br>context + tools</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Return Path -->
+  <div class="section">
+    <h3>📥 Return Path — ส่งคำตอบกลับ</h3>
+    <div class="flow-container">
+      <div class="flow-row">
+        <div class="flow-node">
+          <div class="flow-icon ai">🧠</div>
+          <div class="flow-label">AI Model</div>
+          <div class="flow-name">Response text</div>
+          <div class="flow-detail">Generated answer<br>+ tool results</div>
+        </div>
+        <div class="flow-arrow reverse">→</div>
+        <div class="flow-node">
+          <div class="flow-icon hermes">🤖</div>
+          <div class="flow-label">Agent</div>
+          <div class="flow-name">Hermes</div>
+          <div class="flow-detail">Process tools<br>Format output<br>Return stdout</div>
+        </div>
+        <div class="flow-arrow reverse">→</div>
+        <div class="flow-node">
+          <div class="flow-icon fastapi">⚡</div>
+          <div class="flow-label">Server</div>
+          <div class="flow-name">FastAPI</div>
+          <div class="flow-detail">Save to history<br>Parse response</div>
+        </div>
+        <div class="flow-arrow reverse">→</div>
+        <div class="flow-node">
+          <div class="flow-icon tunnel">🌐</div>
+          <div class="flow-label">Tunnel</div>
+          <div class="flow-name">ngrok / CF</div>
+          <div class="flow-detail">Forward response<br>→ Azure Bot</div>
+        </div>
+        <div class="flow-arrow reverse">→</div>
+        <div class="flow-node">
+          <div class="flow-icon azure">☁️</div>
+          <div class="flow-label">Service</div>
+          <div class="flow-name">Azure Bot</div>
+          <div class="flow-detail">Route response<br>→ Teams channel</div>
+        </div>
+        <div class="flow-arrow reverse">→</div>
+        <div class="flow-node">
+          <div class="flow-icon teams">💬</div>
+          <div class="flow-label">Platform</div>
+          <div class="flow-name">MS Teams</div>
+          <div class="flow-detail">แสดงผลใน<br>chat window</div>
+        </div>
+        <div class="flow-arrow reverse">→</div>
+        <div class="flow-node">
+          <div class="flow-icon user">👤</div>
+          <div class="flow-label">User</div>
+          <div class="flow-name">PE Engineer</div>
+          <div class="flow-detail">อ่านคำตอบ<br>ส่ง message ต่อ</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detailed step-by-step -->
+  <div class="section">
+    <h3>📋 Detailed Step-by-Step (แต่ละจุดอย่างละเอียด)</h3>
+
+    <!-- Step 1 -->
+    <div class="step" onclick="toggleStep(this)">
+      <div class="step-title">Step 1: User → MS Teams</div>
+      <div class="step-desc">ผู้ใช้พิมพ์ข้อความ / แนบไฟล์ ใน Teams chat</div>
+      <div class="step-detail">
+        <table class="data-table">
+          <tr><th>Action</th><th>Data</th></tr>
+          <tr><td>พิมพ์ข้อความ</td><td><code>activity.text = "ช่วยตรวจข้อ 3"</code></td></tr>
+          <tr><td>แนบ Excel</td><td><code>activity.attachments[]</code> + <code>downloadUrl</code></td></tr>
+          <tr><td>แนบ Video</td><td><code>activity.attachments[]</code> + <code>content_type: video/mp4</code></td></tr>
+          <tr><td>แนบ Image</td><td><code>activity.attachments[]</code> + <code>content_type: image/jpeg</code></td></tr>
+        </table>
+        <div class="info-box">💡 Teams จะ serialize ทุกอย่างเป็น <strong>Activity JSON</strong> แล้วส่งไป Azure Bot Service</div>
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="step" onclick="toggleStep(this)">
+      <div class="step-title">Step 2: MS Teams → Azure Bot Service</div>
+      <div class="step-desc">Azure Bot Service รับ Activity → route ไป registered endpoint</div>
+      <div class="step-detail">
+        <p style="font-size:13px;color:var(--text2);margin-bottom:8px">Azure Bot Service ทำ 3 อย่าง:</p>
+        <ol style="font-size:13px;color:var(--text2);padding-left:20px">
+          <li><strong>Authenticate</strong> — ใช้ App ID + Secret ขอ token จาก Bot Framework</li>
+          <li><strong>Route</strong> — ส่ง HTTPS POST ไปยัง registered messaging endpoint</li>
+          <li><strong>Manage connections</strong> — จัดการ conversation references, activity IDs</li>
+        </ol>
+        <div class="code-block"><span class="comment"># Azure Bot Service ส่ง HTTP POST ไปยัง registered endpoint:</span>
+<span class="keyword">POST</span> <span class="string">https://abc123.ngrok-free.app/api/messages</span>
+<span class="keyword">Authorization:</span> Bearer &lt;bot-framework-token&gt;
+<span class="keyword">Content-Type:</span> application/json
+
+{
+  <span class="string">"type"</span>: <span class="string">"message"</span>,
+  <span class="string">"text"</span>: <span class="string">"ช่วยตรวจข้อ 3"</span>,
+  <span class="string">"from"</span>: { <span class="string">"id"</span>: <span class="string">"user-id"</span>, <span class="string">"name"</span>: <span class="string">"Chavagorn"</span> },
+  <span class="string">"conversation"</span>: { <span class="string">"id"</span>: <span class="string">"conv-id-xxx"</span> },
+  <span class="string">"attachments"</span>: [...]
+}</div>
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="step" onclick="toggleStep(this)">
+      <div class="step-title">Step 3: Azure Bot → ngrok Tunnel → localhost:8000</div>
+      <div class="step-desc">Tunnel forward HTTPS request เข้ามาที่เครื่อง local</div>
+      <div class="step-detail">
+        <div class="code-block"><span class="comment"># ngrok สร้าง public HTTPS URL ที่ forward ไป localhost:8000</span>
+
+<span class="keyword">Public:</span>  <span class="string">https://abc123.ngrok-free.app</span>
+    ↓ (HTTPS tunnel)
+<span class="keyword">Local:</span>   <span class="string">http://localhost:8000</span>    ← FastAPI server
+
+<span class="comment"># Flow:</span>
+Azure Bot ──HTTPS──→ ngrok cloud ──tunnel──→ localhost:8000/api/messages</div>
+        <div class="warn-box">⚠️ <strong>Firewall Point:</strong> ถ้า company firewall block outbound port → tunnel ใช้ไม่ได้ ต้องใช้ Cloudflare Tunnel (ใช้ port 443/HTTPS เท่านั้น)</div>
+      </div>
+    </div>
+
+    <!-- Step 4 -->
+    <div class="step" onclick="toggleStep(this)">
+      <div class="step-title">Step 4: FastAPI รับ Request</div>
+      <div class="step-desc">app.py รับ Activity → Authenticate → Extract message + attachments</div>
+      <div class="step-detail">
+        <div class="code-block"><span class="comment"># app.py — Main message handler</span>
+
+<span class="keyword">@app.post</span>(<span class="string">"/api/messages"</span>)
+<span class="keyword">async def</span> <span class="func">messages_post</span>(req: Request):
+    body = <span class="keyword">await</span> req.json()
+    activity = Activity().deserialize(body)     <span class="comment"># Parse Activity JSON</span>
+    auth_header = req.headers.get(<span class="string">"Authorization"</span>)
+
+    <span class="keyword">async def</span> <span class="func">aux_turn</span>(turn_context: TurnContext):
+        user_msg = turn_context.activity.text    <span class="comment"># "ช่วยตรวจข้อ 3"</span>
+        conv_id = turn_context.activity.conversation.id  <span class="comment"># conversation ID</span>
+        attachments = turn_context.activity.attachments   <span class="comment"># files</span>
+
+        <span class="comment"># 1. Download attachments (Excel/Video/Images)</span>
+        <span class="comment"># 2. Load conversation history from JSON</span>
+        <span class="comment"># 3. Build full prompt</span>
+        <span class="comment"># 4. Call Hermes</span>
+        <span class="comment"># 5. Save response to history</span>
+        <span class="comment"># 6. Send back to Teams</span>
+
+    <span class="comment"># Bot Framework adapter handles auth + routing</span>
+    response = <span class="keyword">await</span> adapter.process_activity(activity, auth_header, aux_turn)</div>
+      </div>
+    </div>
+
+    <!-- Step 5 -->
+    <div class="step" onclick="toggleStep(this)">
+      <div class="step-title">Step 5: FastAPI → Hermes CLI (subprocess)</div>
+      <div class="step-desc">เรียก hermes -p pe-bot -z "prompt" ผ่าน subprocess</div>
+      <div class="step-detail">
+        <div class="code-block"><span class="comment"># Build full prompt จาก 4 sources:</span>
+full_prompt = learnings + audit_register + history_context + user_message
+
+<span class="comment"># Invoke Hermes</span>
+cmd = [<span class="string">"hermes"</span>, <span class="string">"-p"</span>, <span class="string">"pe-bot"</span>, <span class="string">"-z"</span>, full_prompt]
+process = subprocess.run(cmd, capture_output=True, text=True)
+
+reply_text = process.stdout.strip()  <span class="comment"># Hermes response</span></div>
+        <div class="info-box">💡 <strong>-p pe-bot</strong> = ใช้ profile pe-bot (SOUL.md + config + memory)<br><strong>-z</strong> = zero-shot mode (single turn, no interactive session)</div>
+        <div class="warn-box">⚠️ <strong>CRITICAL:</strong> <code>-z</code> สร้าง session ใหม่ทุกครั้ง — ต้อง inject history เข้าไปใน prompt เอง<br>ใช้ <code>-c session_tag</code> สำหรับ multi-turn แต่ subprocess ไม่ reliable</div>
+      </div>
+    </div>
+
+    <!-- Step 6 -->
+    <div class="step" onclick="toggleStep(this)">
+      <div class="step-title">Step 6: Hermes → AI Model</div>
+      <div class="step-desc">Hermes ส่ง prompt ไป AI provider — อาจเป็น local หรือ cloud</div>
+      <div class="step-detail">
+        <div class="code-block"><span class="comment"># Hermes อ่าน config จาก profile:</span>
+<span class="comment"># ~/.hermes/profiles/pe-bot/config.yaml</span>
+
+model:
+  provider: lmstudio      <span class="comment"># หรือ xiaomi, gemini, etc.</span>
+  default: qwen3-8b       <span class="comment"># model ที่ load อยู่ใน LM Studio</span>
+
+<span class="comment"># Hermes ส่ง HTTP request ไปยัง provider:</span>
+<span class="comment"># Local:  http://localhost:1234/v1/chat/completions</span>
+<span class="comment"># Cloud:  https://api.xiaomimimo.com/...  หรือ Google API</span></div>
+        <table class="data-table">
+          <tr><th>Provider</th><th>Endpoint</th><th>Latency</th></tr>
+          <tr><td>LM Studio</td><td><code>localhost:1234</code></td><td>5-180s (depends on GPU)</td></tr>
+          <tr><td>Xiaomi MiMo</td><td><code>api.xiaomimimo.com</code></td><td>2-10s</td></tr>
+          <tr><td>Gemini</td><td><code>generativelanguage.googleapis.com</code></td><td>1-5s</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <!-- Step 7 -->
+    <div class="step" onclick="toggleStep(this)">
+      <div class="step-title">Step 7: AI Model → Hermes → FastAPI</div>
+      <div class="step-desc">AI 生成 response → Hermes process → stdout → FastAPI จับ</div>
+      <div class="step-detail">
+        <div class="code-block"><span class="comment"># AI model return response → Hermes processes it</span>
+<span class="comment"># Hermes may execute tools (file read, write, etc.)</span>
+<span class="comment"># Final output → stdout</span>
+
+<span class="comment"># FastAPI captures stdout:</span>
+reply_text = process.stdout.strip()
+<span class="comment"># → "✅ ข้อ 3 ผ่าน PASS ครับ\nเหตุผล: safety guard ครบ..."</span>
+
+<span class="comment"># Save to conversation history:</span>
+conversation_history.save_message(conv_id, <span class="string">"assistant"</span>, reply_text)
+
+<span class="comment"># Send back to Teams:</span>
+<span class="keyword">await</span> turn_context.send_activity(reply_text)</div>
+      </div>
+    </div>
+
+    <!-- Step 8 -->
+    <div class="step" onclick="toggleStep(this)">
+      <div class="step-title">Step 8: FastAPI → Azure Bot → Teams → User</div>
+      <div class="step-desc">Response เดินทางกลับทางเดิม — แสดงใน Teams chat</div>
+      <div class="step-detail">
+        <div class="code-block"><span class="comment"># FastAPI send activity ผ่าน Bot Framework:</span>
+<span class="keyword">await</span> turn_context.send_activity(reply_text)
+
+<span class="comment"># Bot Framework ทำ:</span>
+<span class="comment"># 1. Serialize response เป็น Activity JSON</span>
+<span class="comment"># 2. POST ไป Azure Bot Service (ผ่าน tunnel)</span>
+<span class="comment"># 3. Azure Bot route ไป Teams channel</span>
+<span class="comment"># 4. Teams แสดงผลใน chat window</span>
+
+<span class="comment"># Return path:</span>
+FastAPI ──→ ngrok ──→ Azure Bot ──→ MS Teams ──→ User</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- File Attachment Flow -->
+  <div class="section">
+    <h3>📎 File Attachment Flow (Excel/Video/Images)</h3>
+    <div class="step-list">
+      <div class="step" onclick="toggleStep(this)">
+        <div class="step-title">User แนบไฟล์ใน Teams</div>
+        <div class="step-desc">Teams upload ไฟล์ → แนบ download URL ใน Activity</div>
+        <div class="step-detail">
+          <div class="code-block"><span class="comment"># Teams ไม่ส่งไฟล์ตรงๆ — ส่ง download URL แทน:</span>
+attachments[0].content[<span class="string">"downloadUrl"</span>]  <span class="comment"># ← URL สำหรับ download</span>
+attachments[0].name                       <span class="comment"># ← "SelfCheck_Sheet.xlsx"</span>
+attachments[0].content_type               <span class="comment"># ← "application/vnd.microsoft.teams.file.download.info"</span></div>
+        </div>
+      </div>
+
+      <div class="step" onclick="toggleStep(this)">
+        <div class="step-title">FastAPI ดาวน์โหลดไฟล์</div>
+        <div class="step-desc">ใช้ Bot Framework OAuth token download ไฟล์ → save ลง local</div>
+        <div class="step-detail">
+          <div class="code-block"><span class="comment"># ต้องใช้ OAuth token สำหรับ download:</span>
+token = creds.get_access_token()
+headers = {<span class="string">"Authorization"</span>: <span class="string">f"Bearer {token}"</span>}
+res = requests.get(download_url, headers=headers, timeout=60)
+
+<span class="comment"># Save ตาม file type:</span>
+<span class="keyword">if</span> ext == <span class="string">".xlsx"</span>:  → <span class="string">D:\AI_Hermes\ExcelFile_Ori\</span>
+<span class="keyword">if</span> ext == <span class="string">".mp4"</span>:   → <span class="string">D:\AI_Hermes\Audit_Videos\</span>
+<span class="keyword">if</span> ext == <span class="string">".jpg"</span>:   → <span class="string">D:\AI_Hermes\Audit_Videos\</span></div>
+        </div>
+      </div>
+
+      <div class="step" onclick="toggleStep(this)">
+        <div class="step-title">Inject file path เข้า Hermes prompt</div>
+        <div class="step-desc">ส่ง absolute path ให้ Hermes — Hermes จะใช้ tools อ่านไฟล์</div>
+        <div class="step-detail">
+          <div class="code-block"><span class="comment"># เพิ่ม file info ใน prompt:</span>
+file_info = <span class="string">f"📁 แนบไฟล์แบบฟอร์ม Excel: SelfCheck_Sheet.xlsx\n   Path: D:\AI_Hermes\ExcelFile_Ori\SelfCheck_Sheet.xlsx"</span>
+prompt_parts.append(file_info)
+
+<span class="comment"># Hermes จะใช้ tools (read_file, excel tools) อ่านไฟล์จาก path นี้</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== PAGE 3: CODE WALKTHROUGH ========== -->
+<div class="page" id="page-code">
+  <div class="hero">
+    <h2>💻 Code Walkthrough</h2>
+    <p>อ่าน code จริงจาก <code>C:\Users\chavagorn\pe-audit-bot\app.py</code> — อธิบายทุก function</p>
+  </div>
+
+  <div class="section">
+    <h3>📁 Project Structure</h3>
+    <div class="code-block">C:\Users\chavagorn\pe-audit-bot\
+├── app.py                    <span class="comment"># FastAPI server (558 lines)</span>
+├── .env                      <span class="comment"># Azure credentials</span>
+├── conversation_history/     <span class="comment"># JSON history files</span>
+│   ├── teams_a1b2c3d4.json   <span class="comment"># History per conversation</span>
+│   └── ...
+├── audit_registers/          <span class="comment"># Audit results per conversation</span>
+├── learnings.json            <span class="comment"># Persistent knowledge</span>
+└── run_bot.bat               <span class="comment"># Start script</span>
+
+D:\AI_Hermes\
+├── ExcelFile_Ori/            <span class="comment"># Input Excel files</span>
+├── ExcelFile/                <span class="comment"># Output Excel files</span>
+└── Audit_Videos/             <span class="comment"># Downloaded videos/images</span>
+
+~/.hermes/profiles/pe-bot/
+├── config.yaml               <span class="comment"># Model config</span>
+├── SOUL.md                   <span class="comment"># Bot persona</span>
+└── memories/                 <span class="comment"># Persistent memory</span></div>
+  </div>
+
+  <div class="section">
+    <h3>🔗 Code Architecture (5 ชั้น)</h3>
+
+    <div class="inner-tabs">
+      <button class="inner-tab active" onclick="showCodeTab(this, 'code-env')">1. Environment</button>
+      <button class="inner-tab" onclick="showCodeTab(this, 'code-history')">2. History Manager</button>
+      <button class="inner-tab" onclick="showCodeTab(this, 'code-handler')">3. Message Handler</button>
+      <button class="inner-tab" onclick="showCodeTab(this, 'code-hermes')">4. Hermes Invocation</button>
+      <button class="inner-tab" onclick="showCodeTab(this, 'code-response')">5. Response Return</button>
+    </div>
+
+    <!-- Code Tab 1: Environment -->
+    <div class="detail-panel active" id="code-env">
+      <h4>Layer 1: Environment & Credentials</h4>
+      <div class="code-block"><span class="comment"># app.py lines 37-73</span>
+
+<span class="comment"># ===== Directory Setup =====</span>
+PROJECT_DIR = <span class="string">r"C:\Users\chavagorn\pe-audit-bot"</span>
+EXCEL_DIR   = <span class="string">r"D:\AI_Hermes\ExcelFile_Ori"</span>    <span class="comment"># Input Excel</span>
+VIDEO_DIR   = <span class="string">r"D:\AI_Hermes\Audit_Videos"</span>    <span class="comment"># Videos/Images</span>
+OUTPUT_DIR  = <span class="string">r"D:\AI_Hermes\ExcelFile"</span>       <span class="comment"># Output Excel</span>
+HISTORY_DIR = os.path.join(PROJECT_DIR, <span class="string">"conversation_history"</span>)
+
+<span class="comment"># ===== Load .env =====</span>
+APP_ID      = <span class="string">"TEAMS_APP_ID"</span>       <span class="comment"># Azure App Registration</span>
+APP_PASSWORD = <span class="string">"TEAMS_APP_PASSWORD"</span> <span class="comment"># Client Secret</span>
+TENANT_ID   = <span class="string">"TEAMS_TENANT_ID"</span>    <span class="comment"># Directory ID</span>
+
+<span class="comment"># ===== Bot Framework Adapter =====</span>
+settings = BotFrameworkAdapterSettings(
+    app_id=APP_ID,
+    app_password=APP_PASSWORD,
+    channel_auth_tenant=TENANT_ID  <span class="comment"># ← สำคัญ! ป้องกัน Unauthorized</span>
+)
+adapter = BotFrameworkAdapter(settings)
+creds = MicrosoftAppCredentials(APP_ID, APP_PASSWORD, TENANT_ID)</div>
+      <div class="warn-box">⚠️ <code>channel_auth_tenant</code> ต้องใส่เสมอ — ไม่งั้น send_activity fail 401</div>
+    </div>
+
+    <!-- Code Tab 2: History Manager -->
+    <div class="detail-panel" id="code-history">
+      <h4>Layer 2: Conversation History Manager</h4>
+      <div class="code-block"><span class="comment"># app.py lines 76-130</span>
+
+<span class="keyword">class</span> <span class="func">ConversationHistory</span>:
+    <span class="string">"""Manage per-conversation history in JSON files."""</span>
+
+    <span class="keyword">def</span> <span class="func">__init__</span>(self, history_dir, max_history=<span class="string">30</span>):
+        self.history_dir = Path(history_dir)
+        self.max_history = max_history
+
+    <span class="keyword">def</span> <span class="func">_get_history_file</span>(self, conv_id):
+        safe_id = hashlib.md5(conv_id.encode()).hexdigest()[:<span class="string">16</span>]
+        <span class="keyword">return</span> self.history_dir / <span class="string">f"teams_{safe_id}.json"</span>
+
+    <span class="keyword">def</span> <span class="func">load_history</span>(self, conv_id):
+        <span class="comment"># อ่าน history จาก JSON file</span>
+        <span class="keyword">return</span> data.get(<span class="string">"messages"</span>, [])
+
+    <span class="keyword">def</span> <span class="func">save_message</span>(self, conv_id, role, content):
+        <span class="comment"># เพิ่ม message → trim ถ้าเกิน max_history</span>
+        history.append({<span class="string">"role"</span>: role, <span class="string">"content"</span>: content})
+        <span class="keyword">if</span> len(history) > self.max_history:
+            history = history[-self.max_history:]
+
+    <span class="keyword">def</span> <span class="func">format_history_for_prompt</span>(self, conv_id):
+        <span class="comment"># Format เป็น text สำหรับ inject เข้า prompt</span>
+        <span class="keyword">for</span> msg <span class="keyword">in</span> history:
+            text += <span class="string">f"[{role}]: {msg['content']}\n"</span></div>
+      <div class="info-box">💡 ใช้ MD5 hash เป็น filename — ป้องกัน collision และ sanitize characters</div>
+    </div>
+
+    <!-- Code Tab 3: Message Handler -->
+    <div class="detail-panel" id="code-handler">
+      <h4>Layer 3: Main Message Handler</h4>
+      <div class="code-block"><span class="comment"># app.py lines 325-370</span>
+
+<span class="keyword">@app.post</span>(<span class="string">"/api/messages"</span>)
+<span class="keyword">async def</span> <span class="func">messages_post</span>(req: Request):
+    body = <span class="keyword">await</span> req.json()
+    activity = Activity().deserialize(body)
+    auth_header = req.headers.get(<span class="string">"Authorization"</span>, <span class="string">""</span>)
+
+    <span class="keyword">async def</span> <span class="func">aux_turn</span>(turn_context: TurnContext):
+        user_msg = (turn_context.activity.text or <span class="string">""</span>).strip()
+        conv_id  = turn_context.activity.conversation.id
+        attachments = turn_context.activity.attachments or []
+
+        <span class="comment"># ===== Command Handlers =====</span>
+        <span class="keyword">if</span> user_msg.startswith(<span class="string">"/reset"</span>):    → clear history
+        <span class="keyword">if</span> user_msg.startswith(<span class="string">"/learn "</span>):  → save learning
+        <span class="keyword">if</span> user_msg.startswith(<span class="string">"/help"</span>):    → show help
+
+        <span class="comment"># ===== Download Attachments =====</span>
+        <span class="keyword">if</span> attachments:
+            token = creds.get_access_token()
+            <span class="keyword">for</span> att <span class="keyword">in</span> attachments:
+                download_url = att.content.get(<span class="string">"downloadUrl"</span>)
+                res = requests.get(download_url, headers={...})
+                save_to_local(res.content, file_name)
+
+    <span class="comment"># Process through Bot Framework</span>
+    response = <span class="keyword">await</span> adapter.process_activity(
+        activity, auth_header, aux_turn
+    )</div>
+    </div>
+
+    <!-- Code Tab 4: Hermes Invocation -->
+    <div class="detail-panel" id="code-hermes">
+      <h4>Layer 4: Hermes AI Invocation</h4>
+      <div class="code-block"><span class="comment"># app.py lines 474-544</span>
+
+<span class="comment"># ===== Build Full Prompt (4 sources) =====</span>
+prompt_parts = []
+<span class="keyword">if</span> learnings:    prompt_parts.append(learnings)      <span class="comment"># 1. Knowledge</span>
+<span class="keyword">if</span> audit_reg:    prompt_parts.append(audit_register)  <span class="comment"># 2. Audit history</span>
+<span class="keyword">if</span> history_ctx:  prompt_parts.append(history_context) <span class="comment"># 3. Chat history</span>
+<span class="keyword">if</span> file_info:    prompt_parts.append(file_info)       <span class="comment"># 4. File paths</span>
+<span class="keyword">if</span> user_msg:     prompt_parts.append(user_msg)        <span class="comment"># 5. User message</span>
+
+full_prompt = <span class="string">"\n\n"</span>.join(prompt_parts)
+
+<span class="comment"># ===== Save user message =====</span>
+conversation_history.save_message(conv_id, <span class="string">"user"</span>, user_msg)
+
+<span class="comment"># ===== Typing indicator =====</span>
+stop_typing = asyncio.Event()
+typing_task = asyncio.create_task(send_typing_indicator(turn_context, stop_typing))
+
+<span class="comment"># ===== Invoke Hermes =====</span>
+cmd = [<span class="string">"hermes"</span>, <span class="string">"-p"</span>, <span class="string">"pe-bot"</span>, <span class="string">"-z"</span>, full_prompt]
+process = <span class="keyword">await</span> loop.run_in_executor(
+    <span class="keyword">None</span>,
+    <span class="keyword">lambda</span>: subprocess.run(cmd, capture_output=True, text=True)
+)
+reply_text = process.stdout.strip()</div>
+      <div class="fail-box">❌ <strong>Firewall Point:</strong> ถ้า LM Studio ไม่ running → subprocess hang ไม่มี timeout<br>→ ต้องเช็ค health ก่อน: <code>curl http://localhost:1234/v1/models</code></div>
+    </div>
+
+    <!-- Code Tab 5: Response Return -->
+    <div class="detail-panel" id="code-response">
+      <h4>Layer 5: Response Return Path</h4>
+      <div class="code-block"><span class="comment"># app.py lines 546-558</span>
+
+<span class="comment"># ===== Save assistant response =====</span>
+conversation_history.save_message(conv_id, <span class="string">"assistant"</span>, reply_text)
+
+<span class="comment"># ===== Send back to Teams =====</span>
+<span class="keyword">await</span> turn_context.send_activity(reply_text)
+
+<span class="comment"># ===== Return HTTP response to Azure Bot =====</span>
+<span class="keyword">try</span>:
+    response = <span class="keyword">await</span> adapter.process_activity(activity, auth_header, aux_turn)
+    <span class="keyword">if</span> response:
+        <span class="keyword">return</span> Response(
+            content=response.body,
+            status_code=response.status,
+            media_type=<span class="string">"application/json"</span>
+        )
+    <span class="keyword">return</span> Response(status_code=<span class="string">201</span>)
+<span class="keyword">except</span> Exception <span class="keyword">as</span> e:
+    <span class="keyword">return</span> Response(content=str(e), status_code=<span class="string">500</span>)</div>
+      <div class="info-box">💡 <code>turn_context.send_activity()</code> ส่งผ่าน Bot Connector API (async outbound) — ไม่ใช่ HTTP response body</div>
+    </div>
+  </div>
+
+  <!-- Run Script -->
+  <div class="section">
+    <h3>▶️ Run Script (run_bot.bat)</h3>
+    <div class="code-block"><span class="comment">@echo off</span>
+<span class="keyword">echo</span> Starting PE Audit Bot...
+
+<span class="comment">REM 1. Check LM Studio is running</span>
+<span class="cmd">curl</span> -s http://localhost:1234/v1/models >nul 2>&1
+<span class="keyword">if</span> errorlevel 1 (
+    <span class="keyword">echo</span> <span class="string">WARNING: LM Studio not running! Bot will hang.</span>
+    <span class="keyword">echo</span> <span class="string">Please start LM Studio first.</span>
+    pause
+)
+
+<span class="comment">REM 2. Start ngrok tunnel</span>
+<span class="keyword">start</span> <span class="string">"ngrok"</span> <span class="cmd">ngrok</span> http 8000
+<span class="keyword">timeout</span> /t 3
+
+<span class="comment">REM 3. Start FastAPI server</span>
+<span class="keyword">cd</span> /d C:\Users\chavagorn\pe-audit-bot
+<span class="cmd">python</span> -m uvicorn app:app --host 0.0.0.0 --port 8000
+
+<span class="keyword">pause</span></div>
+  </div>
+</div>
+
+<!-- ========== PAGE 4: PITFALLS ========== -->
+<div class="page" id="page-pitfalls">
+  <div class="hero">
+    <h2>⚠️ Pitfalls & Lessons Learned</h2>
+    <p>ปัญหาที่เจอบ่อย + วิธีแก้ — จากประสบการณ์จริง</p>
+  </div>
+
+  <div class="section">
+    <h3>🔴 Critical Pitfalls</h3>
+    <div class="step-list">
+      <div class="step" onclick="toggleStep(this)">
+        <div class="step-title">❌ Azure Portal Blocked by Company IT</div>
+        <div class="step-desc">ไม่สามารถ register bot หรือ update endpoint ใน Azure Portal ได้</div>
+        <div class="step-detail">
+          <p style="font-size:13px;color:var(--text2);margin-bottom:8px"><strong>ปัญหา:</strong> Company IT block Azure Portal access — ไม่สามารถสร้าง Bot resource หรือ update messaging endpoint</p>
+          <p style="font-size:13px;color:var(--text2);margin-bottom:8px"><strong>Workaround:</strong></p>
+          <ul style="font-size:13px;color:var(--text2);padding-left:20px">
+            <li>ใช้ personal Microsoft account register bot</li>
+            <li>ใช้ developer tenant (ฟรี)</li>
+            <li>ลอง Power Automate แทน (company มัก enable ไว้)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step" onclick="toggleStep(this)">
+        <div class="step-title">❌ ngrok URL Changes Every Restart</div>
+        <div class="step-desc">Free ngrok ให้ URL ใหม่ทุกครั้ง — ต้อง update Azure Bot endpoint</div>
+        <div class="step-detail">
+          <p style="font-size:13px;color:var(--text2);margin-bottom:8px"><strong>Solution:</strong></p>
+          <ul style="font-size:13px;color:var(--text2);padding-left:20px">
+            <li>Cloudflare Tunnel — URL คงที่, ฟรี</li>
+            <li>ngrok paid plan — static domain</li>
+            <li>Script auto-update Azure endpoint (ต้องมี Azure access)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="step" onclick="toggleStep(this)">
+        <div class="step-title">❌ openpyxl Destroy Excel Formatting</div>
+        <div class="step-desc">openpyxl ลบ shapes, images, cell styles ตอน save</div>
+        <div class="step-detail">
+          <p style="font-size:13px;color:var(--text2);margin-bottom:8px"><strong>Solution:</strong> ใช้ <code>shutil.copy2</code> คัดลอกต้นฉบับก่อน → แล้วใช้ <code>win32com</code> (COM automation) edit</p>
+          <div class="code-block"><span class="comment"># ✅ วิธีที่ work:</span>
+shutil.copy2(template, output)  <span class="comment"># preserve 100%</span>
+excel = win32com.client.Dispatch(<span class="string">"Excel.Application"</span>)
+wb = excel.Workbooks.Open(output)
+<span class="comment"># edit cells...</span>
+wb.Save()</div>
+        </div>
+      </div>
+
+      <div class="step" onclick="toggleStep(this)">
+        <div class="step-title">❌ -z Flag Creates New Session Every Time</div>
+        <div class="step-desc">zero-shot mode ไม่เก็บ history — ต้อง inject เอง</div>
+        <div class="step-detail">
+          <p style="font-size:13px;color:var(--text2);margin-bottom:8px"><strong>Problem:</strong> <code>hermes -z</code> สร้าง session ใหม่ทุกครั้ง — conversation history หาย</p>
+          <p style="font-size:13px;color:var(--text2);margin-bottom:8px"><strong>Solution:</strong> เก็บ history ใน JSON file แล้ว inject เข้า prompt ทุกครั้ง</p>
+          <div class="code-block"><span class="comment"># ✅ External history management</span>
+history = conversation_history.load_history(conv_id)
+history_text = format_history_for_prompt(history)
+full_prompt = history_text + <span class="string">"\n\n"</span> + user_msg
+cmd = [<span class="string">"hermes"</span>, <span class="string">"-p"</span>, <span class="string">"pe-bot"</span>, <span class="string">"-z"</span>, full_prompt]</div>
+        </div>
+      </div>
+
+      <div class="step" onclick="toggleStep(this)">
+        <div class="step-title">❌ COM Initialization Error in FastAPI Threads</div>
+        <div class="step-desc">win32com fail เมื่อเรียกจาก async thread</div>
+        <div class="step-detail">
+          <div class="code-block"><span class="comment"># ❌ Error: CoInitialize has not been called</span>
+
+<span class="comment"># ✅ Fix: Initialize COM ใน worker thread</span>
+<span class="keyword">import</span> pythoncom
+<span class="keyword">def</span> <span class="func">com_worker</span>():
+    pythoncom.CoInitialize()     <span class="comment"># ← ต้องเรียกก่อน</span>
+    <span class="keyword">try</span>:
+        <span class="comment"># win32com operations...</span>
+    <span class="keyword">finally</span>:
+        pythoncom.CoUninitialize() <span class="comment"># ← cleanup</span></div>
+        </div>
+      </div>
+
+      <div class="step" onclick="toggleStep(this)">
+        <div class="step-title">❌ LM Studio Not Running → Bot Hang Forever</div>
+        <div class="step-desc">ถ้า local AI ไม่ running — subprocess ไม่มี timeout → hang</div>
+        <div class="step-detail">
+          <div class="code-block"><span class="comment"># ✅ Health check ก่อน start:</span>
+<span class="cmd">curl</span> http://localhost:1234/v1/models
+
+<span class="comment"># ✅ Fallback provider:</span>
+<span class="comment"># ~/.hermes/profiles/pe-bot/config.yaml</span>
+fallback_providers:
+  - model: gemini-3.1-flash-lite
+    provider: gemini    <span class="comment"># cloud fallback</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firewall Summary -->
+  <div class="section">
+    <h3>🛡️ Firewall & Network Points Summary</h3>
+    <table class="data-table">
+      <tr><th>Point</th><th>Direction</th><th>Risk</th><th>Mitigation</th></tr>
+      <tr>
+        <td>Teams → Azure Bot</td>
+        <td>Outbound HTTPS</td>
+        <td style="color:var(--green)">✅ Low</td>
+        <td>Microsoft internal — ไม่ผ่าน company firewall</td>
+      </tr>
+      <tr>
+        <td>Azure Bot → ngrok</td>
+        <td>Inbound HTTPS</td>
+        <td style="color:var(--amber)">⚠️ Medium</td>
+        <td>ใช้ port 443 (HTTPS) — firewall มักไม่ block</td>
+      </tr>
+      <tr>
+        <td>ngrok → localhost:8000</td>
+        <td>Local tunnel</td>
+        <td style="color:var(--green)">✅ Low</td>
+        <td>Local traffic — ไม่ผ่าน firewall</td>
+      </tr>
+      <tr>
+        <td>Hermes → LM Studio</td>
+        <td>Localhost:1234</td>
+        <td style="color:var(--green)">✅ Low</td>
+        <td>Local traffic — ไม่ผ่าน firewall</td>
+      </tr>
+      <tr>
+        <td>Hermes → Cloud API</td>
+        <td>Outbound HTTPS</td>
+        <td style="color:var(--red)">❌ High</td>
+        <td>Company firewall อาจ block — ใช้ local fallback</td>
+      </tr>
+      <tr>
+        <td>FastAPI download files</td>
+        <td>Outbound HTTPS</td>
+        <td style="color:var(--amber)">⚠️ Medium</td>
+        <td>ต้องผ่าน Bot Framework OAuth — ถ้า block = ดาวน์โหลดไฟล์ไม่ได้</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<script>
+function switchPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function toggleStep(el) {
+  el.classList.toggle('expanded');
+}
+
+function showCodeTab(btn, id) {
+  btn.closest('.section').querySelectorAll('.inner-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  btn.closest('.section').querySelectorAll('.detail-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+</script>
+
+</body>
+</html>

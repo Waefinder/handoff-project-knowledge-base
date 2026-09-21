@@ -1,0 +1,1850 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Knowledge Base — Ampas Industries</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --bg-secondary: #12121a;
+      --bg-tertiary: #1a1a26;
+      --card: #16161f;
+      --card-hover: #1e1e2e;
+      --border: #252535;
+      --border-light: #35354a;
+      --text: #e8e8ed;
+      --text-secondary: #a0a0b0;
+      --muted: #6b6b80;
+      --green: #4ade80;
+      --green-dim: rgba(74,222,128,0.10);
+      --red: #f87171;
+      --red-dim: rgba(248,113,113,0.10);
+      --amber: #fbbf24;
+      --amber-dim: rgba(251,191,36,0.10);
+      --blue: #60a5fa;
+      --blue-dim: rgba(96,165,250,0.10);
+      --purple: #c084fc;
+      --purple-dim: rgba(192,132,252,0.10);
+      --cyan: #22d3ee;
+      --cyan-dim: rgba(34,211,238,0.10);
+      --pink: #f472b6;
+      --pink-dim: rgba(244,114,182,0.10);
+      --gradient-hero: linear-gradient(135deg, #0f0c29 0%, #1a1040 40%, #24243e 100%);
+      --gradient-accent: linear-gradient(135deg, var(--blue), var(--purple));
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', 'Noto Sans Thai', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.7;
+    }
+
+    /* ===== Header ===== */
+    .header {
+      background: rgba(18,18,26,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .header h1 {
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      letter-spacing: -0.3px;
+    }
+    .nav-links {
+      display: flex;
+      gap: 4px;
+    }
+    .nav-link {
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      border: none;
+      background: none;
+      font-family: inherit;
+    }
+    .nav-link:hover { color: var(--text); background: var(--card); }
+    .nav-link.active { color: var(--blue); background: var(--blue-dim); }
+    .header-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* ===== Buttons ===== */
+    .btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      text-decoration: none;
+    }
+    .btn:hover { background: var(--card-hover); border-color: var(--border-light); }
+    .btn-primary { background: var(--blue); color: #000; border-color: var(--blue); font-weight: 600; }
+    .btn-primary:hover { opacity: 0.9; }
+    .btn-danger { border-color: var(--red); color: var(--red); }
+    .btn-danger:hover { background: var(--red-dim); }
+    .btn-sm { padding: 4px 10px; font-size: 12px; }
+    .btn-ghost { border-color: transparent; background: transparent; }
+    .btn-ghost:hover { background: var(--card); }
+
+    /* ===== Pages ===== */
+    .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ===== Stats ===== */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 26px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .stat-label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 4px;
+    }
+
+    /* ===== Filters ===== */
+    .filters {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .search-box {
+      flex: 1;
+      min-width: 200px;
+      padding: 10px 14px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .search-box:focus { border-color: var(--blue); }
+    .search-box::placeholder { color: var(--muted); }
+    select.filter-select {
+      padding: 10px 14px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 13px;
+      outline: none;
+      cursor: pointer;
+    }
+    select.filter-select option { background: var(--card); color: var(--text); }
+
+    /* ===== Tags / Badges ===== */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .badge-worked { background: var(--green-dim); color: var(--green); }
+    .badge-failed { background: var(--red-dim); color: var(--red); }
+    .badge-pitfall { background: var(--amber-dim); color: var(--amber); }
+    .badge-lg { padding: 5px 14px; font-size: 12px; }
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      background: var(--purple-dim);
+      color: var(--purple);
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .tag-tool { background: var(--cyan-dim); color: var(--cyan); }
+    .tag-category { background: var(--blue-dim); color: var(--blue); }
+    .tag-lg { padding: 4px 12px; font-size: 12px; }
+
+    /* ===== Project Grid ===== */
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 16px;
+    }
+    .project-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .project-card:hover {
+      border-color: var(--border-light);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    }
+    .project-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+      gap: 8px;
+    }
+    .project-card h3 { font-size: 15px; font-weight: 600; line-height: 1.4; flex: 1; }
+    .project-card .description {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .project-card .meta { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+    .project-card .tools { display: flex; gap: 4px; flex-wrap: wrap; }
+    .project-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* ===== Detail Page ===== */
+    .detail-hero {
+      background: var(--gradient-hero);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 36px;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .detail-hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(96,165,250,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .detail-hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 16px;
+      position: relative;
+    }
+    .detail-hero h2 {
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1.3;
+      flex: 1;
+      letter-spacing: -0.5px;
+    }
+    .detail-hero .badges { display: flex; gap: 8px; flex-wrap: wrap; }
+    .detail-hero .description {
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.8;
+      margin-bottom: 20px;
+      position: relative;
+    }
+    .detail-hero .meta-bar {
+      display: flex;
+      gap: 28px;
+      flex-wrap: wrap;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      position: relative;
+    }
+    .detail-hero .meta-item .label {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .detail-hero .meta-item .value {
+      font-size: 14px;
+      font-weight: 500;
+      margin-top: 2px;
+    }
+
+    /* ===== 3-Paragraph Detail Sections ===== */
+    .paragraph-section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+    .paragraph-section::before {
+      content: attr(data-step);
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 48px;
+      font-weight: 800;
+      color: rgba(255,255,255,0.03);
+      font-family: 'JetBrains Mono', monospace;
+      pointer-events: none;
+    }
+    .paragraph-section h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .paragraph-section h3 .emoji { font-size: 20px; }
+    .paragraph-section p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.9;
+      margin-bottom: 12px;
+    }
+    .paragraph-section ul {
+      padding-left: 20px;
+      margin-bottom: 12px;
+    }
+    .paragraph-section li {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.8;
+      margin-bottom: 6px;
+    }
+    .paragraph-section li strong { color: var(--text); }
+    .highlight-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--blue);
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin: 14px 0;
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+    .highlight-box.warn { border-left-color: var(--amber); }
+    .highlight-box.error { border-left-color: var(--red); }
+    .highlight-box.success { border-left-color: var(--green); }
+
+    .tool-chips { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+
+    /* ===== Related Projects ===== */
+    .related-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .related-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .related-card:hover { border-color: var(--blue); }
+    .related-card h4 { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+    .related-card p {
+      font-size: 12px;
+      color: var(--muted);
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* ===== Hermes Setup Page ===== */
+    .setup-hero {
+      background: var(--gradient-hero);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 48px 36px;
+      margin-bottom: 32px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .setup-hero::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(192,132,252,0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .setup-hero h2 {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      position: relative;
+      letter-spacing: -0.5px;
+    }
+    .setup-hero p {
+      font-size: 15px;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .setup-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+    .setup-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+    }
+    .setup-card.full-width { grid-column: 1 / -1; }
+    .setup-card h3 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .setup-card p, .setup-card li {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.8;
+    }
+    .setup-card ul { padding-left: 18px; }
+    .setup-card li { margin-bottom: 6px; }
+
+    .config-block {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--cyan);
+      margin: 10px 0;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      line-height: 1.6;
+    }
+
+    .setup-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+    }
+    .setup-table th, .setup-table td {
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .setup-table th {
+      color: var(--muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+    }
+    .setup-table td { color: var(--text-secondary); }
+    .setup-table td:first-child { color: var(--text); font-weight: 500; }
+
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 16px 0;
+    }
+    .comparison-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px;
+    }
+    .comparison-box h4 {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .comparison-box ul { padding-left: 16px; }
+    .comparison-box li {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 4px;
+    }
+
+    /* ===== Empty / Toast ===== */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+      grid-column: 1 / -1;
+    }
+    .empty-state .icon { font-size: 48px; margin-bottom: 16px; }
+    .empty-state h3 { font-size: 18px; margin-bottom: 8px; color: var(--text-secondary); }
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--green);
+      color: #000;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 13px;
+      z-index: 300;
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all 0.3s;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 768px) {
+      .project-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .stats-bar { grid-template-columns: repeat(2, 1fr); }
+      .header-inner { flex-direction: column; align-items: flex-start; }
+      .setup-grid { grid-template-columns: 1fr; }
+      .comparison-grid { grid-template-columns: 1fr; }
+      .detail-hero { padding: 24px; }
+      .detail-hero h2 { font-size: 22px; }
+    }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    /* ===== Pipeline Flow Chart ===== */
+    .pipeline-section {
+      margin: 24px 0;
+      padding: 20px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+    .pipeline-section h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .pipeline-flow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      overflow-x: auto;
+      padding: 8px 0;
+    }
+    .pipeline-node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      min-width: 140px;
+      max-width: 180px;
+      flex-shrink: 0;
+    }
+    .pipeline-node-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 8px;
+      border: 2px solid var(--border);
+      background: var(--bg-tertiary);
+    }
+    .pipeline-node-icon.passed { border-color: var(--green); background: var(--green-dim); }
+    .pipeline-node-icon.blocked { border-color: var(--red); background: var(--red-dim); }
+    .pipeline-node-icon.workaround { border-color: var(--amber); background: var(--amber-dim); }
+    .pipeline-node-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .pipeline-node-detail {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+    .pipeline-arrow {
+      font-size: 20px;
+      color: var(--border-light);
+      flex-shrink: 0;
+      margin: 0 4px;
+      padding-bottom: 28px;
+    }
+    .pipeline-firewall-status {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-top: 4px;
+    }
+    .pipeline-firewall-status.passed { color: var(--green); background: var(--green-dim); }
+    .pipeline-firewall-status.blocked { color: var(--red); background: var(--red-dim); }
+    .pipeline-firewall-status.workaround { color: var(--amber); background: var(--amber-dim); }
+
+    /* ===== Branch History Timeline ===== */
+    .history-section {
+      margin: 24px 0;
+      padding: 20px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+    .history-section h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .history-timeline {
+      position: relative;
+      padding-left: 28px;
+    }
+    .history-timeline::before {
+      content: '';
+      position: absolute;
+      left: 8px;
+      top: 4px;
+      bottom: 4px;
+      width: 2px;
+      background: var(--border);
+    }
+    .history-entry {
+      position: relative;
+      padding: 0 0 20px 0;
+    }
+    .history-entry:last-child { padding-bottom: 0; }
+    .history-dot {
+      position: absolute;
+      left: -24px;
+      top: 4px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: var(--bg-tertiary);
+    }
+    .history-dot.success { border-color: var(--green); background: var(--green); }
+    .history-dot.fail { border-color: var(--red); background: var(--red); }
+    .history-dot.pitfall { border-color: var(--amber); background: var(--amber); }
+    .history-date {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 2px;
+    }
+    .history-event {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .history-detail {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 2px;
+    }
+    .history-note {
+      font-size: 12px;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    /* ===== Responsive — Pipeline ===== */
+    @media (max-width: 768px) {
+      .pipeline-flow {
+        flex-direction: column;
+        gap: 0;
+      }
+      .pipeline-arrow {
+        transform: rotate(90deg);
+        margin: 4px 0;
+        padding-bottom: 0;
+      }
+      .pipeline-node {
+        min-width: 100%;
+        max-width: 100%;
+      }
+    }
+
+    /* ===== Detail Page Tabs ===== */
+    .detail-tabs {
+      display: flex;
+      gap: 4px;
+      margin: 20px 0 0;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0;
+    }
+    .detail-tab {
+      padding: 8px 16px;
+      border-radius: 8px 8px 0 0;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      border: 1px solid transparent;
+      border-bottom: none;
+      background: none;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+    .detail-tab:hover { color: var(--text); background: var(--card); }
+    .detail-tab.active { color: var(--cyan); background: var(--bg-secondary); border-color: var(--border); position: relative; top: 1px; }
+    .detail-tab-content { display: none; }
+    .detail-tab-content.active { display: block; }
+    .arch-iframe {
+      width: 100%;
+      height: 80vh;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--bg-secondary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-inner">
+      <div class="header-nav">
+        <h1 onclick="navigate('/')"><span>📚</span> PKB</h1>
+        <div class="nav-links">
+          <button class="nav-link" id="navProjects" onclick="navigate('/')">Projects</button>
+          <button class="nav-link" id="navSetup" onclick="navigate('/setup')">Hermes Setup</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== PAGE: List ===== -->
+  <div class="page" id="pageList">
+    <div class="container">
+      <div class="stats-bar" id="statsBar"></div>
+      <div class="filters">
+        <input type="text" class="search-box" id="searchBox" placeholder="🔍 Search projects, tools, lessons..." oninput="renderProjects()">
+        <select class="filter-select" id="filterCategory" onchange="renderProjects()">
+          <option value="">All Categories</option>
+        </select>
+        <select class="filter-select" id="filterStatus" onchange="renderProjects()">
+          <option value="">All Status</option>
+          <option value="Worked">✅ Worked</option>
+          <option value="Failed">❌ Failed</option>
+          <option value="Pitfall">⚠️ Pitfall</option>
+        </select>
+      </div>
+      <div class="project-grid" id="projectGrid"></div>
+    </div>
+  </div>
+
+  <!-- ===== PAGE: Detail ===== -->
+  <div class="page" id="pageDetail">
+    <div class="container" id="detailContainer"></div>
+  </div>
+
+  <!-- ===== PAGE: Hermes Setup ===== -->
+  <div class="page" id="pageSetup">
+    <div class="container">
+      <div class="setup-hero">
+        <h2>⚙️ Hermes Agent Setup</h2>
+        <p>Ampas Industries — วิธีตั้งค่า Hermes Agent สำหรับใช้งานจริงในบริษัท รวมถึง MCP, Provider, และ Local AI Knowledge</p>
+      </div>
+
+      <div class="setup-grid">
+        <!-- Programs & Tools -->
+        <div class="setup-card">
+          <h3>🖥️ Programs & Tools</h3>
+          <table class="setup-table">
+            <tr><th>Program</th><th>Version</th><th>Purpose</th></tr>
+            <tr><td>Python</td><td>3.11.15</td><td>Scripting, MCP servers, data processing</td></tr>
+            <tr><td>Node.js</td><td>v22.23.2</td><td>npm/npx for MCP packages</td></tr>
+            <tr><td>uv</td><td>0.12.2</td><td>Fast Python package installer</td></tr>
+            <tr><td>Git</td><td>2.54.0</td><td>Version control</td></tr>
+            <tr><td>Hermes Agent</td><td>Latest</td><td>AI agent framework (CLI + Desktop)</td></tr>
+            <tr><td>LM Studio</td><td>Latest</td><td>Local LLM inference (GGUF models)</td></tr>
+          </table>
+        </div>
+
+        <!-- Profiles -->
+        <div class="setup-card">
+          <h3>👤 Hermes Profiles</h3>
+          <p>แต่ละ profile มี config, sessions, skills, memory แยกกัน:</p>
+          <div class="config-block">profiles/
+├── aunt-next-door    ← ตัวนี้ (คุณป้าข้างบ้าน)
+├── engi              ← วิศวกร
+├── secretary-kim     ← เลขา
+├── planner           ← ผู้วางแผน
+├── do-er             ← ผู้ลงมือทำ
+├── audit-er          ← ผู้ตรวจสอบ
+├── pe-bot            ← PE Self-Audit Bot
+└── ...</div>
+          <p style="margin-top:10px">แต่ละ profile ทำงานอิสระ — แยก config, skills, memory ไม่ทับกัน</p>
+        </div>
+
+        <!-- MCP Servers -->
+        <div class="setup-card">
+          <h3>🔌 MCP Servers (Custom)</h3>
+          <p>MCP servers ที่เพิ่มจาก default เพื่อให้ AI ควบคุม Excel และ PowerPoint ได้:</p>
+          <table class="setup-table">
+            <tr><th>Server</th><th>Type</th><th>Tools</th></tr>
+            <tr><td>excel-live</td><td>stdio (Python)</td><td>133 tools — read/write cells, charts, formatting, etc.</td></tr>
+            <tr><td>pptx-live</td><td>stdio (Python)</td><td>36 tools — slides, shapes, text, transitions</td></tr>
+          </table>
+          <div class="config-block">mcp_servers:
+  excel-live:
+    command: python
+    args: [D:\AI_Hermes\excel_mcp_server.py]
+  pptx-live:
+    command: python
+    args: [C:/Users/chavagorn/powerpoint_mcp/powerpoint_mcp.py]
+    enabled: true</div>
+          <p style="margin-top:10px;color:var(--amber)">⚠️ MCP servers ไม่ใช่ default — ต้องสร้างเองและ config ใน config.yaml</p>
+        </div>
+
+        <!-- Provider Config -->
+        <div class="setup-card">
+          <h3>⚙️ Provider Configuration</h3>
+          <p>ปัจจุบันใช้ cloud provider เป็นหลัก ด้วยเหตุผลด้าน cost:</p>
+          <div class="config-block">model:
+  default: mimo-v2.5
+  provider: xiaomi
+  # → ใช้ Xiaomi MiMo platform
+  # → Standard Monthly: ¥99/mo (~$16)
+  # → 11B credits/month
+  # → 	valid until 2026-09-20</div>
+          <p style="margin-top:12px"><strong>Plan เดิม:</strong> ใช้ LM Studio (local) ทั้งหมดเพื่อไม่เสียค่า API — แต่ user ตัดสินใจสลับมา cloud เพื่อ quality</p>
+          <p><strong>Current trade-off:</strong> Local = ฟรีแต่ quality ต่ำ / Cloud = เสียเงินแต่ quality สูง</p>
+        </div>
+
+        <!-- Local AI Knowledge -->
+        <div class="setup-card full-width">
+          <h3>🧠 Local AI Knowledge — Parameters, GGUF, Quantization</h3>
+          <p>ความรู้เกี่ยวกับ Local AI สำหรับผู้เริ่มต้น:</p>
+
+          <h4 style="font-size:14px;font-weight:600;margin:16px 0 8px;color:var(--text)">📏 Parameters (พารามิเตอร์)</h4>
+          <p>จำนวน weight ใน model — ยิ่งมาก ยิ่งฉลาด แต่ต้องการ RAM/VRAM มากขึ้น</p>
+          <table class="setup-table">
+            <tr><th>Size</th><th>RAM Required</th><th>Use Case</th></tr>
+            <tr><td>1-3B</td><td>2-4 GB</td><td>Simple tasks, mobile, fast inference</td></tr>
+            <tr><td>7-8B</td><td>6-10 GB</td><td>General purpose, good balance</td></tr>
+            <tr><td>13-14B</td><td>10-16 GB</td><td>Complex reasoning, coding</td></tr>
+            <tr><td>30-34B</td><td>20-24 GB</td><td>Near GPT-3.5 level</td></tr>
+            <tr><td>70B+</td><td>40-80 GB</td><td>GPT-4 level, needs multi-GPU</td></tr>
+          </table>
+
+          <h4 style="font-size:14px;font-weight:600;margin:16px 0 8px;color:var(--text)">📦 GGUF Format</h4>
+          <p>File format สำหรับ local LLM — รวม weights + metadata ในไฟล์เดียว ใช้กับ llama.cpp, LM Studio, Ollama</p>
+          <div class="config-block"># ตัวอย่าง GGUF model files
+Qwen3-8B-Q4_K_M.gguf     ← 4-bit quantized, ~5GB
+Llama-3-8B-Q8_0.gguf     ← 8-bit quantized, ~8.5GB
+Mistral-7B-F16.gguf      ← 16-bit full precision, ~14GB
+
+# ดาวน์โหลดจาก:
+# - HuggingFace (hf.co)
+# - LM Studio (built-in model browser)
+# - Ollama (ollama.com)</div>
+
+          <h4 style="font-size:14px;font-weight:600;margin:16px 0 8px;color:var(--text)">🔧 Quantization (การบีบอัด)</h4>
+          <p>ลดขนาด model โดยไม่เสีย quality มาก — trade-off ระหว่าง ขนาด vs ความแม่น</p>
+          <table class="setup-table">
+            <tr><th>Quant</th><th>Size Reduction</th><th>Quality Loss</th><th>Best For</th></tr>
+            <tr><td>F16</td><td>1x (baseline)</td><td>None</td><td>Maximum quality, needs lots of VRAM</td></tr>
+            <tr><td>Q8_0</td><td>~50%</td><td>Minimal</td><td>Good quality, moderate VRAM</td></tr>
+            <tr><td>Q6_K</td><td>~38%</td><td>Very small</td><td>Best balance for most users</td></tr>
+            <tr><td>Q4_K_M</td><td>~25%</td><td>Small</td><td>Most popular — good quality, small size</td></tr>
+            <tr><td>Q4_K_S</td><td>~23%</td><td>Small-Medium</td><td>Slightly smaller, slightly worse</td></tr>
+            <tr><td>Q3_K_M</td><td>~20%</td><td>Medium</td><td>When VRAM is very limited</td></tr>
+            <tr><td>Q2_K</td><td>~15%</td><td>Noticeable</td><td>Last resort, significant quality loss</td></tr>
+          </table>
+
+          <h4 style="font-size:14px;font-weight:600;margin:16px 0 8px;color:var(--text)">🏭 Model Providers & Labs</h4>
+          <table class="setup-table">
+            <tr><th>Provider</th><th>Notable Models</th><th>Notes</th></tr>
+            <tr><td>Unsloth</td><td>Fast fine-tuning, optimized quants</td><td>2x faster training, 60% less memory — best for custom models</td></tr>
+            <tr><td>Meta (Llama)</td><td>Llama 3, Llama 4</td><td>Open weight, widely used</td></tr>
+            <tr><td>Alibaba (Qwen)</td><td>Qwen 2.5, Qwen 3</td><td>Strong multilingual, good for code</td></tr>
+            <tr><td>Google (Gemma)</td><td>Gemma 3, Gemma 4</td><td>Compact, efficient</td></tr>
+            <tr><td>Mistral</td><td>Mistral 7B, Mixtral</td><td>French engineering, efficient</td></tr>
+            <tr><td>DeepSeek</td><td>DeepSeek-R1, V3</td><td>Strong reasoning, MoE architecture</td></tr>
+            <tr><td>Nous Research</td><td>Hermes, Nous-Capybara</td><td>Optimized for agent use</td></tr>
+          </table>
+
+          <h4 style="font-size:14px;font-weight:600;margin:16px 0 8px;color:var(--text)">⚖️ Local vs Cloud — ข้อดี-ข้อเสีย</h4>
+          <div class="comparison-grid">
+            <div class="comparison-box" style="border-color:var(--green)">
+              <h4 style="color:var(--green)">✅ Local AI (LM Studio / Ollama)</h4>
+              <ul>
+                <li><strong>Free</strong> — ไม่เสียค่า API ใช้ได้ตลอด</li>
+                <li><strong>Privacy</strong> — ข้อมูลไม่ออกจากเครื่อง</li>
+                <li><strong>Offline</strong> — ใช้ได้แม้ไม่มี internet</li>
+                <li><strong>Fast inference</strong> — ถ้ามี GPU แรง</li>
+                <li><strong>Customizable</strong> — fine-tune ได้ตามต้องการ</li>
+              </ul>
+            </div>
+            <div class="comparison-box" style="border-color:var(--red)">
+              <h4 style="color:var(--red)">❌ Local AI — ข้อจำกัด</h4>
+              <ul>
+                <li><strong>Hardware cost</strong> — ต้องมี GPU ดี (RTX 3090+)</li>
+                <li><strong>Quality gap</strong> — 7B/8B ยังสู้ GPT-4 ไม่ได้</li>
+                <li><strong>Memory hungry</strong> — 70B ต้องมี 40GB+ VRAM</li>
+                <li><strong>No latest models</strong> — ต้องรอมี quantized version</li>
+                <li><strong>Setup complexity</strong> — ต้อง config หลายอย่าง</li>
+              </ul>
+            </div>
+          </div>
+          <div class="comparison-grid">
+            <div class="comparison-box" style="border-color:var(--blue)">
+              <h4 style="color:var(--blue)">☁️ Cloud AI (Xiaomi MiMo, OpenAI, etc.)</h4>
+              <ul>
+                <li><strong>Best quality</strong> — access to largest models</li>
+                <li><strong>No hardware needed</strong> — ใช้ได้ทันที</li>
+                <li><strong>Always updated</strong> — model ใหม่เข้าถึงทันที</li>
+                <li><strong>Scalable</strong> — ไม่ต้องกังวลเรื่อง RAM</li>
+                <li><strong>Simple setup</strong> — แค่มี API key</li>
+              </ul>
+            </div>
+            <div class="comparison-box" style="border-color:var(--amber)">
+              <h4 style="color:var(--amber)">⚠️ Cloud AI — ข้อจำกัด</h4>
+              <ul>
+                <li><strong>Cost</strong> — เสียเงินรายเดือน/ต่อ token</li>
+                <li><strong>Privacy risk</strong> — ข้อมูลส่งไป server ภายนอก</li>
+                <li><strong>Internet required</strong> — ใช้ไม่ได้ถ้า offline</li>
+                <li><strong>Rate limits</strong> — อาจถูก limit ตอนใช้เยอะ</li>
+                <li><strong>Vendor lock-in</strong> — ย้าย provider ยาก</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Real Setup Used -->
+        <div class="setup-card full-width">
+          <h3>🏭 Setup ที่ใช้จริงใน Ampas Industries</h3>
+          <div class="highlight-box">
+            <strong>Current Setup:</strong> Hermes Agent (Desktop) + Xiaomi MiMo v2.5 (Cloud) + Custom MCP Servers (Excel + PowerPoint) + LM Studio (Backup/Local testing)
+          </div>
+          <p style="margin-top:12px"><strong>Decision flow ที่ใช้:</strong></p>
+          <ul>
+            <li><strong>เดิม:</strong> ใช้ LM Studio (local) ทั้งหมด → ฟรี แต่ quality ไม่พอสำหรับ complex tasks</li>
+            <li><strong>ปัจจุบัน:</strong> สลับมา Xiaomi MiMo cloud → เสีย ~$16/mo แต่ quality ดีขึ้นมาก</li>
+            <li><strong>Fallback:</strong> ถ้า cloud ล่ม → fallback ไป Gemini Flash Lite (free tier)</li>
+          </ul>
+          <div class="config-block">fallback_providers:
+  - model: gemini-3.1-flash-lite
+    provider: gemini
+    # → Free fallback เมื่อ primary provider ไม่ available</div>
+          <p style="margin-top:12px"><strong>Why this matters:</strong> สำหรับบริษัทที่มี budget จำกัด — ต้อง balance ระหว่าง quality, cost, และ privacy Local models ดีสำหรับ sensitive data แต่ cloud models ดีกว่าสำหรับ complex reasoning</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ===== Seed Data with 3-paragraph structure =====
+    const SEED_DATA = [
+      {
+        id: 1, name: "WI Generator",
+        description: "สร้าง Work Instruction sheets จาก template",
+        category: "Manufacturing/PE", status: "Worked", difficulty: "Medium",
+        tools_used: ["Python", "openpyxl", "Excel COM", "shutil"],
+        pipeline: {
+          input: { icon: "📋", label: "Input", detail: "Process data + WI template (.xlsx)" },
+          program: { icon: "🐍", label: "Program", detail: "Python script (main.py)" },
+          tool: { icon: "🔧", label: "Tool", detail: "shutil.copy2 + win32com (COM automation)" },
+          firewall: { icon: "🛡️", label: "Firewall", detail: "Local execution — no network required", status: "passed" },
+          output: { icon: "📊", label: "Output", detail: "WI Excel with 100% formatting preserved" }
+        },
+        history: [
+          { date: "2026-04-01", event: "v1 — openpyxl approach", detail: "ใช้ openpyxl inject ข้อมูลลง template", outcome: "fail", note: "Formatting หายหมด (shapes, images, cell styles)" },
+          { date: "2026-04-15", event: "v2 — openpyxl + preserve_style", detail: "เพิ่ม style preservation ใน openpyxl", outcome: "fail", note: "ยังหาย — openpyxl ไม่ support shapes/images จริง" },
+          { date: "2026-05-01", event: "v3 — shutil.copy2 + COM", detail: "คัดลอกไฟล์ต้นฉบับก่อน แล้วใช้ win32com edit", outcome: "success", note: "รักษา formatting ได้ 100% ✅" },
+          { date: "2026-05-15", event: "Release", detail: "เพิ่ม data verification loop + batch support", outcome: "success", note: "Production ready" }
+        ],
+        intro: "ในโรงงาน manufacturing ต้องสร้าง Work Instruction (WI) สำหรับแต่ละ process — แต่ทำมือทีละไฟล์ช้ามาก ต้องการ automation ที่แปลงข้อมูล process ให้เป็นเอกสาร WI สำเร็จรูป พร้อม multi-language support และ formatting ที่ซับซ้อน (shapes, images, cell styles)",
+        method: "เริ่มจากใช้ openpyxl อ่าน template Excel แล้ว inject ข้อมูล process — แต่พบว่า formatting หายหมด (shapes, images, cell styles หาย) จึงเปลี่ยนมาใช้ shutil.copy2 คัดลอกไฟล์ต้นฉบับก่อน แล้วใช้ Excel COM (win32com) ในการ edit — วิธีนี้รักษา formatting ได้ครบ 100% ขั้นตอนสุดท้ายคือ validate output ด้วย data verification loop เปรียบเทียบ source vs output",
+        summary: "ปัญหาหลัก: openpyxl 丢失 formatting สำหรับไฟล์ที่มี shapes/images — แก้ด้วย shutil.copy2 + COM automation วิธีที่ work: คัดลอกไฟล์ต้นฉบับก่อนแล้ว edit ด้วย COM Next steps: เพิ่ม batch processing สำหรับ WI หลายไฟล์พร้อมกัน, เพิ่ม template version control",
+        date_completed: "2026-05-15", duration: "3 weeks", team_size: 1,
+        tags: ["excel", "manufacturing", "template", "lesson"], related_sessions: [],
+        alternatives: ["openpyxl direct injection (formatting lost)", "pandas read/write (no shape support)", "xlwings (requires Excel running)"],
+        decision_reason: "shutil.copy2 + win32com chosen because it preserves 100% formatting including shapes, images, cell styles — openpyxl loses everything for complex Excel files"
+      },
+      {
+        id: 2, name: "PFMEA Tool",
+        description: "Process Failure Mode & Effects Analysis พร้อม RPN auto-calc",
+        category: "Manufacturing/PE", status: "Worked", difficulty: "Medium",
+        tools_used: ["Python", "openpyxl"],
+        pipeline: {
+          input: { icon: "📋", label: "Input", detail: "Process failure modes data" },
+          program: { icon: "🐍", label: "Program", detail: "Python script (pfmea_gen.py)" },
+          tool: { icon: "🔧", label: "Tool", detail: "openpyxl — template injection + RPN formulas" },
+          firewall: { icon: "🛡️", label: "Firewall", detail: "Local execution — no network required", status: "passed" },
+          output: { icon: "📊", label: "Output", detail: "PFMEA Excel with auto-calculated RPN" }
+        },
+        history: [
+          { date: "2026-04-05", event: "v1 — openpyxl template", detail: "สร้าง PFMEA template ด้วย openpyxl + RPN formula", outcome: "success", note: "ใช้ได้ดีเพราะไม่มี shapes/images" },
+          { date: "2026-04-20", event: "Release", detail: "เพิ่ม data validation (1-10) + input range check", outcome: "success", note: "Production ready" }
+        ],
+        intro: "PFMEA (Process Failure Mode and Effects Analysis) เป็นเครื่องมือ quality ที่ต้องทำสำหรับทุก process ในโรงงาน — ต้องคำนวณ Risk Priority Number (RPN = Severity × Occurrence × Detection) ซึ่งทำมือง่ายต่อการผิดพลาด",
+        method: "ใช้ Python + openpyxl สร้าง PFMEA template อัตโนมัติ — inject ข้อมูล process failure modes แล้วใส่ formula คำนวณ RPN อัตโนมัติ พร้อม data validation (1-10) เพื่อป้องกันค่าผิดพลาด openpyxl ใช้ได้ดีสำหรับ template นี้เพราะไม่ซับซ้อนเรื่อง shapes/images",
+        summary: "สำเร็จด้วย openpyxl — template นี้ไม่ต้องการ shapes/images จึงไม่เจอปัญหา formatting RPN formula ทำงานถูกต้อง ต้อง validate input ranges เสมอ Next steps: เพิ่ม auto-suggest สำหรับ failure modes จาก database, link กับ Control Plan",
+        date_completed: "2026-04-20", duration: "2 weeks", team_size: 1,
+        tags: ["manufacturing", "quality", "fmea"], related_sessions: [],
+        alternatives: ["Manual Excel entry", "Google Sheets + Apps Script"],
+        decision_reason: "Python + openpyxl chosen for local execution, no internet dependency, and RPN auto-calculation with data validation"
+      },
+      {
+        id: 3, name: "Process Control Plan",
+        description: "แผนควบคุมกระบวนการผลิตอัตโนมัติ",
+        category: "Manufacturing/PE", status: "Worked", difficulty: "Easy",
+        tools_used: ["Python", "Excel template"],
+        pipeline: {
+          input: { icon: "📋", label: "Input", detail: "Process characteristics + control methods" },
+          program: { icon: "🐍", label: "Program", detail: "Python script (cp_gen.py)" },
+          tool: { icon: "🔧", label: "Tool", detail: "Excel template injection" },
+          firewall: { icon: "🛡️", label: "Firewall", detail: "Local execution — no network required", status: "passed" },
+          output: { icon: "📊", label: "Output", detail: "Control Plan Excel (consistent format)" }
+        },
+        history: [
+          { date: "2026-04-15", event: "v1 — template injection", detail: "ใช้ Excel template มาตรฐาน + inject data", outcome: "success", note: "Output สม่ำเสมอ" },
+          { date: "2026-04-25", event: "Release", detail: "เพิ่ม version tracking ใน template", outcome: "success", note: "Production ready" }
+        ],
+        intro: "Control Plan เป็นเอกสาร quality ที่เชื่อมโยงกับ PFMEA — บันทึกว่าแต่ละ characteristic ต้องควบคุมอย่างไร, ใช้เครื่องมือวัดอะไร, มี frequency เท่าไหร่ ทำมือช้าและง่ายต่อการ error",
+        method: "ใช้ template-based approach — มี Excel template มาตรฐาน แล้ว inject ข้อมูล process characteristics, control methods, measurement tools อัตโนมัติ วิธีนี้ทำให้ output สม่ำเสมอและ reduce human error",
+        summary: "Template-based approach ได้ผลดี — output สม่ำเสมอ ปัญหา: template ต้อง update ตาม revision ของ process ล่าสุดเสมอ Next steps: ใส่ version control ใน template, auto-link กับ PFMEA data",
+        date_completed: "2026-04-25", duration: "1 week", team_size: 1,
+        tags: ["manufacturing", "quality", "control-plan"], related_sessions: [],
+        alternatives: ["Manual Word document", "Google Docs template"],
+        decision_reason: "Excel template injection chosen for consistency with other manufacturing documents and familiar interface for PE team"
+      },
+      {
+        id: 4, name: "Run@Rate Generator",
+        description: "สร้าง Run@Rate Excel 1 sheet/part พร้อม summary",
+        category: "Manufacturing/PE", status: "Worked", difficulty: "Medium",
+        tools_used: ["Python", "template"],
+        pipeline: {
+          input: { icon: "📋", label: "Input", detail: "Part list + test result data" },
+          program: { icon: "🐍", label: "Program", detail: "Python script (runrate_gen.py)" },
+          tool: { icon: "🔧", label: "Tool", detail: "Dynamic sheet generation + formulas" },
+          firewall: { icon: "🛡️", label: "Firewall", detail: "Local execution — no network required", status: "passed" },
+          output: { icon: "📊", label: "Output", detail: "Run@Rate Excel (1 sheet/part + summary)" }
+        },
+        history: [
+          { date: "2026-05-15", event: "v1 — static sheets", detail: "สร้าง fixed จำนวน sheets", outcome: "pitfall", note: "ไม่ flexible — part จำนวนต่างกัน handled ไม่ได้" },
+          { date: "2026-05-25", event: "v2 — dynamic sheet generation", detail: "สร้าง sheet ตามจำนวน part อัตโนมัติ", outcome: "success", note: "Support 10-100+ parts" },
+          { date: "2026-06-01", event: "Release", detail: "เพิ่ม summary dashboard sheet", outcome: "success", note: "Production ready" }
+        ],
+        intro: "Run@Rate เป็นการทดสอบว่า production line สามารถผลิตได้ตาม target rate หรือไม่ — ต้องสร้าง Excel สำหรับบันทึกผลการทดสอบ โดย 1 part = 1 sheet พร้อม summary sheet รวมทุก part",
+        method: "ใช้ Python dynamic sheet generation — สร้าง sheet ใหม่สำหรับแต่ละ part อัตโนมัติ พร้อม formula คำนวณ cycle time, uptime, defect rate summary sheet รวม data จากทุก part เป็น dashboard",
+        summary: "Dynamic sheet generation ทำให้จัดการ data ได้ง่าย ต้อง handle case ที่ part มีจำนวนต่างกัน (10-100+) Next steps: เพิ่ม chart visualization, export เป็น PDF สำหรับ management review",
+        date_completed: "2026-06-01", duration: "2 weeks", team_size: 1,
+        tags: ["manufacturing", "run-rate", "excel"], related_sessions: [],
+        alternatives: ["Fixed template with manual sheet creation", "Google Sheets with Apps Script"],
+        decision_reason: "Dynamic sheet generation chosen to handle variable part counts (10-100+) without manual intervention"
+      },
+      {
+        id: 5, name: "Excel WI Translation",
+        description: "แปล WI Excel ไทย→อังกฤษ พร้อมรักษา formatting",
+        category: "Manufacturing/PE", status: "Pitfall", difficulty: "Hard",
+        tools_used: ["Python", "openpyxl", "win32com", "shutil"],
+        pipeline: {
+          input: { icon: "📋", label: "Input", detail: "Thai WI Excel (with shapes/images)" },
+          program: { icon: "🐍", label: "Program", detail: "Python script (translate_wi.py)" },
+          tool: { icon: "🔧", label: "Tool", detail: "shutil.copy2 + win32com (3 approaches tested)" },
+          firewall: { icon: "🛡️", label: "Firewall", detail: "Local execution — no network required", status: "passed" },
+          output: { icon: "📊", label: "Output", detail: "English WI Excel (formatting preserved)" }
+        },
+        history: [
+          { date: "2026-05-20", event: "v1 — openpyxl direct", detail: "ใช้ openpyxl อ่าน + แก้ text + เขียนกลับ", outcome: "fail", note: "Formatting หายหมด" },
+          { date: "2026-05-28", event: "v2 — openpyxl + preserve_style", detail: "เพิ่ม style preservation", outcome: "fail", note: "ยังหายเหมือนเดิม" },
+          { date: "2026-06-05", event: "v3 — shutil.copy2 + COM", detail: "คัดลอกต้นฉบับ + win32com edit text", outcome: "success", note: "รักษา formatting 100% ✅" },
+          { date: "2026-06-10", event: "Release", detail: "สรุป lesson: openpyxl ไม่เหมาะกับไฟล์ที่มี shapes", outcome: "pitfall", note: "⚠️ Key lesson learned" }
+        ],
+        intro: "ต้องแปล Work Instruction Excel จากภาษาไทยเป็นอังกฤษ — แต่ต้องรักษา formatting เดิม (shapes, images, cell styles, A4 layout) ไว้ครบ ซึ่งเป็น challenge ใหญ่เพราะ openpyxl มักจะ丢失 formatting",
+        method: "尝试 3 วิธี: (1) openpyxl ตรงๆ → formatting หายหมด, (2) openpyxl + preserve_style → ยังหาย, (3) shutil.copy2 คัดลอกไฟล์ต้นฉบับก่อน แล้วใช้ win32com (COM automation) แก้ไข text → สำเร็จ! วิธีที่ 3 รักษา formatting ได้ 100%",
+        summary: "⚠️ PITFALL: openpyxl 丢失 formatting สำหรับไฟล์ Excel ที่มี shapes/images — ไม่ว่าจะ config ยังไงก็หาย วิธีที่ work: shutil.copy2 + COM automation เท่านั้น สำหรับ high-fidelity editing Next steps: สร้าง reusable utility function สำหรับ high-fidelity Excel editing",
+        date_completed: "2026-06-10", duration: "3 weeks", team_size: 1,
+        tags: ["excel", "translation", "pitfall", "formatting", "lesson"], related_sessions: [],
+        alternatives: ["Google Translate API (inaccurate for technical terms)", "DeepL API (cost)", "Manual translation"],
+        decision_reason: "shutil.copy2 + win32com chosen because it preserves formatting 100% — openpyxl loses shapes/images regardless of config"
+      },
+      {
+        id: 6, name: "PE Self-Audit Bot",
+        description: "Teams bot สำหรับ audit assembly workcells",
+        category: "Automation", status: "Failed", difficulty: "Hard",
+        tools_used: ["Teams Bot Framework", "FastAPI", "Hermes Agent", "LM Studio"],
+        pipeline: {
+          input: { icon: "📸", label: "Input", detail: "Workcell photo from Teams chat" },
+          program: { icon: "⚡", label: "Program", detail: "FastAPI + Teams Bot Framework" },
+          tool: { icon: "🤖", label: "Tool", detail: "LM Studio (zero-shot AI analysis)" },
+          firewall: { icon: "🛡️", label: "Firewall", detail: "Azure Portal BLOCKED by company IT — ngrok workaround (URL changes daily)", status: "blocked" },
+          output: { icon: "📊", label: "Output", detail: "PASS/FAIL verdict (bot works, infra doesn't)" }
+        },
+        history: [
+          { date: "2026-05-15", event: "v1 — Teams Bot Framework", detail: "สร้าง bot logic + FastAPI endpoint", outcome: "success", note: "Bot logic ทำงานได้ดี" },
+          { date: "2026-05-25", event: "v2 — Azure registration", detail: "พยายาม register bot ใน Azure Portal", outcome: "fail", note: "❌ Company IT block Azure Portal access" },
+          { date: "2026-06-01", event: "v3 — ngrok workaround", detail: "ใช้ ngrok tunnel เป็น endpoint", outcome: "pitfall", note: "⚠️ URL เปลี่ยนทุกวัน ไม่ stable" },
+          { date: "2026-06-15", event: "v4 — Line + n8n + Local AI", detail: "ลอง Line bot + n8n + local AI", outcome: "fail", note: "❌ Firewall block outbound" },
+          { date: "2026-07-01", event: "Archived", detail: "สรุป: infrastructure ไม่เอื้อ ต้องหา alternative", outcome: "fail", note: "❌ Lesson: evaluate infra ก่อน start" }
+        ],
+        intro: "ต้องการ bot ใน Microsoft Teams ที่ช่วย PE audit assembly workcells — ถ่ายรูป workcell แล้ว AI วิเคราะห์ว่าผ่านมาตรฐานหรือไม่ (PASS/FAIL) แต่ต้องทำงานได้จริงในสภาพแวดล้อมของบริษัท",
+        method: "ใช้ Teams Bot Framework + FastAPI สร้าง bot ที่รับภาพถ่าย workcell แล้วส่งให้ AI วิเคราะห์ (zero-shot + JSON history + audit register) Bot logic ทำงานได้ดี — AI เข้าใจ context ของ machine assembly แต่ปัญหาคือ infrastructure: ต้องการ stable endpoint สำหรับ Teams แต่ company IT block Azure Portal access ทำให้ไม่สามารถ register bot ได้ ใช้ ngrok เป็น workaround แต่ URL เปลี่ยนทุกวัน",
+        summary: "❌ FAIL: ไม่สามารถ deploy ได้จริงเพราะ Azure blocked by company IT Bot logic ทำงานได้ดีแต่ infrastructure ไม่เอื้อ บทเรียน: ต้อง evaluate infra constraint ก่อน start project — ถ้า company block cloud services ต้องหา alternative เช่น Teams incoming webhook หรือ Power Automate Next steps: ลองใช้ Power Platform แทน ซึ่ง company น่าจะ enable ไว้แล้ว",
+        date_completed: "2026-07-01", duration: "4 weeks", team_size: 2,
+        tags: ["teams-bot", "audit", "failed", "azure", "lesson"], related_sessions: [],
+        alternatives: ["Azure Bot Service (blocked by IT)", "ngrok tunnel (URL changes daily)", "Line bot + n8n (firewall blocked)", "Power Automate (not yet evaluated)"],
+        decision_reason: "Teams Bot Framework + FastAPI chosen for native Teams integration and local AI processing — but infra blockers prevented deployment",
+        architecture_url: "hermes-teams-architecture.html",
+        content_type: "narrative",
+        narrative: `
+        <div class="paragraph-section" data-step="01">
+          <h3><span class="emoji">🎯</span> ปัญหา — PE Audit ยังใช้มือทำ</h3>
+          <p>Process Engineer ต้องเดินตรวจ assembly workcell ทุกวัน — จดบันทึกด้วยมือ, ถ่ายรูปด้วยมือถือ, แล้วกลับไปพิมพ์ลง Excel ทีหลัง ไม่มี data ดิจิทัล, ไม่มี real-time tracking, ไม่มี standardized checklist</p>
+          <div class="highlight-box warn">⚠️ ปัญหา: ข้อมูล audit กระจายอยู่ในสมุดจดหลายเล่ม — ค้นหายาก, วิเคราะห์ยาก, รายงานช้า</div>
+        </div>
+
+        <div class="paragraph-section" data-step="02">
+          <h3><span class="emoji">💡</span> โจทย์ — สร้าง Bot ใน Teams</h3>
+          <p>สร้าง bot ใน Microsoft Teams ที่ PE engineer ถ่ายรูป/วิดีโอ workcell แล้ว AI ประเมิน PASS/FAIL อัตโนมัติ — ลดเวลา audit จาก 30 นาที เหลือ 5 นาที</p>
+        </div>
+
+        <div class="paragraph-section" data-step="03">
+          <h3><span class="emoji">✅</span> สิ่งที่ทำได้สำเร็จ (6 features)</h3>
+          <ul>
+            <li><strong>Teams Bot Framework</strong> — bot รับข้อความ/รูปภาพจาก Teams chat ✅</li>
+            <li><strong>File Transfer</strong> — รับไฟล์จาก user ผ่าน Teams Bot API ✅</li>
+            <li><strong>Frame Extraction (OpenCV)</strong> — แยก frame จากวิดีโอเพื่อวิเคราะห์ ✅</li>
+            <li><strong>AI Processing (LM Studio)</strong> — zero-shot analysis + JSON history + audit register ✅</li>
+            <li><strong>Excel Recording (win32com)</strong> — บันทึกผล audit ลง Excel อัตโนมัติ ✅</li>
+            <li><strong>Session Isolation</strong> — audit แต่ละครั้งแยกกัน ไม่ทับกัน ✅</li>
+          </ul>
+          <div class="highlight-box success">✅ Bot logic ทำงานได้ดี — AI เข้าใจ context ของ machine assembly workcells</div>
+        </div>
+
+        <div class="paragraph-section" data-step="04">
+          <h3><span class="emoji">❌</span> สิ่งที่ทำไม่ได้ (2 blockers)</h3>
+          <ul>
+            <li><strong>Azure Portal blocked</strong> — company IT block Azure Portal access → ไม่สามารถ register bot ได้ ❌</li>
+            <li><strong>Stable endpoint</strong> — ใช้ ngrok เป็น workaround แต่ URL เปลี่ยนทุกวัน → ไม่ stable ❌</li>
+          </ul>
+          <div class="highlight-box error">❌ Infrastructure ไม่เอื้อ — bot logic ดีแต่ deploy ไม่ได้</div>
+        </div>
+
+        <div class="paragraph-section" data-step="05">
+          <h3><span class="emoji">🔄</span> ทางเลือกที่ลอง (4 versions)</h3>
+          <ul>
+            <li><strong>v1 — Azure Bot:</strong> พยายาม register ใน Azure Portal → fail (company IT block)</li>
+            <li><strong>v2 — ngrok:</strong> ใช้ ngrok tunnel เป็น endpoint → workaround (URL เปลี่ยนทุกวัน)</li>
+            <li><strong>v3 — Line + n8n + Local AI:</strong> ลอง Line bot + n8n + local AI → firewall block outbound</li>
+            <li><strong>v4 — Archived:</strong> สรุป: infrastructure ไม่เอื้อ ต้องรอ Power Platform</li>
+          </ul>
+          <div class="highlight-box warn">⚠️ บทเรียน: ต้อง evaluate infra constraint ก่อน start project</div>
+        </div>
+
+        <div class="paragraph-section">
+          <h3><span class="emoji">📎</span> Project Files</h3>
+          <ul>
+            <li><strong>app.py:</strong> <code>C:\\Users\\chavagorn\\pe-audit-bot\\app.py</code></li>
+            <li><strong>Architecture:</strong> <code>D:\\AI_Hermes\\hermes-teams-architecture.html</code></li>
+            <li><strong>Storyboard:</strong> <code>D:\\AI_Hermes\\PE_Audit_Flow.pptx</code></li>
+          </ul>
+        </div>
+
+        <div class="paragraph-section" data-step="06">
+          <h3><span class="emoji">🔮</span> บทสรุป & Next Steps</h3>
+          <p>Bot logic ทำงานได้ดีแต่ infrastructure ไม่เอื้อ ทางเลือกต่อไป: ลองใช้ <strong>Power Platform</strong> (Power Automate + Power Apps) ซึ่ง company น่าจะ enable ไว้แล้ว — ไม่ต้อง register bot ใน Azure</p>
+        </div>`
+      },
+      {
+        id: 7, name: "MiMo Calculator",
+        description: "Interactive HTML calculator สำหรับ MiMo credits",
+        category: "Productivity", status: "Worked", difficulty: "Easy",
+        tools_used: ["HTML", "CSS", "JavaScript"],
+        pipeline: {
+          input: { icon: "🔢", label: "Input", detail: "Token count input by user" },
+          program: { icon: "📜", label: "Program", detail: "JavaScript (inline in HTML)" },
+          tool: { icon: "🔧", label: "Tool", detail: "HTML/CSS/JS — single-page app" },
+          firewall: { icon: "🛡️", label: "Firewall", detail: "Browser local — no network calls", status: "passed" },
+          output: { icon: "📊", label: "Output", detail: "Cost calculation + localStorage persistence" }
+        },
+        history: [
+          { date: "2026-07-15", event: "v1 — single-page HTML", detail: "สร้าง interactive calculator ด้วย HTML/CSS/JS", outcome: "success", note: "ใช้ localStorage persist ข้อมูล" },
+          { date: "2026-07-15", event: "Release", detail: "เสร็จใน 1 วัน — simple but useful", outcome: "success", note: "Production ready" }
+        ],
+        intro: "ต้องการเครื่องมือคำนวณcredits สำหรับ Xiaomi MiMo platform — ใส่จำนวน tokens ได้เลย แล้วคำนวณ cost ทันที ต้อง persist ข้อมูลไว้ใช้ซ้ำ",
+        method: "สร้าง single-page HTML tool ที่มี input fields สำหรับ tokens, rate calculation, แสดงผล cost ทันที ใช้ localStorage persist ข้อมูลเพื่อให้ไม่ต้องกรอกใหม่ทุกครั้ง dark theme design ดู professional",
+        summary: "สำเร็จ — interactive HTML tool ที่ persist ข้อมูลด้วย localStorage บทเรียน: single-page HTML tools ควร persist ข้อมูลด้วย localStorage เสมอ Next steps: เพิ่ม chart เปรียบเทียบ cost ระหว่าง providers",
+        date_completed: "2026-07-15", duration: "1 day", team_size: 1,
+        tags: ["html", "calculator", "productivity"], related_sessions: [],
+        alternatives: ["Spreadsheet calculation", "Python CLI tool", "Online calculator websites"],
+        decision_reason: "HTML single-page chosen for instant access, localStorage persistence, no server dependency, and visual dark theme"
+      },
+      {
+        id: 8, name: "3-Bot 'Best New Team'",
+        description: "AI agent orchestration — Planner → Do Er → Audit Er",
+        category: "AI/ML", status: "Worked", difficulty: "Hard",
+        tools_used: ["Hermes Agent", "LM Studio", "Gemma 4"],
+        pipeline: {
+          input: { icon: "📝", label: "Input", detail: "Task request from user" },
+          program: { icon: "🤖", label: "Program", detail: "Hermes Agent (3 profiles)" },
+          tool: { icon: "🧠", label: "Tool", detail: "LM Studio + Gemma 4 (local inference)" },
+          firewall: { icon: "🛡️", label: "Firewall", detail: "Local execution — all bots run on same machine", status: "passed" },
+          output: { icon: "📊", label: "Output", detail: "Planned → Executed → Audited result" }
+        },
+        history: [
+          { date: "2026-07-10", event: "v1 — single bot", detail: "ลองใช้ bot เดียวทำทุกอย่าง", outcome: "pitfall", note: "⚠️ Role confusion — bot ทำทั้ง plan + execute + review" },
+          { date: "2026-07-20", event: "v2 — 3-bot separation", detail: "แยก Planner / Do Er / Audit Er ชัดเจน", outcome: "success", note: "แต่ละ bot มี SOUL.md กำหนด role" },
+          { date: "2026-08-01", event: "Release", detail: "เพิ่ม signal protocol (✅ DONE:)", outcome: "success", note: "Production ready" }
+        ],
+        intro: "ต้องการสร้าง multi-agent workflow ที่ AI bots ทำงานร่วมกัน — Planner วางแผน, Do Er ลงมือทำ, Audit Er ตรวจสอบ ต้องแยก Responsibility ชัดเจนเพื่อป้องกัน confusion",
+        method: "ใช้ Hermes Agent สร้าง 3 profiles แยกกัน: Planner (plan+delegate เท่านั้น, ห้าม execute), Do Er (execute จริง, signal '✅ DONE:' เมื่อเสร็จ), Audit Er (review หลัง done, PASS by default ระหว่าง execution) แต่ละ bot มี SOUL.md ใน profile เพื่อกำหนด persona และ rules ชัดเจน",
+        summary: "สำเร็จ — multi-agent workflow ทำงานได้ บทเรียนสำคัญ: ต้องแยก role ชัดเจน Planner ห้าม execute, Do Er ห้าม plan — ป้องกัน role confusion Next steps: เพิ่ม error recovery, cross-bot memory sharing",
+        date_completed: "2026-08-01", duration: "2 weeks", team_size: 3,
+        tags: ["ai-agent", "orchestration", "hermes", "multi-bot"], related_sessions: [],
+        alternatives: ["Single bot doing everything (role confusion)", "2-bot split (planner+worker)", "External orchestration platforms"],
+        decision_reason: "3-bot separation chosen to enforce clear responsibility: Planner plans only, Do-er executes only, Auditor reviews only — prevents role confusion"
+      },
+      {
+        id: 9, name: "Excel High-Fidelity Automation",
+        description: "รักษา shapes, images, A4 layouts ใน Excel edit",
+        category: "Automation", status: "Worked", difficulty: "Hard",
+        tools_used: ["Python", "win32com"],
+        pipeline: {
+          input: { icon: "📋", label: "Input", detail: "Excel file with shapes/images/A4 layout" },
+          program: { icon: "🐍", label: "Program", detail: "Python script (excel_hifi.py)" },
+          tool: { icon: "🔧", label: "Tool", detail: "win32com (COM automation via Excel app)" },
+          firewall: { icon: "🛡️", label: "Firewall", detail: "Local execution — requires Excel installed", status: "passed" },
+          output: { icon: "📊", label: "Output", detail: "Edited Excel with 100% formatting preserved" }
+        },
+        history: [
+          { date: "2026-05-20", event: "v1 — openpyxl", detail: "ลอง openpyxl สำหรับ edit Excel ที่มี shapes", outcome: "fail", note: "❌ Formatting หายหมด" },
+          { date: "2026-06-01", event: "v2 — win32com discovery", detail: "ค้นพบ win32com (COM automation)", outcome: "success", note: "✅ รักษา formatting 100%" },
+          { date: "2026-06-15", event: "Release", detail: "สรุป: win32com = high fidelity, openpyxl = cross-platform", outcome: "success", note: "Production ready" }
+        ],
+        intro: "ต้องการ automate Excel editing แต่รักษา formatting ทั้งหมดไว้ — shapes, images, A4 layouts, margins, cell styles ซึ่ง openpyxl ทำไม่ได้",
+        method: "ใช้ win32com (COM automation) ผ่าน Python — เปิด Excel application จริง แล้วควบคุมผ่าน COM interface วิธีนี้ทำให้รักษา formatting ได้ครบ 100% เพราะใช้ Excel application จริงในการ edit ไม่ใช่ parsing ไฟล์เอง",
+        summary: "สำเร็จ — win32com รักษา formatting ได้ 100% บทเรียน: Win32com = High fidelity Excel, openpyxl = Low fidelity but cross-platform เลือกให้ถูก task! Next steps: สร้าง wrapper library ที่เลือก tool อัตโนมัติตามความซับซ้อนของไฟล์",
+        date_completed: "2026-06-15", duration: "3 weeks", team_size: 1,
+        tags: ["excel", "automation", "win32com", "high-fidelity"], related_sessions: [],
+        alternatives: ["openpyxl (formatting lost)", "pandas (no shape support)", "Google Sheets API"],
+        decision_reason: "win32com chosen because it uses actual Excel application — guarantees 100% formatting preservation for shapes, images, A4 layouts"
+      },
+      {
+        id: 10, name: "Executive Presentation",
+        description: "Card-style PPTX สำหรับผู้บริหาร Ampas Industries",
+        category: "Presentation", status: "Worked", difficulty: "Medium",
+        tools_used: ["python-pptx", "pptxgenjs"],
+        pipeline: {
+          input: { icon: "📋", label: "Input", detail: "Content + brand guidelines (Ampas Industries)" },
+          program: { icon: "🐍", label: "Program", detail: "python-pptx + pptxgenjs" },
+          tool: { icon: "🔧", label: "Tool", detail: "PPTX generation with card-style layout" },
+          firewall: { icon: "🛡️", label: "Firewall", detail: "Local execution — no network required", status: "passed" },
+          output: { icon: "📊", label: "Output", detail: "Professional PPTX (keyword + subtitle format)" }
+        },
+        history: [
+          { date: "2026-06-10", event: "v1 — paragraph style", detail: "สร้าง PPTX แบบ paragraph ยาวๆ", outcome: "pitfall", note: "⚠️ ผู้บริหารไม่อ่าน paragraph" },
+          { date: "2026-06-15", event: "v2 — card style", detail: "เปลี่ยนเป็น keyword + subtitle + card layout", outcome: "success", note: "✅ Visual hierarchy ชัดเจน" },
+          { date: "2026-06-20", event: "Release", detail: "เพิ่ม background colors สำหรับแต่ละ card", outcome: "success", note: "Production ready" }
+        ],
+        intro: "ต้องการสร้าง presentation สำหรับผู้บริหาร Ampas Industries — ต้อง clean, professional, แสดง key information ได้ทันทีโดยไม่ต้องอ่าน paragraph ยาวๆ",
+        method: "ใช้ python-pptx + pptxgenjs สร้าง card-style layout — keyword + subtitle format พร้อม background colors สำหรับแต่ละ card visual hierarchy ชัดเจน: title ใหญ่, subtitle เล็ก, key metrics เด่น",
+        summary: "สำเร็จ — card style ได้ผลดีสำหรับ executive บทเรียน: ผู้บริหารต้องการ keyword + subtitle ไม่ใช่ paragraph — visual hierarchy สำคัญมาก Next steps: เพิ่ม template library สำหรับ presentation types ต่างๆ",
+        date_completed: "2026-06-20", duration: "1 week", team_size: 1,
+        tags: ["presentation", "executive", "design"], related_sessions: [],
+        alternatives: ["Paragraph-style slides (rejected by execs)", "Markdown to PPTX conversion", "Canva/Google Slides manual"],
+        decision_reason: "python-pptx + pptxgenjs chosen for programmatic card-style layout with keyword + subtitle format — execs prefer visual hierarchy over paragraphs"
+      },
+      {
+        id: 11, name: "Excel Data Verification",
+        description: "ตรวจสอบ data integrity หลัง write อัตโนมัติ",
+        category: "Automation", status: "Worked", difficulty: "Medium",
+        tools_used: ["Python", "openpyxl"],
+        pipeline: {
+          input: { icon: "📋", label: "Input", detail: "Source Excel + Output Excel (post-write)" },
+          program: { icon: "🐍", label: "Program", detail: "Python script (verify.py)" },
+          tool: { icon: "🔧", label: "Tool", detail: "openpyxl — cell-by-cell comparison" },
+          firewall: { icon: "🛡️", label: "Firewall", detail: "Local execution — no network required", status: "passed" },
+          output: { icon: "📊", label: "Output", detail: "Verification report (match/mismatch flags)" }
+        },
+        history: [
+          { date: "2026-05-10", event: "v1 — trust write", detail: "ไม่มี verification — สมมติว่า write ถูกต้อง", outcome: "fail", note: "❌ Data corruption ไม่ถูกจับ" },
+          { date: "2026-05-15", event: "v2 — post-write verification", detail: "เพิ่ม cell-by-cell comparison loop", outcome: "success", note: "✅ จับ corruption ได้ก่อนส่ง" },
+          { date: "2026-05-20", event: "Release", detail: "กลายเป็น standard practice ทุก automation", outcome: "success", note: "Production ready" }
+        ],
+        intro: "หลังจาก automate Excel writing ต้องการตรวจสอบว่าข้อมูลที่เขียนไปถูกต้อง — เปรียบเทียบ source vs output เพื่อจับ data corruption ก่อนส่ง",
+        method: "สร้าง post-write verification loop — อ่าน cell values จากทั้ง source และ output เปรียบเทียบทีละ cell ถ้า mismatch ให้ flag และ report ทันที ทำเป็น standard practice ในทุก automation",
+        summary: "สำเร็จ — verification loop จับ data corruption ได้ก่อนส่ง บทเรียน: Always verify output after write — never trust write operation 100% ใส่ verification step เป็น standard practice Next steps: เพิ่ม image comparison สำหรับ cells ที่มี embedded images",
+        date_completed: "2026-05-20", duration: "1 week", team_size: 1,
+        tags: ["excel", "verification", "quality"], related_sessions: [],
+        alternatives: ["No verification (trust write)", "Visual manual check", "Compare file sizes"],
+        decision_reason: "Post-write cell-by-cell comparison chosen as standard practice — catches data corruption before delivery, low overhead"
+      },
+      {
+        id: 12, name: "PDF-to-Excel Conversion",
+        description: "แปลง PDF manufacturing docs เป็น Excel",
+        category: "Document Processing", status: "Worked", difficulty: "Medium",
+        tools_used: ["Python", "pymupdf", "pandas"],
+        pipeline: {
+          input: { icon: "📄", label: "Input", detail: "PDF manufacturing docs (text-based or scanned)" },
+          program: { icon: "🐍", label: "Program", detail: "Python script (pdf2excel.py)" },
+          tool: { icon: "🔧", label: "Tool", detail: "pymupdf + pandas (+ tesseract for scanned)" },
+          firewall: { icon: "🛡️", label: "Firewall", detail: "Local execution — no network required", status: "passed" },
+          output: { icon: "📊", label: "Output", detail: "Excel spreadsheet (structured data)" }
+        },
+        history: [
+          { date: "2026-06-25", event: "v1 — pymupdf extract", detail: "ใช้ pymupdf extract text จาก PDF", outcome: "success", note: "✅ ทำงานได้ดีสำหรับ text-based PDF" },
+          { date: "2026-07-01", event: "v2 — scanned PDF test", detail: "ลองกับ scanned PDF (image-based)", outcome: "fail", note: "❌ ไม่มี text layer — ต้อง OCR" },
+          { date: "2026-07-05", event: "v3 — tesseract OCR", detail: "เพิ่ม tesseract OCR สำหรับ scanned PDF", outcome: "pitfall", note: "⚠️ Accuracy ต่ำกว่า text-based" },
+          { date: "2026-07-10", event: "Release", detail: "Release เฉพาะ text-based path, OCR เป็น experimental", outcome: "success", note: "Production ready (text-based only)" }
+        ],
+        intro: "ต้องการแปลง PDF manufacturing documents (spec sheets, reports) เป็น Excel เพื่อให้แก้ไขและวิเคราะห์ต่อได้ แต่ PDF บางไฟล์เป็น scanned images ไม่ใช่ text-based",
+        method: "ใช้ pymupdf extract text layer จาก PDF — ได้ผลดีสำหรับ text-based PDF แล้วใช้ pandas clean data และจัดรูปแบบเป็น Excel สำหรับ scanned PDFs ต้องใช้ OCR (tesseract) เพิ่ม แต่ accuracy ต่ำกว่า",
+        summary: "สำเร็จสำหรับ text-based PDFs — pymupdf + pandas ทำงานได้ดี ปัญหา: scanned PDFs ไม่มี text layer — ต้อง OCR ก่อน accuracy ต่ำกว่า Next steps: เพิ่ม OCR pipeline สำหรับ scanned PDFs, เพิ่ม table detection สำหรับ complex layouts",
+        date_completed: "2026-07-10", duration: "2 weeks", team_size: 1,
+        tags: ["pdf", "conversion", "document"], related_sessions: [],
+        alternatives: ["Manual data entry", "Online PDF converters (inaccurate)", "Adobe Acrobat export"],
+        decision_reason: "pymupdf + pandas chosen for text-based PDFs — fast, accurate, local execution. OCR path added as experimental for scanned PDFs"
+      },
+      {
+        id: 13, name: "Storyboard Generator",
+        description: "Python script สร้าง PPTX storyboard สำหรับ PE Audit Bot architecture",
+        category: "Presentation", status: "Worked", difficulty: "Medium",
+        tools_used: ["Python", "python-pptx"],
+        pipeline: {
+          input: { icon: "📋", label: "Input", detail: "Architecture data + status data" },
+          program: { icon: "🐍", label: "Program", detail: "Python script (gen_storyboard_v4.py)" },
+          tool: { icon: "🔧", label: "Tool", detail: "python-pptx — shape/text generation" },
+          firewall: { icon: "🛡️", label: "Firewall", detail: "Local execution", status: "passed" },
+          output: { icon: "📊", label: "Output", detail: "PE_Audit_Flow.pptx (4 versions refined)" }
+        },
+        history: [
+          { date: "2026-09-02", event: "v1 — basic layout", detail: "สร้าง PPTX ด้วย hardcoded positions", outcome: "success" },
+          { date: "2026-09-02", event: "v2 — add firewall highlight", detail: "เพิ่ม firewall blocked indicator", outcome: "success" },
+          { date: "2026-09-02", event: "v3 — add progress grid", detail: "เพิ่ม progress status cards", outcome: "success" },
+          { date: "2026-09-02", event: "v4 — final polish", detail: "ปรับ layout + 5 process steps", outcome: "success" }
+        ],
+        intro: "ต้องการสร้าง storyboard PPTX สำหรับ PE Audit Bot — แสดง architecture, flow, และ progress ให้ทีมเข้าใจ",
+        method: "ใช้ python-pptx สร้าง PPTX ด้วย hardcoded positions — ปรับ layout 4 versions จนได้ storyboard ที่ชัดเจน แสดง 5 process steps พร้อม firewall status",
+        summary: "สำเร็จ — storyboard ช่วยอธิบาย bot architecture ให้ทีมเข้าใจง่าย",
+        date_completed: "2026-09-02", duration: "1 day", team_size: 1,
+        tags: ["presentation", "storyboard", "pe-bot"], related_sessions: [],
+        alternatives: ["Manual PowerPoint creation", "Google Slides API", "Markdown + pandoc"],
+        decision_reason: "python-pptx chosen for full control over layout, colors, and dynamic data injection — generated 4 versions in one day"
+      },
+      {
+        id: 14, name: "Excel MCP Server",
+        description: "Custom MCP server 133 tools สำหรับ control Excel แบบ real-time ผ่าน Hermes",
+        category: "Automation", status: "Worked", difficulty: "Hard",
+        tools_used: ["Python", "FastMCP", "win32com", "openpyxl"],
+        pipeline: {
+          input: { icon: "📝", label: "Input", detail: "Hermes tool call (e.g. read_range, write_cell)" },
+          program: { icon: "⚡", label: "Program", detail: "FastMCP server (excel_mcp_server.py)" },
+          tool: { icon: "🔧", label: "Tool", detail: "win32com + openpyxl (133 tools)" },
+          firewall: { icon: "🛡️", label: "Firewall", detail: "Local MCP — no network", status: "passed" },
+          output: { icon: "📊", label: "Output", detail: "Excel operations + JSON results" }
+        },
+        history: [
+          { date: "2026-08-07", event: "v1 — basic MCP", detail: "สร้าง FastMCP server ด้วย basic read/write tools", outcome: "success" },
+          { date: "2026-08-07", event: "v2 — expand tools", detail: "เพิ่ม chart, shape, checkbox, conditional format tools", outcome: "success" },
+          { date: "2026-08-07", event: "v3 — 133 tools", detail: "ครบ 133 tools — read, write, format, chart, shape, export", outcome: "success" }
+        ],
+        intro: "ต้องการ control Excel แบบ real-time ผ่าน Hermes Agent — อ่าน cell, เขียน cell, สร้าง chart, จัดรูปแบบ ทำได้ทั้งหมดผ่าน MCP protocol",
+        method: "ใช้ FastMCP framework สร้าง Python server ที่ expose 133 tools สำหรับ Excel — ใช้ win32com สำหรับ live Excel operations และ openpyxl สำหรับ file-based operations",
+        summary: "สำเร็จ — 133 tools ครอบคลุมทุก operation ที่ต้องการ ช่วยให้ Hermes ควบคุม Excel ได้เหมือนมนุษย์",
+        date_completed: "2026-08-07", duration: "1 day", team_size: 1,
+        tags: ["mcp", "excel", "automation", "fastmcp"], related_sessions: [],
+        alternatives: ["Direct Excel COM calls from AI", "Google Sheets MCP", "Manual file reading"],
+        decision_reason: "FastMCP framework chosen for standard MCP protocol compatibility — 133 tools cover all Excel operations needed by AI agents"
+      },
+      {
+        id: 15, name: "PE Audit Presentations",
+        description: "PPTX presentations สำหรับ PE Audit Bot — architecture, storyboard, status",
+        category: "Presentation", status: "Worked", difficulty: "Easy",
+        tools_used: ["Python", "python-pptx"],
+        pipeline: {
+          input: { icon: "📋", label: "Input", detail: "Bot architecture data + progress data" },
+          program: { icon: "🐍", label: "Program", detail: "gen_storyboard.py (multiple versions)" },
+          tool: { icon: "🔧", label: "Tool", detail: "python-pptx" },
+          firewall: { icon: "🛡️", label: "Firewall", detail: "Local execution", status: "passed" },
+          output: { icon: "📊", label: "Output", detail: "3 PPTX: Flow, Storyboard, Status" }
+        },
+        intro: "ต้องการ presentation สำหรับ PE Audit Bot — 3 แบบ: architecture flow, storyboard, และ progress status",
+        method: "ใช้ python-pptx สร้าง 3 PPTX files แยกกัน — แต่ละไฟล์มี layout และ content เฉพาะตัว",
+        summary: "สำเร็จ — 3 presentations ครอบคลุมทุกด้านของ PE Audit Bot",
+        date_completed: "2026-09-02", duration: "1 day", team_size: 1,
+        tags: ["presentation", "pe-bot", "storyboard"], related_sessions: [],
+        alternatives: ["Manual PowerPoint creation", "PDF reports", "Email summaries"],
+        decision_reason: "python-pptx chosen for automated PPTX generation from audit data — 3 files for different audiences in one run"
+      },
+      {
+        id: 16, name: "PE Audit Bot PWA",
+        description: "Progressive Web App version ของ PE Audit Bot — ไม่ต้องพึ่ง Teams",
+        category: "Automation", status: "Pitfall", difficulty: "Hard",
+        tools_used: ["Python", "FastAPI", "HTML/CSS/JS"],
+        pipeline: {
+          input: { icon: "📱", label: "Input", detail: "User uploads via browser (PWA)" },
+          program: { icon: "⚡", label: "Program", detail: "FastAPI + static files (server.py)" },
+          tool: { icon: "🔧", label: "Tool", detail: "PWA — offline capable" },
+          firewall: { icon: "🛡️", label: "Firewall", detail: "Requires stable endpoint for PWA", status: "workaround" },
+          output: { icon: "📊", label: "Output", detail: "Web-based audit interface" }
+        },
+        history: [
+          { date: "2026-09-08", event: "Plan created", detail: "สร้าง PWA_BUILD_PLAN.md", outcome: "success" },
+          { date: "2026-09-08", event: "v1 — basic server", detail: "server.py + static files", outcome: "pitfall", note: "ยังไม่เสร็จ — ต้องการ stable endpoint" }
+        ],
+        intro: "ต้องการ PWA version ของ PE Audit Bot — ไม่ต้องพึ่ง Teams ใช้ browser ตรงๆ แต่ยังมีปัญหา stable endpoint เหมือนเดิม",
+        method: "สร้าง FastAPI server + PWA static files — ออกแบบให้ offline capable แต่ยังไม่เสร็จเพราะต้องการ stable endpoint",
+        summary: "⚠️ PITFALL: ปัญหาเดิมคือ stable endpoint — ต้องแก้ infra ก่อน",
+        date_completed: "2026-09-08", duration: "in progress", team_size: 1,
+        tags: ["pwa", "pe-bot", "pitfall"], related_sessions: [],
+        alternatives: ["Desktop application (not cross-platform)", "Mobile app (requires app store)", "Teams bot (blocked by IT)"],
+        decision_reason: "PWA + FastAPI chosen for browser-based access without installation — but needs stable endpoint which is blocked by company IT"
+      },
+      {
+        id: 17, name: "PFMEA Universal Prompt",
+        description: "Portable prompt template สำหรับ PFMEA generation — ใช้กับ AI ตัวไหนก็ได้",
+        category: "Productivity", status: "Worked", difficulty: "Easy",
+        tools_used: ["Markdown", "Prompt Engineering"],
+        pipeline: {
+          input: { icon: "📋", label: "Input", detail: "Process information (manual input)" },
+          program: { icon: "🧠", label: "Program", detail: "Any LLM (portable prompt)" },
+          tool: { icon: "🔧", label: "Tool", detail: "Markdown prompt template" },
+          firewall: { icon: "🛡️", label: "Firewall", detail: "Depends on provider", status: "passed" },
+          output: { icon: "📊", label: "Output", detail: "PFMEA table (Severity × Occurrence × Detection)" }
+        },
+        intro: "ต้องการ prompt template สำหรับ PFMEA generation ที่ใช้ได้กับ AI ตัวไหนก็ได้ — ไม่ผูกกับ platform",
+        method: "เขียน Markdown prompt template ที่อธิบาย PFMEA structure, ตัวอย่าง input/output, และ rules สำหรับคำนวณ RPN",
+        summary: "สำเร็จ — prompt ใช้ได้กับ GPT, Claude, Gemini, local LLM ทุกตัว",
+        date_completed: "2026-09-01", duration: "1 day", team_size: 1,
+        tags: ["prompt-engineering", "pfMEA", "portable"], related_sessions: [],
+        alternatives: ["Provider-specific prompts", "Excel macro for PFMEA", "Manual PFMEA creation"],
+        decision_reason: "Markdown prompt chosen for portability — works with any LLM provider (GPT, Claude, Gemini, local models) without modification"
+      },
+      {
+        id: 18, name: "Excel Capture Tool",
+        description: "Script สำหรับ capture/export Excel data เป็น format อื่น",
+        category: "Automation", status: "Worked", difficulty: "Easy",
+        tools_used: ["Python", "openpyxl"],
+        pipeline: {
+          input: { icon: "📋", label: "Input", detail: "Excel file (.xlsx)" },
+          program: { icon: "🐍", label: "Program", detail: "Python script (cap_excel.py)" },
+          tool: { icon: "🔧", label: "Tool", detail: "openpyxl — data extraction" },
+          firewall: { icon: "🛡️", label: "Firewall", detail: "Local execution", status: "passed" },
+          output: { icon: "📊", label: "Output", detail: "Extracted/captured data" }
+        },
+        intro: "ต้องการ script สำหรับ capture/export ข้อมูลจาก Excel เป็น format อื่น (JSON, CSV, etc.)",
+        method: "ใช้ openpyxl อ่าน Excel แล้ว extract data ตามที่ต้องการ",
+        summary: "สำเร็จ — script ง่ายๆ แต่ใช้บ่อย",
+        date_completed: "2026-08-15", duration: "1 day", team_size: 1,
+        tags: ["excel", "extraction", "utility"], related_sessions: [],
+        alternatives: ["Manual data entry from Excel", "CSV export + processing", "Database import"],
+        decision_reason: "openpyxl extraction chosen for direct Excel reading without format conversion — simple, fast, no dependency on Excel installation"
+      }
+    ];
+
+    // ===== State =====
+    let projects = [];
+    let nextId = 100;
+    let currentPage = 'list';
+    let currentProjectId = null;
+
+    function init() {
+      // Version migration — force reload SEED_DATA when version changes
+      const DATA_VERSION = 3;
+      const savedVersion = parseInt(localStorage.getItem('pkb_version') || '0');
+      if (savedVersion < DATA_VERSION) {
+        localStorage.removeItem('pkb_projects_v2');
+        localStorage.setItem('pkb_version', DATA_VERSION);
+      }
+      const saved = localStorage.getItem('pkb_projects_v2');
+      if (saved) {
+        projects = JSON.parse(saved);
+        nextId = Math.max(...projects.map(p => p.id), 99) + 1;
+      } else {
+        projects = JSON.parse(JSON.stringify(SEED_DATA));
+        nextId = 100;
+        saveToStorage();
+      }
+      populateCategoryFilter();
+      renderStats();
+      renderProjects();
+      window.addEventListener('hashchange', handleRoute);
+      handleRoute();
+    }
+
+    function saveToStorage() {
+      localStorage.setItem('pkb_projects_v2', JSON.stringify(projects));
+    }
+
+    // ===== Routing =====
+    function navigate(path) {
+      window.location.hash = path;
+    }
+
+    function handleRoute() {
+      const hash = window.location.hash || '#/';
+      const parts = hash.replace('#', '').split('/').filter(Boolean);
+
+      // Update nav
+      document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+      if (parts[0] === 'setup') {
+        document.getElementById('navSetup').classList.add('active');
+        showSetupPage();
+      } else if (parts[0] === 'project' && parts[1]) {
+        document.getElementById('navProjects').classList.add('active');
+        showDetailPage(parseInt(parts[1]));
+      } else {
+        document.getElementById('navProjects').classList.add('active');
+        showListPage();
+      }
+    }
+
+    function showListPage() {
+      currentPage = 'list';
+      currentProjectId = null;
+      document.getElementById('pageList').classList.add('active');
+      document.getElementById('pageDetail').classList.remove('active');
+      document.getElementById('pageSetup').classList.remove('active');
+      renderStats();
+      renderProjects();
+    }
+
+    function showDetailPage(id) {
+      currentPage = 'detail';
+      currentProjectId = id;
+      document.getElementById('pageList').classList.remove('active');
+      document.getElementById('pageDetail').classList.add('active');
+      document.getElementById('pageSetup').classList.remove('active');
+      renderDetail(id);
+    }
+
+    function showSetupPage() {
+      currentPage = 'setup';
+      document.getElementById('pageList').classList.remove('active');
+      document.getElementById('pageDetail').classList.remove('active');
+      document.getElementById('pageSetup').classList.add('active');
+      window.scrollTo(0, 0);
+    }
+
+    // ===== Stats =====
+    function renderStats() {
+      const total = projects.length;
+      const worked = projects.filter(p => p.status === 'Worked').length;
+      const failed = projects.filter(p => p.status === 'Failed').length;
+      const pitfalls = projects.filter(p => p.status === 'Pitfall').length;
+      const categories = [...new Set(projects.map(p => p.category))].length;
+
+      document.getElementById('statsBar').innerHTML = `
+        <div class="stat-card"><div class="stat-value" style="color:var(--blue)">${total}</div><div class="stat-label">Total Projects</div></div>
+        <div class="stat-card"><div class="stat-value" style="color:var(--green)">${worked}</div><div class="stat-label">Worked ✅</div></div>
+        <div class="stat-card"><div class="stat-value" style="color:var(--red)">${failed}</div><div class="stat-label">Failed ❌</div></div>
+        <div class="stat-card"><div class="stat-value" style="color:var(--amber)">${pitfalls}</div><div class="stat-label">Pitfalls ⚠️</div></div>
+        <div class="stat-card"><div class="stat-value" style="color:var(--purple)">${categories}</div><div class="stat-label">Categories</div></div>`;
+    }
+
+    // ===== Filters =====
+    function populateCategoryFilter() {
+      const cats = [...new Set(projects.map(p => p.category))].sort();
+      const sel = document.getElementById('filterCategory');
+      sel.innerHTML = '<option value="">All Categories</option>' + cats.map(c => `<option value="${c}">${c}</option>`).join('');
+    }
+
+    // ===== List Render =====
+    function renderProjects() {
+      const query = document.getElementById('searchBox').value.toLowerCase();
+      const cat = document.getElementById('filterCategory').value;
+      const status = document.getElementById('filterStatus').value;
+
+      let filtered = projects.filter(p => {
+        if (cat && p.category !== cat) return false;
+        if (status && p.status !== status) return false;
+        if (query) {
+          const searchIn = [p.name, p.description, p.category, ...(p.tools_used || []), ...(p.tags || []), p.intro, p.method, p.summary].join(' ').toLowerCase();
+          if (!searchIn.includes(query)) return false;
+        }
+        return true;
+      });
+
+      const grid = document.getElementById('projectGrid');
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="empty-state"><div class="icon">📭</div><h3>No projects found</h3><p>Try adjusting your filters or add a new project.</p></div>`;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(p => `
+        <div class="project-card" onclick="navigate('/project/${p.id}')">
+          <div class="project-card-header">
+            <h3>${esc(p.name)}</h3>
+            <span class="badge badge-${p.status.toLowerCase()}">${icon(p.status)} ${p.status}</span>
+          </div>
+          <div class="description">${esc(p.description)}</div>
+          <div class="meta">
+            <span class="tag tag-category">${esc(p.category)}</span>
+            ${p.difficulty ? `<span class="tag">${p.difficulty}</span>` : ''}
+          </div>
+          <div class="tools">${(p.tools_used || []).map(t => `<span class="tag tag-tool">${esc(t)}</span>`).join('')}</div>
+          <div class="project-card-footer">
+            <span>${p.date_completed ? fmtDate(p.date_completed) : ''}${p.duration ? ' · ' + esc(p.duration) : ''}</span>
+          </div>
+        </div>`).join('');
+    }
+
+    // ===== Detail Render (3 paragraphs) =====
+    function renderDetail(id) {
+      const p = projects.find(x => x.id === id);
+      if (!p) { navigate('/'); return; }
+
+      const related = projects.filter(r => {
+        if (r.id === p.id) return false;
+        if (r.category === p.category) return true;
+        const shared = (p.tools_used || []).filter(t => (r.tools_used || []).includes(t));
+        return shared.length > 0;
+      }).slice(0, 6);
+
+      document.getElementById('detailContainer').innerHTML = `
+        <div style="margin-bottom:16px">
+          <button class="btn btn-ghost" onclick="navigate('/')">← Back to Projects</button>
+        </div>
+
+        <div class="detail-hero">
+          <div class="detail-hero-top">
+            <div style="flex:1"><h2>${esc(p.name)}</h2></div>
+          </div>
+          <div class="badges" style="margin-bottom:16px">
+            <span class="badge badge-lg badge-${p.status.toLowerCase()}">${icon(p.status)} ${p.status}</span>
+            <span class="tag tag-lg tag-category">${esc(p.category)}</span>
+            ${p.difficulty ? `<span class="tag tag-lg">${p.difficulty}</span>` : ''}
+            ${(p.tags || []).map(t => `<span class="tag tag-lg">${esc(t)}</span>`).join('')}
+          </div>
+          <div class="description">${esc(p.description)}</div>
+          <div class="tool-chips">${(p.tools_used || []).map(t => `<span class="tag tag-lg tag-tool">${esc(t)}</span>`).join('')}</div>
+          <div class="meta-bar">
+            ${p.date_completed ? `<div class="meta-item"><div class="label">Completed</div><div class="value">${fmtDate(p.date_completed)}</div></div>` : ''}
+            ${p.duration ? `<div class="meta-item"><div class="label">Duration</div><div class="value">${esc(p.duration)}</div></div>` : ''}
+            ${p.team_size ? `<div class="meta-item"><div class="label">Team</div><div class="value">${p.team_size} person(s)</div></div>` : ''}
+          </div>
+        </div>
+
+        ${p.architecture_url ? `
+        <div class="detail-tabs">
+          <button class="detail-tab active" onclick="switchDetailTab('overview', this)">📋 Overview</button>
+          <button class="detail-tab" onclick="switchDetailTab('architecture', this)">🏗️ Architecture</button>
+        </div>` : ''}
+
+        <div class="detail-tab-content ${p.architecture_url ? '' : 'active'}" id="detailTabOverview">
+        <!-- Pipeline Flow Chart -->
+        ${p.pipeline ? `
+        <div class="pipeline-section">
+          <h3>🔄 Pipeline Flow</h3>
+          <div class="pipeline-flow">
+            ${['input','program','tool','firewall','output'].map((step, i) => {
+              const node = p.pipeline[step];
+              if (!node) return '';
+              const arrow = i < 4 ? '<div class="pipeline-arrow">→</div>' : '';
+              const fwStatus = step === 'firewall' && node.status ?
+                `<div class="pipeline-firewall-status ${node.status}">${node.status === 'passed' ? '✅ Passed' : node.status === 'blocked' ? '❌ Blocked' : '⚠️ Workaround'}</div>` : '';
+              return `
+        <div class="pipeline-node">
+          <div class="pipeline-node-icon ${step === 'firewall' ? (node.status || '') : ''}">${node.icon}</div>
+          <div class="pipeline-node-label">${node.label}</div>
+          <div class="pipeline-node-detail">${node.detail}</div>
+          ${fwStatus}
+        </div>
+        ${arrow}`;
+            }).join('')}
+          </div>
+        </div>` : ''}
+
+        <!-- Branch History -->
+        ${p.history && p.history.length > 0 ? `
+        <div class="history-section">
+          <h3>📜 Branch History</h3>
+          <div class="history-timeline">
+            ${p.history.map(h => `
+        <div class="history-entry">
+          <div class="history-dot ${h.outcome}"></div>
+          <div class="history-date">${h.date}</div>
+          <div class="history-event">${h.event}</div>
+          <div class="history-detail">${h.detail}</div>
+          ${h.note ? `<div class="history-note">${h.note}</div>` : ''}
+        </div>`).join('')}
+          </div>
+        </div>` : ''}
+
+        ${p.content_type === 'narrative' && p.narrative ? p.narrative : `
+        <!-- Paragraph 1: Introduction -->
+        <div class="paragraph-section" data-step="01">
+          <h3><span class="emoji">📌</span> บทนำ — ปัญหาที่จะแก้</h3>
+          <p>${esc(p.intro || p.description || 'No introduction provided.')}</p>
+        </div>
+
+        <!-- Paragraph 2: Method -->
+        <div class="paragraph-section" data-step="02">
+          <h3><span class="emoji">🔧</span> วิธีการทำ</h3>
+          <p>${esc(p.method || 'No method description provided.')}</p>
+        </div>
+
+        <!-- Paragraph 3: Summary -->
+        <div class="paragraph-section" data-step="03">
+          <h3><span class="emoji">📊</span> บทสรุป — ปัญหา, วิธีที่ Work, Next Steps</h3>
+          <p>${esc(p.summary || 'No summary provided.')}</p>
+        </div>
+        `}
+
+        ${p.alternatives && p.alternatives.length > 0 ? `
+        <div class="paragraph-section" data-step="alt">
+          <h3><span class="emoji">🔄</span> ทางเลือกที่ลอง</h3>
+          <ul>
+            ${p.alternatives.map(a => `<li>${esc(a)}</li>`).join('')}
+          </ul>
+          ${p.decision_reason ? `<div class="highlight-box success"><strong>เหตุผลการตัดสินใจ:</strong> ${esc(p.decision_reason)}</div>` : ''}
+        </div>` : ''}
+
+        ${related.length > 0 ? `
+        <div class="setup-card" style="margin-top:20px">
+          <h3>📎 Related Projects (${related.length})</h3>
+          <div class="related-grid">
+            ${related.map(r => `
+              <div class="related-card" onclick="navigate('/project/${r.id}')">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                  <h4>${esc(r.name)}</h4>
+                  <span class="badge badge-${r.status.toLowerCase()}" style="font-size:10px;padding:2px 6px">${icon(r.status)}</span>
+                </div>
+                <p>${esc(r.description)}</p>
+              </div>`).join('')}
+          </div>
+        </div>` : ''}
+        </div>
+
+        ${p.architecture_url ? `
+        <div class="detail-tab-content" id="detailTabArchitecture">
+          <iframe class="arch-iframe" src="${esc(p.architecture_url)}" loading="lazy"></iframe>
+        </div>` : ''}
+
+        <div style="margin-top:24px;padding-top:16px;border-top:1px solid var(--border)">
+          <button class="btn btn-ghost" onclick="navigate('/')">← Back to All Projects</button>
+        </div>`;
+      window.scrollTo(0, 0);
+    }
+
+    function switchDetailTab(tab, btn) {
+      document.querySelectorAll('.detail-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.detail-tab-content').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('detailTab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+    }
+
+    // ===== Helpers =====
+    function esc(s) { if (!s) return ''; const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+    function icon(s) { return s === 'Worked' ? '✅' : s === 'Failed' ? '❌' : '⚠️'; }
+    function fmtDate(d) { try { return new Date(d).toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' }); } catch { return d; } }
+    function split(s) { return s.split(',').map(x => x.trim()).filter(Boolean); }
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    init();
+  </script>
+</body>
+</html>
