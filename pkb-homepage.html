@@ -14,7 +14,6 @@
     *{margin:0;padding:0;box-sizing:border-box;}
     body{font-family:'Inter','Noto Sans Thai',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow:hidden;}
 
-    /* ===== BACKGROUND ===== */
     .bg{position:fixed;inset:0;z-index:0;overflow:hidden;background:var(--grass);}
     .rh{position:absolute;top:50%;left:0;right:0;height:200px;transform:translateY(-50%);background:var(--road);border-top:3px solid #1a1a25;border-bottom:3px solid #1a1a25;}
     .rv{position:absolute;left:50%;top:0;bottom:0;width:200px;transform:translateX(-50%);background:var(--road);border-left:3px solid #1a1a25;border-right:3px solid #1a1a25;}
@@ -29,41 +28,34 @@
     .cw-e{right:calc(50% - 110px);top:calc(50% - 90px);width:18px;height:180px;background:repeating-linear-gradient(180deg,var(--cw) 0 12px,transparent 12px 22px);}
     .cw-w{left:calc(50% - 110px);top:calc(50% - 90px);width:18px;height:180px;background:repeating-linear-gradient(180deg,var(--cw) 0 12px,transparent 12px 22px);}
 
-    /* ===== 4 LARGE FACTORIES (only 1/4 visible) ===== */
     .fac{position:absolute;z-index:1;border-radius:4px;box-shadow:2px 3px 10px rgba(0,0,0,0.5);overflow:hidden;}
     .fac::after{content:'';position:absolute;border-radius:2px;background:rgba(255,200,50,0.2);}
     .fac-ch{position:absolute;top:-18px;width:12px;height:18px;border-radius:2px 2px 0 0;}
     .fac-sm{position:absolute;top:-30px;width:8px;height:8px;background:rgba(200,200,200,0.3);border-radius:50%;animation:sm 3s ease-out infinite;}
     @keyframes sm{0%{opacity:.5;transform:translateY(0) scale(1);}100%{opacity:0;transform:translateY(-25px) scale(2.2);}}
 
-    /* Top-Left: huge factory, only bottom-right quarter visible */
     .fac-tl{bottom:calc(50% + 100px);right:calc(50% + 100px);width:300px;height:250px;background:linear-gradient(135deg,#1e2a3a,#253545);}
     .fac-tl::after{width:14px;height:16px;bottom:30px;right:30px;box-shadow:-24px 0 0 rgba(255,200,50,0.2),-48px 0 0 rgba(255,200,50,0.2),0 -28px 0 rgba(255,200,50,0.2),-24px -28px 0 rgba(255,200,50,0.2);}
     .fac-tl .fac-ch{right:25px;bottom:15px;background:#2a3a4a;}
     .fac-tl .fac-ch+.fac-sm{right:27px;bottom:28px;}
 
-    /* Top-Right */
     .fac-tr{bottom:calc(50% + 100px);left:calc(50% + 100px);width:320px;height:260px;background:linear-gradient(135deg,#2a1e3a,#352545);}
     .fac-tr::after{width:14px;height:16px;bottom:28px;left:30px;box-shadow:24px 0 0 rgba(255,200,50,0.2),48px 0 0 rgba(255,200,50,0.2),0 -26px 0 rgba(255,200,50,0.2);}
     .fac-tr .fac-ch{left:20px;bottom:12px;background:#3a2a4a;}
     .fac-tr .fac-ch+.fac-sm{left:22px;bottom:25px;}
 
-    /* Bottom-Left */
     .fac-bl{top:calc(50% + 100px);right:calc(50% + 100px);width:310px;height:270px;background:linear-gradient(135deg,#3a2a1e,#453525);}
     .fac-bl::after{width:14px;height:16px;top:28px;right:28px;box-shadow:-24px 0 0 rgba(255,200,50,0.2),-48px 0 0 rgba(255,200,50,0.2),0 26px 0 rgba(255,200,50,0.2),-24px 26px 0 rgba(255,200,50,0.2);}
     .fac-bl .fac-ch{right:22px;top:12px;background:#4a3a2a;}
     .fac-bl .fac-ch+.fac-sm{right:24px;top:25px;}
 
-    /* Bottom-Right */
     .fac-br{top:calc(50% + 100px);left:calc(50% + 100px);width:330px;height:280px;background:linear-gradient(135deg,#1e3a2a,#254535);}
     .fac-br::after{width:14px;height:16px;top:30px;left:28px;box-shadow:24px 0 0 rgba(255,200,50,0.2),48px 0 0 rgba(255,200,50,0.2),72px 0 0 rgba(255,200,50,0.2),0 28px 0 rgba(255,200,50,0.2),24px 28px 0 rgba(255,200,50,0.2);}
     .fac-br .fac-ch{left:25px;top:14px;background:#2a4a3a;}
     .fac-br .fac-ch+.fac-sm{left:27px;top:27px;}
 
-    /* Trees (small decorations along road edges) */
     .tree{position:absolute;z-index:1;border-radius:50%;box-shadow:0 0 4px rgba(0,60,0,0.4);}
 
-    /* ===== CARS ===== */
     .car{position:absolute;z-index:4;will-change:left,top;}
     .car .bh{width:54px;height:24px;background:var(--c);border-radius:5px 8px 5px 5px;position:relative;box-shadow:2px 2px 5px rgba(0,0,0,0.5);}
     .car .bh::before{content:'';position:absolute;top:3px;left:12px;width:20px;height:18px;background:rgba(100,180,255,0.25);border-radius:2px 4px 2px 2px;border:1px solid rgba(255,255,255,0.08);}
@@ -76,7 +68,6 @@
     .car .bv .w{position:absolute;width:9px;height:9px;background:#1a1a1a;border-radius:50%;border:2px solid #333;}
     .car .bv .wf{bottom:7px;left:-4px;}.car .bv .wr{top:7px;left:-4px;}
 
-    /* ===== PORTAL ===== */
     .portal{position:relative;z-index:10;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 24px 40px;gap:28px;}
     .ph{position:fixed;top:0;left:0;right:0;background:rgba(10,10,15,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:14px 24px;z-index:100;text-align:center;}
     .ph h1{font-size:18px;font-weight:700;display:inline-flex;align-items:center;gap:8px;}
@@ -89,82 +80,31 @@
     .pb .ic{font-size:20px;}.pb .ar{font-size:14px;opacity:0.6;transition:opacity 0.3s;}.pb:hover .ar{opacity:1;}
     .pf{position:fixed;bottom:16px;font-size:11px;color:var(--muted);z-index:100;width:100%;text-align:center;}
 
-    /* ===== WRENCH: 2.5D illustration with CSS transforms ===== */
-    .ws{width:120px;height:240px;perspective:800px;}
+    /* ===== 3D WRENCH:5 boxes ===== */
+    .ws{width:120px;height:260px;perspective:800px;}
     .wr3d{width:100%;height:100%;position:relative;transform-style:preserve-3d;animation:ws 8s cubic-bezier(0.4,0,0.2,1) infinite;}
     @keyframes ws{
-      0%{transform:rotateX(-8deg) rotateY(-12deg);}
-      25%{transform:rotateX(4deg) rotateY(12deg);}
-      50%{transform:rotateX(-6deg) rotateY(-8deg);}
-      75%{transform:rotateX(6deg) rotateY(10deg);}
-      100%{transform:rotateX(-8deg) rotateY(-12deg);}
+      0%{transform:rotateX(-5deg) rotateY(0deg);}
+      25%{transform:rotateX(3deg) rotateY(90deg);}
+      50%{transform:rotateX(-5deg) rotateY(180deg);}
+      75%{transform:rotateX(3deg) rotateY(270deg);}
+      100%{transform:rotateX(-5deg) rotateY(360deg);}
     }
+    .box{position:absolute;left:50%;top:50%;transform-style:preserve-3d;}
+    .face{position:absolute;backface-visibility:visible;}
 
-    .wf{position:absolute;backface-visibility:visible;}
-
-    /* Wrench front face — full illustration with shading */
-    .wf-f{width:120px;height:240px;transform:rotateY(0deg) translateZ(8px);
-      background:
-        /* Handle highlight */
-        linear-gradient(90deg,rgba(255,255,255,0.08) 0%,rgba(255,255,255,0.15) 40%,rgba(255,255,255,0.08) 60%,rgba(0,0,0,0.1) 100%),
-        /* Base gradient */
-        linear-gradient(180deg,#7a8a9d 0%,#5a6577 15%,#4a5568 30%,#5a6577 50%,#4a5568 70%,#5a6577 85%,#7a8a9d 100%);
-      clip-path:polygon(
-        /* Jaw left */
-        30% 0%,34% 0%,36% 4%,36% 8%,33% 10%,30% 10%,
-        27% 12%,27% 16%,33% 16%,
-        /* Head top */
-        40% 16%,40% 12%,36% 10%,
-        /* Gap */
-        36% 12%,40% 16%,
-        /* Inner left */
-        42% 16%,42% 13%,48% 13%,
-        48% 16%,
-        /* Inner right */
-        52% 16%,52% 13%,58% 13%,
-        58% 16%,
-        /* Gap right */
-        60% 12%,64% 10%,
-        /* Head top right */
-        60% 12%,60% 16%,67% 16%,
-        73% 16%,73% 12%,70% 10%,67% 10%,64% 8%,64% 4%,66% 0%,70% 0%,
-        /* Head bottom right */
-        70% 20%,65% 24%,60% 26%,
-        /* Neck right */
-        58% 28%,56% 30%,
-        /* Handle right */
-        56% 95%,54% 100%,46% 100%,44% 95%,
-        /* Handle left */
-        44% 30%,42% 28%,
-        /* Neck left */
-        40% 26%,35% 24%,30% 20%
-      );
-    }
-    /* Back face */
-    .wf-b{width:120px;height:240px;transform:rotateY(180deg) translateZ(8px);
-      background:linear-gradient(180deg,#4a5568 0%,#3d4654 30%,#2d3748 60%,#4a5568 100%);
-      clip-path:polygon(
-        30% 0%,34% 0%,36% 4%,36% 8%,33% 10%,30% 10%,27% 12%,27% 16%,33% 16%,
-        40% 16%,40% 12%,36% 10%,36% 12%,40% 16%,
-        42% 16%,42% 13%,48% 13%,48% 16%,52% 16%,52% 13%,58% 13%,58% 16%,
-        60% 12%,64% 10%,60% 12%,60% 16%,67% 16%,73% 16%,73% 12%,70% 10%,67% 10%,64% 8%,64% 4%,66% 0%,70% 0%,
-        70% 20%,65% 24%,60% 26%,58% 28%,56% 30%,56% 95%,54% 100%,46% 100%,44% 95%,
-        44% 30%,42% 28%,40% 26%,35% 24%,30% 20%
-      );
-    }
-    /* Right side (thickness) */
-    .wf-r{width:16px;height:240px;background:linear-gradient(180deg,#5a6577,#3d4654,#5a6577);transform:rotateY(90deg) translateZ(60px);}
-    /* Left side */
-    .wf-l{width:16px;height:240px;background:linear-gradient(180deg,#3d4654,#2d3748,#3d4654);transform:rotateY(-90deg) translateZ(60px);}
-    /* Top cap */
-    .wf-t{width:120px;height:16px;background:#6b7a8d;transform:rotateX(90deg) translateZ(120px);}
-    /* Bottom cap */
-    .wf-bo{width:120px;height:16px;background:#2d3748;transform:rotateX(-90deg) translateZ(120px);}
+    /* Face colors for3D shading */
+    .face-f{background:#6b7a8d;} /* front */
+    .face-b{background:#4a5568;} /* back */
+    .face-r{background:#5a6577;} /* right */
+    .face-l{background:#3d4654;} /* left */
+    .face-t{background:#7a8a9d;} /* top */
+    .face-bo{background:#2d3748;} /* bottom */
 
     .wsh{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:90px;height:14px;background:radial-gradient(ellipse,rgba(0,0,0,0.35) 0%,transparent 70%);animation:sp 8s cubic-bezier(0.4,0,0.2,1) infinite;}
     @keyframes sp{0%,100%{transform:translateX(-50%) scaleX(1);opacity:.5;}50%{transform:translateX(-50%) scaleX(1.15);opacity:.3;}}
 
-    @media(max-width:600px){.ps{gap:8px;}.si{min-width:70px;padding:10px 14px;}.si .n{font-size:22px;}.ws{width:90px;height:180px;}}
+    @media(max-width:600px){.ps{gap:8px;}.si{min-width:70px;padding:10px 14px;}.si .n{font-size:22px;}.ws{width:90px;height:200px;}}
   </style>
 </head>
 <body>
@@ -172,23 +112,18 @@
 <div class="bg">
   <div class="rh"></div><div class="rv"></div><div class="ix"></div>
   <div class="cw cw-n"></div><div class="cw cw-s"></div><div class="cw cw-e"></div><div class="cw cw-w"></div>
-
-  <!-- 4 HUGE Factories (only 1/4 visible at intersection corners) -->
   <div class="fac fac-tl"><div class="fac-ch"></div><div class="fac-sm"></div></div>
   <div class="fac fac-tr"><div class="fac-ch"></div><div class="fac-sm"></div></div>
   <div class="fac fac-bl"><div class="fac-ch"></div><div class="fac-sm"></div></div>
   <div class="fac fac-br"><div class="fac-ch"></div><div class="fac-sm"></div></div>
-
-  <!-- Trees along road edges -->
-  <div class="tree" style="width:16px;height:16px;background:#2a4a2a;top:calc(50% - 105px);left:calc(50% - 115px);"></div>
-  <div class="tree" style="width:12px;height:12px;background:#1e3a1e;top:calc(50% + 95px);left:calc(50% - 115px);"></div>
-  <div class="tree" style="width:14px;height:14px;background:#2a4a2a;top:calc(50% - 105px);right:calc(50% - 115px);"></div>
-  <div class="tree" style="width:16px;height:16px;background:#1e3a1e;top:calc(50% + 95px);right:calc(50% - 115px);"></div>
-  <div class="tree" style="width:14px;height:14px;background:#2a4a2a;top:calc(50% - 115px);left:calc(50% + 95px);"></div>
-  <div class="tree" style="width:12px;height:12px;background:#1e3a1e;top:calc(50% + 105px);left:calc(50% + 95px);"></div>
-  <div class="tree" style="width:16px;height:16px;background:#2a4a2a;top:calc(50% - 115px);right:calc(50% + 95px);"></div>
-  <div class="tree" style="width:12px;height:12px;background:#1e3a1e;top:calc(50% + 105px);right:calc(50% + 95px);"></div>
-
+  <div class="tree" style="width:16px;height:16px;background:#2a4a2a;top:calc(50% - 115px);left:calc(50% - 125px);"></div>
+  <div class="tree" style="width:12px;height:12px;background:#1e3a1e;top:calc(50% + 105px);left:calc(50% - 125px);"></div>
+  <div class="tree" style="width:14px;height:14px;background:#2a4a2a;top:calc(50% - 115px);right:calc(50% - 125px);"></div>
+  <div class="tree" style="width:16px;height:16px;background:#1e3a1e;top:calc(50% + 105px);right:calc(50% - 125px);"></div>
+  <div class="tree" style="width:14px;height:14px;background:#2a4a2a;top:calc(50% - 125px);left:calc(50% + 105px);"></div>
+  <div class="tree" style="width:12px;height:12px;background:#1e3a1e;top:calc(50% + 115px);left:calc(50% + 105px);"></div>
+  <div class="tree" style="width:16px;height:16px;background:#2a4a2a;top:calc(50% - 125px);right:calc(50% + 105px);"></div>
+  <div class="tree" style="width:12px;height:12px;background:#1e3a1e;top:calc(50% + 115px);right:calc(50% + 105px);"></div>
   <div id="cc"></div>
 </div>
 
@@ -202,17 +137,7 @@
     <div class="si"><div class="n" style="color:var(--amber)">2</div><div class="l">Pitfall</div></div>
   </div>
 
-  <div class="ws">
-    <div class="wr3d">
-      <div class="wf wf-f"></div>
-      <div class="wf wf-b"></div>
-      <div class="wf wf-r"></div>
-      <div class="wf wf-l"></div>
-      <div class="wf wf-t"></div>
-      <div class="wf wf-bo"></div>
-    </div>
-    <div class="wsh"></div>
-  </div>
+  <div class="ws"><div class="wr3d" id="wr"></div><div class="wsh"></div></div>
 
   <a href="project-knowledge-base.html" class="pb"><span class="ic">📋</span> View All Projects <span class="ar">→</span></a>
 </div>
@@ -220,6 +145,53 @@
 <div class="pf">Ampas Industries Co., Ltd. — Process Engineering Hub</div>
 
 <script>
+// ===== 3D WRENCH: Build from 5 boxes =====
+const wr=document.getElementById('wr');
+
+function box(w,h,d,x,y){
+  const b=document.createElement('div');b.className='box';
+  b.style.cssText=`transform:translate3d(${x}px,${y}px,0)`;
+  const fw=Math.round(w/2),fh=Math.round(h/2),fd=Math.round(d/2);
+  // front
+  let f=document.createElement('div');f.className='face face-f';
+  f.style.cssText=`width:${w}px;height:${h}px;left:${-fw}px;top:${-fh}px;transform:translateZ(${fd}px)`;
+  b.appendChild(f);
+  // back
+  f=document.createElement('div');f.className='face face-b';
+  f.style.cssText=`width:${w}px;height:${h}px;left:${-fw}px;top:${-fh}px;transform:rotateY(180deg) translateZ(${fd}px)`;
+  b.appendChild(f);
+  // right
+  f=document.createElement('div');f.className='face face-r';
+  f.style.cssText=`width:${d}px;height:${h}px;left:${-fd}px;top:${-fh}px;transform:rotateY(90deg) translateZ(${fw}px)`;
+  b.appendChild(f);
+  // left
+  f=document.createElement('div');f.className='face face-l';
+  f.style.cssText=`width:${d}px;height:${h}px;left:${-fd}px;top:${-fh}px;transform:rotateY(-90deg) translateZ(${fw}px)`;
+  b.appendChild(f);
+  // top
+  f=document.createElement('div');f.className='face face-t';
+  f.style.cssText=`width:${w}px;height:${d}px;left:${-fw}px;top:${-fd}px;transform:rotateX(90deg) translateZ(${fh}px)`;
+  b.appendChild(f);
+  // bottom
+  f=document.createElement('div');f.className='face face-bo';
+  f.style.cssText=`width:${w}px;height:${d}px;left:${-fw}px;top:${-fd}px;transform:rotateX(-90deg) translateZ(${fh}px)`;
+  b.appendChild(f);
+  return b;
+}
+
+// Wrench parts (center at 0,0):
+// Left jaw:   15×50×20  at (-32.5, -90)
+// Right jaw:  15×50×20  at (+32.5, -90)
+// Bottom bar: 50×15×20  at (0, -72.5)
+// Neck:       20×30×20  at (0, -50)
+// Handle:     20×150×20 at (0, +40)
+wr.appendChild(box(15,50,20,-32.5,-90));
+wr.appendChild(box(15,50,20,32.5,-90));
+wr.appendChild(box(50,15,20,0,-72.5));
+wr.appendChild(box(20,30,20,0,-50));
+wr.appendChild(box(20,150,20,0,40));
+
+// ===== CARS =====
 const cc=document.getElementById('cc');
 const ct=[
   {d:'r',b:'bh',s:[6,10],t:'calc(50% - 30px)',c:['#e74c3c','#f1c40f','#ecf0f1','#3498db']},
