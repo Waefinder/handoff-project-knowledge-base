@@ -106,6 +106,26 @@ RTX 4060 Ti (288 GB/s) + 7B Q4 (~4 GB)
       <strong>Rule of thumb:</strong> เอา bandwidth ÷ ขนาด model (GB) = tok/s ceiling แล้ว × 0.5–0.7 ได้ค่าจริง ใช้ได้ทั้ง NVIDIA และ Apple Silicon
     </div>
 
+    <h3>Prefill (prompt processing) — คนละสูตรกับ decode</h3>
+    <p>ตอนที่ model อ่าน prompt (prefill) <strong>ถูกจำกัดด้วย compute ไม่ใช่ bandwidth</strong> — ทุก token ใน prompt ต้องคูณ matrix ผ่านทุก layer 1 ครั้ง (กฎ 2N):</p>
+
+    <div class="formula-box">
+      <div class="label">Prefill Speed</div>
+      <div class="math">prefill tok/s ≈ GPU FLOPS ÷ (2 × Parameters)</div>
+      <div class="sub">เวลาอ่าน prompt = prompt_tokens ÷ prefill tok/s — ยิ่ง prompt ยาว ยิ่งรอแรกนาน (TTFT)</div>
+    </div>
+
+<pre><code>7B model (2×7B = 14 GFLOPs/token), prompt 1,000 tokens:
+
+RTX 4090  (~82 TFLOPS FP16) → 1000 ÷ 5,857 ≈ 0.17 วินาที
+M2 Ultra  (~27 TFLOPS FP16) → 1000 ÷ 1,928 ≈ 0.52 วินาที
+RTX 4060 Ti (~22 TFLOPS)    → 1000 ÷ 1,571 ≈ 0.64 วินาที</code></pre>
+
+    <div class="formula-box">
+      <div class="math">Decode → ดู Bandwidth | Prefill → ดู FLOPS</div>
+      <div class="sub">2 phase คนละ bottleneck — GPU แรงแต่ VRAM ช้า = prefill เร็ว decode ช้า</div>
+    </div>
+
     <h2>2. GPU Comparison — Spec ไหนสำคัญจริง</h2>
     <p>สำหรับ single-stream decode <strong>memory bandwidth คือ king</strong> — core clock, CUDA cores, tensor cores พวกนั้นสำคัญกับ training และ batch inference แต่ไม่ช่วย decode เท่าไหร่</p>
 
@@ -124,6 +144,7 @@ RTX 4060 Ti (288 GB/s) + 7B Q4 (~4 GB)
     </table>
     <p style="font-size:0.82rem;color:var(--muted);margin-top:-8px;">* llama.cpp / MLX decode speed, single stream, Q4_K_M — ค่าจริง varies กับ context length และ batch size</p>
 
+    <h3>มือหนึ่ง (New)</h3>
     <div class="grid-2">
       <div class="stat-card">
         <div class="label">🏆 เร็วสุด (Raw Speed)</div>
@@ -136,14 +157,22 @@ RTX 4060 Ti (288 GB/s) + 7B Q4 (~4 GB)
         <div class="desc">60W ได้ 800 GB/s — ประหยัดกว่า NVIDIA 3–5 เท่า เงียบ ไม่มีพัดลม</div>
       </div>
       <div class="stat-card">
+        <div class="label">🏆 รัน Model ใหญ่สุด</div>
+        <div class="value" style="color:var(--purple)">M2 Ultra 192GB</div>
+        <div class="desc">70B Q4 (~40GB) รันได้แบบไม่ต้อง offload — GPU ฝั่ง NVIDIA ทำไม่ได้</div>
+      </div>
+    </div>
+
+    <h3>มือสอง (Used)</h3>
+    <div class="grid-2">
+      <div class="stat-card">
         <div class="label">🏆 คุ้มเงินสุด</div>
         <div class="value" style="color:var(--amber)">RTX 3090 มือสอง</div>
         <div class="desc">936 GB/s ราคา ~25,000-30,000 บาท — ได้ 93% ของ 4090 ในราคากึ่งหนึ่ง</div>
       </div>
       <div class="stat-card">
-        <div class="label">🏆 รัน Model ใหญ่สุด</div>
-        <div class="value" style="color:var(--purple)">M2 Ultra 192GB</div>
-        <div class="desc">70B Q4 (~40GB) รันได้แบบไม่ต้อง offload — GPU ฝั่ง NVIDIA ทำไม่ได้</div>
+        <div class="label">⚠️ สิ่งที่ต้องเช็คก่อนซื้อมือสอง</div>
+        <div class="desc" style="margin-top:2px;">• อายุการ์ด / ขุด mining มาก่อนไหม<br>• VRAM error test (matmulf32 30 นาที)<br>• Warranty เหลือไหม<br>• เทียบราคามือหนึ่ง — 4060 Ti 16GB ใหม่ ~15,000 บาท</div>
       </div>
     </div>
 

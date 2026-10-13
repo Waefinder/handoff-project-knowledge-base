@@ -266,11 +266,10 @@
       <a class="article-card" href="blog/gpu-token-calc.html">
         <h2>⚡ คำนวณ Tokens/sec ก่อนซื้อ GPU — ไม่ให้ซื้อผิด</h2>
         <div class="excerpt">
-          สูตรทำนายความเร็ว LLM inference จาก spec hardware — bandwidth, wattage, overclock
-          สำหรับทั้ง NVIDIA GPU และ Apple Silicon Mac: สูตร tok/s = bandwidth ÷ model size,
-          ตารางเทียบ GPU 8 รุ่น (bandwidth / VRAM / tok/s / perf-per-watt),
-          ทำไม mem OC ช่วย 10% แต่ core OC ไม่ช่วย, GPU vs Mac comparison,
-          Checklist 7 ข้อก่อนซื้อ และข้อผิดพลาดที่พบบ่อย 5 ข้อ
+          สูตรทำนายความเร็ว LLM inference จาก spec hardware — prefill (compute-bound: FLOPS ÷ 2N) และ decode (bandwidth-bound: GB/s ÷ model size),
+          wattage, overclock สำหรับ NVIDIA GPU และ Apple Silicon Mac:
+          ตารางเทียบ GPU 8 รุ่น, การ์ดแยกมือหนึ่ง/มือสอง (พร้อม checklist ซื้อมือสอง),
+          ทำไม mem OC ช่วย 10% แต่ core OC ไม่ช่วย, GPU vs Mac, Checklist 7 ข้อก่อนซื้อ
         </div>
         <div class="article-meta">
           <span>📅 13 ต.ค. 2026</span>
