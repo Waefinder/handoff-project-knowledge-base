@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>คำนวณ Tokens/sec ก่อนซื้อ GPU — ไม่ให้ซื้อผิด — Blog</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#0a0a0f;--bg-secondary:#12121a;--bg3:#1a1a26;--card:#16161f;--border:#252535;--border-light:#35354a;--text:#e8e8ed;--text-secondary:#a0a0b0;--muted:#6b6b80;--green:#4ade80;--red:#f87171;--amber:#fbbf24;--blue:#60a5fa;--purple:#c084fc;--purple-dim:rgba(192,132,252,0.10);--cyan:#22d3ee;--cyan-dim:rgba(34,211,238,0.10);--green-dim:rgba(74,222,128,0.10);--red-dim:rgba(248,113,113,0.10);--amber-dim:rgba(251,191,36,0.10);--blue-dim:rgba(96,165,250,0.10);}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Inter','Leelawadee UI','Noto Sans Thai',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.85;}
+    .header{background:rgba(18,18,26,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:14px 24px;position:sticky;top:0;z-index:100;}
+    .header-inner{max-width:1000px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;}
+    .header h1{font-size:17px;font-weight:700;display:flex;align-items:center;gap:8px;}
+    .nav-links{display:flex;gap:8px;flex-wrap:wrap;}
+    .nav-btn{padding:7px 14px;background:var(--card);border:1px solid var(--border);border-radius:8px;color:var(--text-secondary);font-size:12.5px;font-weight:600;text-decoration:none;transition:all 0.2s;white-space:nowrap;}
+    .nav-btn:hover{border-color:var(--blue);color:var(--blue);}
+    .article{max-width:1000px;margin:0 auto;padding:40px 24px 60px;}
+    .article-meta-top{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted);margin-bottom:10px;align-items:center;}
+    .tag{padding:3px 10px;background:var(--purple-dim);color:var(--purple);border-radius:20px;font-size:11px;font-weight:600;}
+    .tag.alt{background:var(--cyan-dim);color:var(--cyan);}
+    .tag.date{background:var(--amber-dim);color:var(--amber);}
+    h1.title{font-size:28px;font-weight:800;line-height:1.35;margin-bottom:20px;}
+    h2{font-size:21px;font-weight:700;margin:40px 0 14px;color:var(--blue);padding-bottom:8px;border-bottom:1px solid var(--border);}
+    h3{font-size:17px;font-weight:700;margin:28px 0 10px;color:var(--purple);}
+    p{margin-bottom:16px;color:var(--text-secondary);}
+    strong{color:var(--text);}
+    code{font-family:'JetBrains Mono',monospace;font-size:0.88em;background:var(--bg3);padding:2px 7px;border-radius:5px;color:var(--amber);}
+    pre{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:18px 22px;overflow-x:auto;margin:18px 0;line-height:1.7;}
+    pre code{background:none;padding:0;font-size:0.9rem;color:#c8e6c9;}
+    .formula-box{background:linear-gradient(135deg,var(--bg3),#1e1e35);border:1px solid var(--purple);border-radius:12px;padding:22px 26px;margin:22px 0;text-align:center;}
+    .formula-box .label{font-size:0.82rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+    .formula-box .math{font-family:'JetBrains Mono',monospace;font-size:1.3rem;color:var(--amber);font-weight:600;margin:6px 0;}
+    .formula-box .sub{font-size:0.84rem;color:var(--muted);margin-top:6px;}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:22px 0;}
+    .stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;}
+    .stat-card .label{font-size:0.78rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:6px;}
+    .stat-card .value{font-family:'JetBrains Mono',monospace;font-size:1.6rem;font-weight:700;}
+    .stat-card .desc{font-size:0.82rem;color:var(--muted);margin-top:6px;line-height:1.5;}
+    table{width:100%;border-collapse:collapse;margin:18px 0;font-size:0.9rem;}
+    th{background:var(--card);color:var(--blue);text-align:left;padding:11px 13px;border-bottom:2px solid var(--border);font-weight:600;font-size:0.84rem;}
+    td{padding:10px 13px;border-bottom:1px solid var(--border);color:var(--text-secondary);}
+    tr:hover td{background:rgba(96,165,250,0.03);}
+    .t-green{color:var(--green);font-weight:600;}
+    .t-red{color:var(--red);font-weight:600;}
+    .t-amber{color:var(--amber);font-weight:600;}
+    .t-blue{color:var(--blue);font-weight:600;}
+    .warn-box{background:var(--red-dim);border:1px solid var(--red);border-radius:12px;padding:16px 20px;margin:20px 0;font-size:0.93rem;}
+    .warn-box::before{content:"\26A0\FE0F ";}
+    .tip-box{background:var(--green-dim);border:1px solid var(--green);border-radius:12px;padding:16px 20px;margin:20px 0;font-size:0.93rem;}
+    .tip-box::before{content:"\1F4A1 ";}
+    .checklist{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px 26px;margin:22px 0;}
+    .checklist li{margin:12px 0;padding-left:8px;list-style:none;color:var(--text-secondary);}
+    .checklist li::before{content:"\2610 ";color:var(--amber);font-weight:700;font-size:1.15em;}
+    .checklist li strong{display:block;font-size:1rem;color:var(--text);}
+    .checklist li span{font-size:0.86rem;color:var(--muted);}
+    .footer{text-align:center;padding:24px;font-size:11.5px;color:var(--muted);border-top:1px solid var(--border);margin-top:32px;}
+    @media(max-width:640px){.article{padding:28px 16px;}h1.title{font-size:22px;}.grid-2{grid-template-columns:1fr;}table{font-size:0.82rem;}}
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-inner">
+      <h1><span>\270D\FE0F</span> Blog</h1>
+      <div class="nav-links">
+        <a class="nav-btn" href="../pkb-homepage.html">\1F3E0 Home</a>
+        <a class="nav-btn" href="../project-knowledge-base.html">\1F4CB PKB</a>
+        <a class="nav-btn" href="../blog.html">\1F4DA All Posts</a>
+      </div>
+    </div>
+  </div>
+  <div class="article">
+    <div class="article-meta-top">
+      <span class="tag date">\1F4C5 22 \u0E01.\u0E22. 2026</span>
+      <span>\u23F1\uFE0F ~8 \u0E19\u0E32\u0E17\u0E35</span>
+      <span>\u270D\uFE0F ~1,400 \u0E04\u0E33</span>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <span class="tag">GPU</span>
+        <span class="tag alt">Local LLM</span>
+        <span class="tag">Hardware</span>
+      </div>
+    </div>
+    <h1 class="title">\u0E04\u0E33\u0E19\u0E27\u0E13 Tokens/sec \u0E01\u0E48\u0E2D\u0E19\u0E0B\u0E37\u0E49\u0E2D GPU \u2014 \u0E44\u0E21\u0E48\u0E43\u0E2B\u0E49\u0E0B\u0E37\u0E49\u0E2D\u0E1C\u0E34\u0E14</h1>
+    <p>\u0E2A\u0E39\u0E15\u0E23\u0E07\u0E48\u0E32\u0E22\u0E46 \u0E17\u0E35\u0E48\u0E43\u0E0A\u0E49\u0E17\u0E33\u0E19\u0E32\u0E22\u0E04\u0E27\u0E32\u0E21\u0E40\u0E23\u0E47\u0E27 LLM inference \u0E08\u0E32\u0E01 spec hardware \u2014 bandwidth, wattage, overclock \u2014 \u0E01\u0E48\u0E2D\u0E15\u0E31\u0E14\u0E2A\u0E34\u0E19\u0E43\u0E08\u0E0B\u0E37\u0E49\u0E2D \u0E44\u0E21\u0E48\u0E27\u0E48\u0E32\u0E08\u0E30\u0E40\u0E1B\u0E47\u0E19 NVIDIA GPU \u0E2B\u0E23\u0E37\u0E2D Apple Silicon Mac</p>
+
+    <h2>1. \u0E2A\u0E39\u0E15\u0E23\u0E40\u0E14\u0E35\u0E22\u0E27\u0E17\u0E35\u0E48\u0E15\u0E49\u0E2D\u0E07\u0E23\u0E39\u0E49</h2>
+    <p>Token generation (decode) <strong>\u0E16\u0E39\u0E01\u0E08\u0E33\u0E01\u0E31\u0E14\u0E14\u0E49\u0E27\u0E22 memory bandwidth</strong> \u0E44\u0E21\u0E48\u0E43\u0E0A\u0E48 compute \u2014 \u0E17\u0E38\u0E01 token \u0E43\u0E2B\u0E21\u0E48\u0E15\u0E49\u0E2D\u0E07\u0E2D\u0E48\u0E32\u0E19 model weights \u0E17\u0E31\u0E49\u0E07\u0E2B\u0E21\u0E14 1 \u0E23\u0E2D\u0E1A \u0E14\u0E31\u0E07\u0E19\u0E31\u0E49\u0E19:</p>
+    <div class="formula-box">
+      <div class="label">Token Generation Rate</div>
+      <div class="math">tokens/sec \u2248 Memory Bandwidth (GB/s) \u00F7 Model Size (GB)</div>
+      <div class="sub">\u0E04\u0E48\u0E32\u0E08\u0E23\u0E34\u0E07 = 50\u201370% \u0E02\u0E2D\u0E07\u0E04\u0E48\u0E32\u0E19\u0E35\u0E49</div>
+    </div>
+    <p><strong>\u0E08\u0E1A.</strong> \u0E16\u0E49\u0E32\u0E08\u0E33\u0E44\u0E14\u0E49\u0E41\u0E04\u0E48\u0E2D\u0E22\u0E48\u0E32\u0E07\u0E40\u0E14\u0E35\u0E22\u0E27 \u0E08\u0E33\u0E2A\u0E39\u0E15\u0E23\u0E19\u0E35\u0E49 \u0E17\u0E35\u0E48\u0E40\u0E2B\u0E25\u0E37\u0E2D\u0E04\u0E37\u0E2D\u0E23\u0E32\u0E22\u0E30\u0E40\u0E25\u0E35\u0E22\u0E14</p>
+    <h3>\u0E15\u0E31\u0E27\u0E2D\u0E22\u0E48\u0E32\u0E07\u0E40\u0E23\u0E47\u0E27</h3>
+<pre><code>RTX 4090 (1008 GB/s) + 7B Q4 (~4 GB)
+\u2192 1008 \u00F7 4 = 252 tok/s (theoretical) \u2192 ~120-150 tok/s (real)
+
+M2 Ultra (800 GB/s) + 7B Q4 (~4 GB)
+\u2192 800 \u00F7 4 = 200 tok/s (theoretical) \u2192 ~60-90 tok/s (real)
+
+RTX 4060 Ti (288 GB/s) + 7B Q4 (~4 GB)
+\u2192 288 \u00F7 4 = 72 tok/s (theoretical) \u2192 ~35-50 tok/s (real)</code></pre>
+    <div class="tip-box"><strong>Rule of thumb:</strong> \u0E40\u0E2D\u0E32 bandwidth \u00F7 \u0E02\u0E19\u0E32\u0E14 model (GB) = tok/s ceiling \u0E41\u0E25\u0E49\u0E27 \u00D7 0.5\u20130.7 \u0E44\u0E14\u0E49\u0E04\u0E48\u0E32\u0E08\u0E23\u0E34\u0E07</div>
+
+    <h2>2. GPU Comparison \u2014 Spec \u0E43\u0E2B\u0E19\u0E2A\u0E33\u0E04\u0E31\u0E0D\u0E08\u0E23\u0E34\u0E07</h2>
+    <p>\u0E2A\u0E33\u0E2B\u0E23\u0E31\u0E1A single-stream decode <strong>memory bandwidth \u0E04\u0E37\u0E2D king</strong></p>
+    <table>
+      <thead><tr><th>Device</th><th>Bandwidth</th><th>VRAM / UMA</th><th>7B Q4 tok/s*</th><th>Power</th><th>tok/s per Watt</th></tr></thead>
+      <tbody>
+        <tr><td>RTX 4090</td><td class="t-blue">1008 GB/s</td><td>24 GB</td><td class="t-green">120\u2013150</td><td>450W</td><td>0.27\u20130.33</td></tr>
+        <tr><td>RTX 4080</td><td class="t-blue">717 GB/s</td><td>16 GB</td><td class="t-green">80\u2013110</td><td>320W</td><td>0.25\u20130.34</td></tr>
+        <tr><td>RTX 4070 Ti</td><td class="t-blue">504 GB/s</td><td>12 GB</td><td>55\u201375</td><td>285W</td><td>0.19\u20130.26</td></tr>
+        <tr><td>RTX 4060 Ti</td><td class="t-blue">288 GB/s</td><td>16 GB</td><td>35\u201350</td><td>165W</td><td>0.21\u20130.30</td></tr>
+        <tr><td>RTX 3090 (used)</td><td class="t-blue">936 GB/s</td><td>24 GB</td><td class="t-green">100\u2013130</td><td>350W</td><td>0.29\u20130.37</td></tr>
+        <tr><td>M2 Ultra</td><td class="t-blue">800 GB/s</td><td>192 GB</td><td>60\u201390</td><td>60W</td><td class="t-green">1.0\u20131.5</td></tr>
+        <tr><td>M2 Max</td><td class="t-blue">400 GB/s</td><td>96 GB</td><td>35\u201355</td><td>40W</td><td class="t-green">0.88\u20131.38</td></tr>
+        <tr><td>M1 Ultra</td><td class="t-blue">800 GB/s</td><td>128 GB</td><td>55\u201380</td><td>60W</td><td class="t-green">0.92\u20131.33</td></tr>
+      </tbody>
+    </table>
+
+    <div class="grid-2">
+      <div class="stat-card"><div class="label">\u{1F3C6} \u0E40\u0E23\u0E47\u0E27\u0E2A\u0E38\u0E14</div><div class="value" style="color:var(--green)">RTX 4090</div><div class="desc">1008 GB/s \u2014 bandwidth \u0E2A\u0E39\u0E07\u0E2A\u0E38\u0E14\u0E43\u0E19 consumer</div></div>
+      <div class="stat-card"><div class="label">\u{1F3C6} Perf/Watt \u0E14\u0E35\u0E2A\u0E38\u0E14</div><div class="value" style="color:var(--green)">M2 Ultra</div><div class="desc">60W \u0E44\u0E14\u0E49 800 GB/s \u2014 \u0E1B\u0E23\u0E30\u0E2B\u0E22\u0E31\u0E14\u0E01\u0E27\u0E48\u0E32 3\u20135 \u0E40\u0E17\u0E48\u0E32</div></div>
+      <div class="stat-card"><div class="label">\u{1F3C6} \u0E04\u0E38\u0E49\u0E21\u0E40\u0E07\u0E34\u0E19\u0E2A\u0E38\u0E14</div><div class="value" style="color:var(--amber)">RTX 3090 \u0E21\u0E37\u0E2D\u0E2A\u0E2D\u0E07</div><div class="desc">936 GB/s \u0E23\u0E32\u0E04\u0E32 ~25,000-30,000 \u0E1A\u0E32\u0E17</div></div>
+      <div class="stat-card"><div class="label">\u{1F3C6} Model \u0E43\u0E2B\u0E0D\u0E48\u0E2A\u0E38\u0E14</div><div class="value" style="color:var(--purple)">M2 Ultra 192GB</div><div class="desc">70B Q4 (~40GB) \u0E23\u0E31\u0E19\u0E44\u0E14\u0E49\u0E44\u0E21\u0E48\u0E15\u0E49\u0E2D\u0E07 offload</div></div>
+    </div>
+
+    <h2>3. Overclock \u2014 \u0E2D\u0E31\u0E19\u0E43\u0E2B\u0E19\u0E0A\u0E48\u0E27\u0E22\u0E08\u0E23\u0E34\u0E07</h2>
+    <h3>GPU Core OC \u2014 \u274C \u0E41\u0E17\u0E1A\u0E44\u0E21\u0E48\u0E0A\u0E48\u0E27\u0E22</h3>
+    <p>Decode \u0E16\u0E39\u0E01\u0E08\u0E33\u0E01\u0E31\u0E14\u0E14\u0E49\u0E27\u0E22 memory \u2014 core OC \u0E44\u0E14\u0E49 ~<strong>2\u20135%</strong> \u0E40\u0E17\u0E48\u0E32\u0E19\u0E31\u0E49\u0E19</p>
+    <h3>VRAM Memory OC \u2014 \u2705 \u0E0A\u0E48\u0E27\u0E22\u0E08\u0E23\u0E34\u0E07</h3>
+    <p>OC memory clock \u0E15\u0E23\u0E07\u0E46 \u0E40\u0E1E\u0E34\u0E48\u0E21 bandwidth 10% = <strong>~7\u201310% tok/s</strong></p>
+<pre><code>RTX 4090:
+Stock:     21 Gbps \u2192 1008 GB/s \u2192 ~130 tok/s
++10% OC:  23.1 Gbps \u2192 1108 GB/s \u2192 ~143 tok/s (+10%)
+
+Core OC:  +200 MHz \u2192 ~3% (noise)</code></pre>
+    <h3>Apple Silicon \u2014 \u274C OC \u0E44\u0E21\u0E48\u0E44\u0E14\u0E49</h3>
+    <p>Bandwidth \u0E16\u0E39\u0E01 fix \u0E42\u0E14\u0E22 SoC \u2014 \u0E0B\u0E37\u0E49\u0E2D\u0E21\u0E32\u0E40\u0E17\u0E48\u0E32\u0E44\u0E2B\u0E23\u0E48\u0E44\u0E14\u0E49\u0E40\u0E17\u0E48\u0E32\u0E19\u0E31\u0E49\u0E19</p>
+    <div class="warn-box"><strong>\u0E2D\u0E22\u0E48\u0E32\u0E0B\u0E37\u0E49\u0E2D GPU \u0E1B\u0E23\u0E30\u0E2B\u0E23\u0E2D OC headroom</strong> \u2014 \u0E0B\u0E37\u0E49\u0E2D\u0E08\u0E32\u0E01 stock bandwidth</div>
+
+    <h2>4. GPU vs Mac</h2>
+    <table>
+      <thead><tr><th>\u0E1B\u0E31\u0E08\u0E08\u0E31\u0E22</th><th>NVIDIA GPU</th><th>Apple Silicon</th></tr></thead>
+      <tbody>
+        <tr><td>tok/s \u0E2A\u0E39\u0E07\u0E2A\u0E38\u0E14</td><td class="t-green">\u0E0A\u0E19\u0E30 (4090: ~150)</td><td>M2 Ultra: ~90</td></tr>
+        <tr><td>Perf/Watt</td><td>0.25\u20130.37</td><td class="t-green">0.88\u20131.50 (3-5x)</td></tr>
+        <tr><td>Model \u0E43\u0E2B\u0E0D\u0E48</td><td>24GB VRAM</td><td class="t-green">192GB UMA</td></tr>
+        <tr><td>\u0E40\u0E2A\u0E35\u0E22\u0E07</td><td class="t-red">\u0E14\u0E31\u0E07\u0E15\u0E2D\u0E19 load</td><td class="t-green">\u0E40\u0E07\u0E35\u0E22\u0E1A</td></tr>
+        <tr><td>\u0E23\u0E32\u0E04\u0E32/\u0E04\u0E27\u0E32\u0E21\u0E40\u0E23\u0E47\u0E27</td><td class="t-green">4090: ~55,000 \u0E1A\u0E32\u0E17</td><td>M2 Ultra: ~130,000+ \u0E1A\u0E32\u0E17</td></tr>
+        <tr><td>\u0E2D\u0E31\u0E1B\u0E40\u0E01\u0E23\u0E14\u0E44\u0E14\u0E49</td><td class="t-green">\u0E40\u0E1B\u0E25\u0E35\u0E48\u0E22\u0E19\u0E01\u0E32\u0E23\u0E4C\u0E14</td><td class="t-red">\u0E0B\u0E37\u0E49\u0E2D\u0E40\u0E04\u0E23\u0E37\u0E48\u0E2D\u0E07\u0E43\u0E2B\u0E21\u0E48</td></tr>
+      </tbody>
+    </table>
+    <div class="tip-box"><strong>\u0E0B\u0E37\u0E49\u0E2D NVIDIA ถ้า:</strong> \u0E2D\u0E22\u0E32\u0E01\u0E40\u0E23\u0E47\u0E27\u0E2A\u0E38\u0E14, CUDA, \u0E2D\u0E31\u0E1B\u0E40\u0E01\u0E23\u0E14\u0E17\u0E35\u0E2B\u0E25\u0E31\u0E07<br><strong>\u0E0B\u0E37\u0E49\u0E2D Mac ถ้า:</strong> model \u0E43\u0E2B\u0E0D\u0E48, \u0E40\u0E07\u0E35\u0E22\u0E1A, perf/watt \u0E14\u0E35\u0E2A\u0E38\u0E14</div>
+
+    <h2>5. Checklist \u0E01\u0E48\u0E2D\u0E19\u0E0B\u0E37\u0E49\u0E2D</h2>
+    <div class="checklist">
+      <ul>
+        <li><strong>\u2610 \u0E15\u0E31\u0E49\u0E07\u0E40\u0E1B\u0E49\u0E32 tok/s</strong><span>Chat: 20+ | Batch: 50+ | Real-time: 100+</span></li>
+        <li><strong>\u2610 \u0E40\u0E25\u0E37\u0E2D\u0E01\u0E02\u0E19\u0E32\u0E14 model</strong><span>7B Q4 = ~4GB | 13B Q4 = ~7GB | 70B Q4 = ~40GB</span></li>
+        <li><strong>\u2610 \u0E04\u0E33\u0E19\u0E27\u0E13: bandwidth \u00F7 model size</strong><span>= tok/s ceiling \u0E04\u0E48\u0E32\u0E08\u0E23\u0E34\u0E07 = 50-70%</span></li>
+        <li><strong>\u2610 \u0E40\u0E0A\u0E47\u0E04 VRAM/UMA</strong><span>7B=4GB | 13B=7GB | 70B=40GB+</span></li>
+        <li><strong>\u2610 \u0E04\u0E33\u0E19\u0E27\u0E13 perf/watt</strong><span>tok/s \u00F7 TDP \u2014 \u0E23\u0E31\u0E19 24/7 \u0E04\u0E48\u0E32\u0E44\u0E1F\u0E2A\u0E33\u0E04\u0E31\u0E0D</span></li>
+        <li><strong>\u2610 \u0E1A\u0E23\u0E23\u0E14\u0E32\u0E20\u0E32\u0E13 \u0E15\u0E48\u0E2D bandwidth</strong><span>3090 \u0E21\u0E37\u0E2D\u0E2A\u0E2D\u0E07: ~33 GB/s/\u0E1E\u0E31\u0E19\u0E1A\u0E32\u0E17 | 4090: ~18 | M2 Ultra: ~6</span></li>
+        <li><strong>\u2610 \u0E2D\u0E22\u0E48\u0E32\u0E14\u0E39 core clock</strong><span>Memory bandwidth \u0E2A\u0E33\u0E04\u0E31\u0E0D\u0E01\u0E27\u0E48\u0E32</span></li>
+      </ul>
+    </div>
+
+    <h2>6. \u0E02\u0E49\u0E2D\u0E1C\u0E34\u0E14\u0E1E\u0E25\u0E32\u0E14\u0E17\u0E35\u0E48\u0E1E\u0E1A\u0E1A\u0E48\u0E2D\u0E22</h2>
+    <table>
+      <thead><tr><th>\u0E40\u0E02\u0E49\u0E32\u0E43\u0E08\u0E1C\u0E34\u0E14</th><th>\u0E17\u0E33\u0E44\u0E21\u0E1C\u0E34\u0E14</th><th>\u0E04\u0E27\u0E23\u0E17\u0E33</th></tr></thead>
+      <tbody>
+        <tr><td>"\u0E15\u0E49\u0E2D\u0E07\u0E01\u0E32\u0E23 CUDA cores \u0E40\u0E22\u0E2D\u0E30"</td><td>Decode \u0E16\u0E39\u0E01\u0E08\u0E33\u0E01\u0E31\u0E14\u0E14\u0E49\u0E27\u0E22 bandwidth</td><td>\u0E14\u0E39 memory bandwidth \u0E41\u0E17\u0E19</td></tr>
+        <tr><td>"OC \u0E41\u0E25\u0E49\u0E27\u0E40\u0E23\u0E47\u0E27\u0E02\u0E36\u0E49\u0E19"</td><td>Core OC = ~3% \u2014 mem OC \u0E40\u0E17\u0E48\u0E32\u0E19\u0E31\u0E49\u0E19</td><td>\u0E0B\u0E37\u0E49\u0E2D stock bandwidth</td></tr>
+        <tr><td>"8GB VRAM \u0E1E\u0E2D"</td><td>7B Q4 \u0E41\u0E17\u0E1A\u0E44\u0E21\u0E48\u0E1E\u0E2D 13B \u0E44\u0E21\u0E48\u0E44\u0E14\u0E40\u0E25\u0E22</td><td>16GB \u0E02\u0E31\u0E49\u0E19\u0E15\u0E48\u0E33, 24GB \u0E2A\u0E1A\u0E32\u0E22</td></tr>
+        <tr><td>"Mac \u0E0A\u0E49\u0E32\u0E2A\u0E33\u0E2B\u0E23\u0E31\u0E1A AI"</td><td>M2 Ultra 800 GB/s \u2014 \u0E40\u0E23\u0E47\u0E27\u0E01\u0E27\u0E48\u0E32 GPU \u0E2A\u0E27\u0E19\u0E43\u0E2B\u0E0D\u0E48</td><td>\u0E40\u0E17\u0E35\u0E22\u0E1A bandwidth</td></tr>
+        <tr><td>"cloud API \u0E04\u0E38\u0E49\u0E21\u0E01\u0E27\u0E48\u0E32"</td><td>\u0E23\u0E32\u0E22\u0E40\u0E14\u0E37\u0E2D\u0E19\u0E2A\u0E30\u0E2A\u0E21</td><td>\u0E04\u0E33\u0E19\u0E27\u0E13 \u0E23\u0E32\u0E04\u0E32 GPU \u00F7 \u0E04\u0E48\u0E32 API/\u0E40\u0E14\u0E37\u0E2D\u0E19 = \u0E40\u0E14\u0E37\u0E2D\u0E19\u0E04\u0E37\u0E19\u0E17\u0E38\u0E19</td></tr>
+      </tbody>
+    </table>
+
+    <h2>\u0E2A\u0E23\u0E38\u0E1B</h2>
+    <div class="formula-box">
+      <div class="math">tok/s = Bandwidth (GB/s) \u00F7 Model Size (GB)</div>
+      <div class="sub">\u0E04\u0E48\u0E32\u0E08\u0E23\u0E34\u0E07 \u00D7 0.5\u20130.7</div>
+    </div>
+    <p>\u2192 <strong>Memory bandwidth</strong> = spec \u0E40\u0E14\u0E35\u0E22\u0E27\u0E17\u0E35\u0E48\u0E2A\u0E33\u0E04\u0E31\u0E0D\u0E2A\u0E33\u0E2B\u0E23\u0E31\u0E1A decode<br>
+    \u2192 <strong>Mem OC</strong> \u0E0A\u0E48\u0E27\u0E22 ~10% Core OC \u0E44\u0E21\u0E48<br>
+    \u2192 <strong>Mac \u0E0A\u0E19\u0E30 perf/watt</strong> NVIDIA \u0E0A\u0E19\u0E30 raw speed<br>
+    \u2192 <strong>RTX 3090 \u0E21\u0E37\u0E2D\u0E2A\u0E2D\u0E07</strong> \u0E04\u0E38\u0E49\u0E21\u0E2A\u0E38\u0E14 bandwidth/\u0E1A\u0E32\u0E17</p>
+  </div>
+  <div class="footer">Ampas Industries Co., Ltd. \u2014 \u270D\uFE0F Blog</div>
+</body>
+</html>

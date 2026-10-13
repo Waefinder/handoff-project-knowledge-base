@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>✍️ Blog — Ampas Industries</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --bg-secondary: #12121a;
+      --card: #16161f;
+      --border: #252535;
+      --border-light: #35354a;
+      --text: #e8e8ed;
+      --text-secondary: #a0a0b0;
+      --muted: #6b6b80;
+      --green: #4ade80;
+      --blue: #60a5fa;
+      --purple: #c084fc;
+      --purple-dim: rgba(192,132,252,0.10);
+      --cyan: #22d3ee;
+      --cyan-dim: rgba(34,211,238,0.10);
+      --amber: #fbbf24;
+      --amber-dim: rgba(251,191,36,0.10);
+      --gradient-hero: linear-gradient(135deg, #0f0c29 0%, #1a1040 40%, #24243e 100%);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', 'Noto Sans Thai', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.7;
+    }
+    .header {
+      background: rgba(18,18,26,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-inner {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .header h1 { font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .nav-links { display: flex; gap: 8px; flex-wrap: wrap; }
+    .nav-btn {
+      padding: 7px 14px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-secondary);
+      font-size: 12.5px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .nav-btn:hover { border-color: var(--blue); color: var(--blue); }
+
+    .container { max-width: 1000px; margin: 0 auto; padding: 32px 24px; }
+    .page-title { font-size: 26px; font-weight: 800; margin-bottom: 6px; }
+    .page-sub { color: var(--muted); font-size: 14px; margin-bottom: 28px; }
+
+    .article-list { display: flex; flex-direction: column; gap: 16px; }
+    .article-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px;
+      text-decoration: none;
+      color: var(--text);
+      transition: all 0.2s;
+      display: block;
+      position: relative;
+      overflow: hidden;
+    }
+    .article-card:hover { border-color: var(--border-light); transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,0,0,0.45); }
+    .article-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--gradient-hero);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .article-card:hover::before { opacity: 1; }
+    .article-card h2 { font-size: 19px; font-weight: 700; margin-bottom: 8px; line-height: 1.4; }
+    .article-card .excerpt { font-size: 14px; color: var(--text-secondary); margin-bottom: 14px; }
+    .article-meta { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12.5px; color: var(--muted); align-items: center; }
+    .article-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-left: auto; }
+    .tag {
+      padding: 3px 10px;
+      background: var(--purple-dim);
+      color: var(--purple);
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .tag.alt { background: var(--cyan-dim); color: var(--cyan); }
+    .tag.date { background: var(--amber-dim); color: var(--amber); }
+
+    .footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 11.5px;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      margin-top: 32px;
+    }
+    @media (max-width: 640px) {
+      .container { padding: 20px 16px; }
+      .article-meta { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .article-tags { margin-left: 0; }
+    }
+
+    /* ===== Motion Reel background — 90 frames from the camera-rotate video as a
+       FIXED full-screen layer behind ALL page content, scrubbed by whole-page
+       scroll depth. Progressive enhancement: layer + HUD + tail stay display:none
+       until JS adds .reel-live to <html>. No JS / prefers-reduced-motion -> no
+       frame ever loads and the page keeps its solid --bg. */
+    .bg-reel { display: none; }
+    html.reel-live .bg-reel {
+      display: block;
+      position: fixed;
+      inset: 0;
+      z-index: -1;              /* above the body canvas, below header (100) / content */
+      overflow: hidden;
+      pointer-events: none;
+      background: var(--bg);    /* base colour while frame 1 decodes */
+    }
+    .bg-reel img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;               /* double-buffer: only .is-front paints */
+      display: block;
+    }
+    .bg-reel img.is-front { opacity: 1; }
+    /* Readability veil ABOVE the frames — JS ramps its opacity 0.52 -> 0.82 with
+       scroll progress, so type and cards stay legible as the footage changes. */
+    .bg-reel-veil {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: rgb(10,10,15);
+      opacity: 0.52;
+    }
+    /* Vignette: darker corners/edges on top of the flat veil. */
+    .bg-reel-scrim {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(135% 105% at 50% 42%, rgba(6,6,10,0) 0%, rgba(6,6,10,0.34) 68%, rgba(6,6,10,0.80) 100%),
+        linear-gradient(180deg, rgba(6,6,10,0.30) 0%, rgba(6,6,10,0.10) 40%, rgba(6,6,10,0.34) 100%);
+    }
+
+    /* Frame HUD — small fixed counter (bottom-left) proving the scrub moves.
+       pointer-events:none, clear of the header and the cards. */
+    .reel-hud {
+      position: fixed;
+      left: 16px;
+      bottom: 16px;
+      z-index: 90;               /* above content, below header (100) */
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(10,10,15,0.78);
+      border: 1px solid var(--border-light);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      pointer-events: none;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    html.reel-live .reel-hud { display: flex; }
+    .reel-hud b { color: var(--blue); font-weight: 600; }
+
+    /* Scroll runway + credit: only exists while the reel is live, so the short
+       index page still has room to scrub (and never scrolls a blank void). */
+    .reel-tail { display: none; }
+    html.reel-live .reel-tail {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 70vh;
+      pointer-events: none;
+    }
+    .reel-tail span {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(232,232,237,0.50);
+      text-shadow: 0 1px 3px rgba(0,0,0,0.65);
+    }
+    html.reel-live .reel-tail span { display: block; }
+
+    /* ---- Legibility over the footage (only when the reel is live) ---- */
+    html.reel-live .container,
+    html.reel-live .footer { text-shadow: 0 1px 3px rgba(0,0,0,0.62); }
+    html.reel-live .header { background: rgba(10,10,15,0.88); }
+
+    @media (max-width: 640px) {
+      .reel-hud { left: 10px; bottom: 10px; font-size: 10px; letter-spacing: 1.2px; padding: 5px 10px; gap: 8px; }
+      html.reel-live .reel-tail { height: 55vh; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      /* belt & braces: JS already refuses to arm the reel, but never show the
+         fixed frame layer (or HUD / runway) when motion is not wanted. */
+      html.reel-live .bg-reel, html.reel-live .reel-hud, html.reel-live .reel-tail { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Motion Reel: 90-frame camera-rotate scrub as a FIXED background behind ALL
+       content. display:none until JS adds .reel-live — no-JS / reduced-motion load nothing. -->
+  <div class="bg-reel" id="bgReel" aria-hidden="true">
+    <img id="reelImgA" alt="" width="800" height="450" decoding="async">
+    <img id="reelImgB" alt="" width="800" height="450" decoding="async">
+    <div class="bg-reel-veil" id="reelVeil"></div>
+    <div class="bg-reel-scrim"></div>
+  </div>
+  <!-- Frame HUD: fixed counter (bottom-left) showing the live scrub position -->
+  <div class="reel-hud" id="reelHud" aria-hidden="true">
+    <span id="reelHudLabel">Motion Reel</span>
+    <span><b id="reelIdx">01</b>/<span id="reelTotal">90</span></span>
+  </div>
+
+  <div class="header">
+    <div class="header-inner">
+      <h1><span>✍️</span> Blog</h1>
+      <div class="nav-links">
+        <a class="nav-btn" href="pkb-homepage.html">🏠 Home</a>
+        <a class="nav-btn" href="project-knowledge-base.html">📋 PKB</a>
+        <a class="nav-btn" href="skills-center.html">⚡ Skills</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="page-title">📚 บทความ</div>
+    <div class="page-sub">บันทึกและบทความด้าน AI, วิศวกรรมกระบวนการ และเครื่องมือของเรา</div>
+
+    <div class="article-list">
+      <a class="article-card" href="blog/gpu-token-calc.html">
+        <h2>⚡ คำนวณ Tokens/sec ก่อนซื้อ GPU — ไม่ให้ซื้อผิด</h2>
+        <div class="excerpt">
+          สูตรทำนายความเร็ว LLM inference จาก spec hardware — bandwidth, wattage, overclock
+          สำหรับทั้ง NVIDIA GPU และ Apple Silicon Mac: สูตร tok/s = bandwidth ÷ model size,
+          ตารางเทียบ GPU 8 รุ่น (bandwidth / VRAM / tok/s / perf-per-watt),
+          ทำไม mem OC ช่วย 10% แต่ core OC ไม่ช่วย, GPU vs Mac comparison,
+          Checklist 7 ข้อก่อนซื้อ และข้อผิดพลาดที่พบบ่อย 5 ข้อ
+        </div>
+        <div class="article-meta">
+          <span>📅 22 ก.ย. 2026</span>
+          <span>⏱️ ~8 นาที</span>
+          <span>📝 ~1,400 คำ</span>
+          <div class="article-tags">
+            <span class="tag">GPU</span>
+            <span class="tag alt">Local LLM</span>
+            <span class="tag">Hardware</span>
+          </div>
+        </div>
+      </a>
+      <a class="article-card" href="blog/ai-models-intelligence.html">
+        <h2>🔬 เทียบความฉลาด AI Model อย่างมืออาชชีพ: สอนใช้ Artificial Analysis</h2>
+        <div class="excerpt">
+          คู่มือสำหรับวิศวกรที่ไม่ใช่สาย ML — สอนใช้ artificialanalysis.ai เว็บวิเคราะห์ AI อิสระ
+          เทียบโมเดล 3 กลุ่ม (frontier / open-weight / local) แบบ step-by-step:
+          เข้าใจ Intelligence Index v4.3 (รวม 10 evaluations), อ่านกราฟ Cost vs Intelligence
+          และเส้น Pareto, ทำไม Cost per Task สำคัญกว่าราคาต่อ token, Openness Index,
+          Capability Indexes ตามสายงาน พร้อมตารางตัดสินใจและลิงก์จริงครบ 9 ลิงก์
+        </div>
+        <div class="article-meta">
+          <span>📅 22 ก.ย. 2026</span>
+          <span>⏱️ ~7 นาที</span>
+          <span>📝 ~1,300 คำ</span>
+          <div class="article-tags">
+            <span class="tag">AI Models</span>
+            <span class="tag alt">Artificial Analysis</span>
+            <span class="tag">Local AI</span>
+          </div>
+        </div>
+      </a>
+      <a class="article-card" href="blog/hermes-teams-architecture.html">
+        <h2>🏛️ Hermes × Teams — System Architecture &amp; Message Flow</h2>
+        <div class="excerpt">
+          สถาปัตยกรรมระบบ bot ใน Microsoft Teams ครบทุกส่วน — Component Map 6 components,
+          Architecture Layers 5 ชั้น, Deployment Topology, Interfaces &amp; Contracts ระหว่างชั้น,
+          Message Flow (Forward/Return path + 8 steps อย่างละเอียด + File Attachment Flow),
+          Code Walkthrough app.py 5 ชั้น, Pitfalls &amp; Firewall Network Summary
+          และคู่มือติดตั้งตั้งแต่ Prerequisites จน Sideload เข้า Teams
+        </div>
+        <div class="article-meta">
+          <span>📅 23 ก.ย. 2026</span>
+          <span>⏱️ ~9 นาที</span>
+          <span>📝 ~1,613 คำ</span>
+          <div class="article-tags">
+            <span class="tag">Architecture</span>
+            <span class="tag alt">Hermes</span>
+            <span class="tag">Microsoft Teams</span>
+          </div>
+        </div>
+      </a>
+      <a class="article-card" href="blog/how-ai-computes.html">
+        <h2>🧮 AI คำนวณแต่ละ token แต่ละ layer อย่างไร — FLOPs &amp; Quantization</h2>
+        <div class="excerpt">
+          สื่อการสอนแบบมี animation เล่นได้จริงในหน้าเดียว — ดู token แตกจากข้อความเข้าสู่ embedding
+          แล้ววิ่งผ่าน Llama-7B ครบทั้ง 32 layers (Attention → MLP → Residual+Norm) จนออกเป็น logits
+          สุ่มคำถัดไปต่อท้ายแบบ autoregressive พร้อมเครื่องคิด FLOPs แบบ live (กฎ 2N: ต่อ token ≈ 2 × จำนวน parameters,
+          7B = 14 GFLOPs/token, 100 tokens = 1.4 TFLOPs) และตารางเทียบ Quantization
+          FP32 / FP16 / Q8 / Q4 ทั้งเรื่องขนาด (7B: 28 → 14 → 7 → 3.5 GB) คุณภาพ และเหตุผลที่ Q4 ทำให้รันบนการ์ด 8GB ได้
+        </div>
+        <div class="article-meta">
+          <span>📅 5 ต.ค. 2026</span>
+          <span>⏱️ ~6 นาที</span>
+          <span>📝 ~1,025 คำ</span>
+          <div class="article-tags">
+            <span class="tag">AI Fundamentals</span>
+            <span class="tag alt">Quantization</span>
+            <span class="tag">LLM</span>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <div class="footer">Ampas Industries Co., Ltd. — ✍️ Blog</div>
+
+  <!-- Scroll runway (reel only): gives the short index page room to scrub and
+       signs the footage. Hidden until JS arms html.reel-live. -->
+  <div class="reel-tail" aria-hidden="true"><span>Camera orbit reel — scroll to scrub the background</span></div>
+
+  <script>
+    // ===== Motion Reel: 90-frame camera-rotate scrub as the FIXED page background =====
+    // Progressive enhancement only. JS + motion allowed -> html.reel-live switches the
+    // fixed .bg-reel layer on and every frame preloads from DOM-ready (it is the
+    // background of the WHOLE page). Two <img> buffers swap only after the incoming
+    // frame has decoded, so the background never flashes blank.
+    // progress = scrollY / (scrollHeight - innerHeight); frame = round(progress*(N-1));
+    // veil opacity = 0.52 + 0.30 * progress (52% -> 82%).
+    // Passive scroll listener + rAF throttle. No JS / reduced motion -> layer stays display:none.
+    (function initReel() {
+      var layer = document.getElementById('bgReel');
+      var imgA = document.getElementById('reelImgA');
+      var imgB = document.getElementById('reelImgB');
+      var veil = document.getElementById('reelVeil');
+      var idxEl = document.getElementById('reelIdx');
+      var totalEl = document.getElementById('reelTotal');
+      var labelEl = document.getElementById('reelHudLabel');
+      if (!layer || !imgA || !imgB) return;
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      var N = 90;
+      if (totalEl) totalEl.textContent = String(N);
+
+      function urlFor(i) { return 'frames-camera/f' + ('0000' + (i + 1)).slice(-4) + '.webp'; }
+      function pad2(n) { return (n < 10 ? '0' : '') + n; }
+
+      document.documentElement.classList.add('reel-live');
+
+      var current = -1;
+      var front = null;          // buffer currently painting
+
+      function setFrame(i) {
+        i = Math.max(0, Math.min(N - 1, i | 0));
+        if (i === current) return;
+        current = i;
+        if (idxEl) idxEl.textContent = pad2(i + 1);
+        var back = (front === imgA) ? imgB : imgA;
+        back.onload = function () {
+          back.onload = null;
+          back.classList.add('is-front');
+          if (front) front.classList.remove('is-front');
+          front = back;
+        };
+        back.src = urlFor(i);
+        if (back.complete && back.naturalWidth > 0) back.onload(); // cached -> instant
+      }
+
+      // ---- Preload ALL frames at DOM-ready + hard timeout fallback ----
+      var cache = new Array(N);
+      var preloadStarted = false, loadedCount = 0;
+      var labelIdle = 'Motion Reel';
+      function setLabel(t) { if (labelEl) labelEl.textContent = t; }
+      function updateLabel() { setLabel('Loading ' + loadedCount + '/' + N); }
+      function startPreload() {
+        if (preloadStarted) return;
+        preloadStarted = true;
+        updateLabel();
+        var finished = false;
+        var guard = setTimeout(finish, 6000); // never a stuck "loading" label
+        function finish() {
+          if (finished) return;
+          finished = true;
+          clearTimeout(guard);
+          setLabel(labelIdle);
+        }
+        for (var i = 0; i < N; i++) {
+          (function (i) {
+            var im = new Image();
+            cache[i] = im;
+            im.onload = function () { loadedCount++; if (!finished) updateLabel(); if (loadedCount >= N) finish(); };
+            im.onerror = function () { loadedCount++; if (!finished) updateLabel(); };
+            im.src = urlFor(i);
+          })(i);
+        }
+      }
+      setFrame(0);        // paint frame 1 as the background base immediately
+      startPreload();
+
+      // ---- Whole-page scroll -> progress -> frame index + scrim ----
+      var reelTicking = false;
+      function applyScrub() {
+        reelTicking = false;
+        var doc = document.documentElement;
+        var y = window.pageYOffset || doc.scrollTop || 0;
+        var range = Math.max(1, (doc.scrollHeight || 0) - (window.innerHeight || 0));
+        var p = y / range;
+        if (p < 0) p = 0; else if (p > 1) p = 1;
+        setFrame(Math.round(p * (N - 1)));
+        if (veil) veil.style.opacity = (0.52 + 0.30 * p).toFixed(3); // 52% -> 82%
+      }
+      var onReelScroll = function () {
+        if (reelTicking) return;
+        reelTicking = true;
+        requestAnimationFrame(applyScrub);
+      };
+      window.addEventListener('scroll', onReelScroll, { passive: true });
+      window.addEventListener('resize', onReelScroll, { passive: true });
+      window.addEventListener('load', onReelScroll, { passive: true });   // images/fonts change doc height
+      onReelScroll();
+    })();
+  </script>
+
+</body>
+</html>
