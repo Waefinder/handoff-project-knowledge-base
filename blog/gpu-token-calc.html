@@ -176,6 +176,35 @@ M2 Ultra        29 tok/s →  23 tok/s   -20%</code></pre>
       <strong>ข้อดีของ hybrid attention:</strong> context 65K ทำให้ decode ช้าลงแค่ ~20% และกิน VRAM เพิ่มแค่ 4.26GB — ถ้าเป็น transformer ธรรมดา (เก็บ KV ทุก layer) KV cache จะใหญ่กว่านี้ 4 เท่า (~17GB) decode ช้าลง ~50% และ 16GB VRAM ไม่พอเลย
     </div>
 
+    <h3>MTP (Multi-Token Prediction) — ฟรีความเร็ว 2-3 เท่า</h3>
+    <p>MTP คือ <strong>draft head เล็กๆ ฝังใน model file</strong> (ไม่ใช่ model แยก — Qwen3.8-27B มีแค่ <code>mtp_num_hidden_layers: 1</code>) ที่ "เดา" หลาย token ล่วงหน้า แล้วให้ model หลัก verify พร้อมกันใน pass เดียว (speculative decoding) ถ้าเดาถูก = ได้หลาย token ต่อ 1 forward</p>
+
+    <div class="formula-box">
+      <div class="label">Effect ของ MTP</div>
+      <div class="math">Decode เร็วขึ้น 2–3× | Prefill เท่าเดิม | คุณภาพเท่าเดิม (lossless)</div>
+      <div class="sub">ตัวเลขจริง RTX 4090 (Qwen): ~47 → ~133 tok/s = 2.85× ฟรีๆ</div>
+    </div>
+
+<pre><code>ทรัพยากรที่ใช้เพิ่ม:
+Weights    — draft head ≈ 1 layer (ไม่กี่ร้อย MB)
+VRAM       — ต้องเก็บ draft KV cache อีกชุด (จุดหลักที่กิน VRAM)
+Compute    — verify ทำพร้อมกันใน batch เดียว = เพิ่มไม่มาก
+Bandwidth  — decode ไม่ต่าง (draft เล็กจนไม่เป็น bottleneck)</code></pre>
+
+<pre><code>เปิด MTP              vs   ปิด MTP
+เร็ว 2-3×                    baseline
+VRAM เพิ่ม (draft KV)       น้อยกว่า
+prefill เท่ากัน             เท่ากัน
+คุณภาพเท่ากัน               เท่ากัน</code></pre>
+
+    <div class="warn-box">
+      <strong>กับดัก draft cache:</strong> อย่า quantize draft cache ลง q4 เพื่อประหยัด VRAM — มีคนลองแล้วช้าลง 34% (29.6 vs 39.7 tok/s) เพราะ cache เล็กจน overhead ไม่คุ้ม f16 ทั้งแรงและกิน VRAM น้อยกว่า และ <strong>long context มี "draft-KV tax"</strong> — ยิ่ง context ยาว gain ยิ่งลด เพราะ draft ต้องอ่าน KV ของมันเองเหมือนกัน
+    </div>
+
+    <div class="tip-box">
+      <strong>สรุป:</strong> VRAM เหลือ → เปิด MTP คุ้มมาก (เร็วขึ้นฟรี) VRAM แน่น → ระวัง draft KV แย่งที่ จนต้องลด context
+    </div>
+
     <h2>2. GPU Comparison — Spec ไหนสำคัญจริง</h2>
     <p>สำหรับ single-stream decode <strong>memory bandwidth คือ king</strong> — core clock, CUDA cores, tensor cores พวกนั้นสำคัญกับ training และ batch inference แต่ไม่ช่วย decode เท่าไหร่</p>
 
