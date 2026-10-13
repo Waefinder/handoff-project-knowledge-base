@@ -6,9 +6,9 @@
   <title>คำนวณ Tokens/sec ก่อนซื้อ GPU — ไม่ให้ซื้อผิด — Blog</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    :root{--bg:#0a0a0f;--bg-secondary:#12121a;--bg3:#1a1a26;--card:#16161f;--border:#252535;--border-light:#35354a;--text:#e8e8ed;--text-secondary:#a0a0b0;--muted:#6b6b80;--green:#4ade80;--red:#f87171;--amber:#fbbf24;--blue:#60a5fa;--purple:#c084fc;--purple-dim:rgba(192,132,252,0.10);--cyan:#22d3ee;--cyan-dim:rgba(34,211,238,0.10);--green-dim:rgba(74,222,128,0.10);--red-dim:rgba(248,113,113,0.10);--amber-dim:rgba(251,191,36,0.10);--blue-dim:rgba(96,165,250,0.10);}
+    :root{--bg:#0a0a0f;--bg3:#1a1a26;--card:#16161f;--border:#252535;--text:#e8e8ed;--text-secondary:#a0a0b0;--muted:#6b6b80;--green:#4ade80;--red:#f87171;--amber:#fbbf24;--blue:#60a5fa;--purple:#c084fc;--purple-dim:rgba(192,132,252,0.10);--cyan:#22d3ee;--cyan-dim:rgba(34,211,238,0.10);--green-dim:rgba(74,222,128,0.10);--red-dim:rgba(248,113,113,0.10);--amber-dim:rgba(251,191,36,0.10);}
     *{margin:0;padding:0;box-sizing:border-box;}
-    body{font-family:'Inter','Leelawadee UI','Noto Sans Thai',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.85;}
+    body{font-family:'Inter','Leelawadee UI','Noto Sans Thai',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.85;}
     .header{background:rgba(18,18,26,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:14px 24px;position:sticky;top:0;z-index:100;}
     .header-inner{max-width:1000px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;}
     .header h1{font-size:17px;font-weight:700;display:flex;align-items:center;gap:8px;}
@@ -35,7 +35,7 @@
     .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:22px 0;}
     .stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;}
     .stat-card .label{font-size:0.78rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:6px;}
-    .stat-card .value{font-family:'JetBrains Mono',monospace;font-size:1.6rem;font-weight:700;}
+    .stat-card .value{font-family:'JetBrains Mono',monospace;font-size:1.4rem;font-weight:700;}
     .stat-card .desc{font-size:0.82rem;color:var(--muted);margin-top:6px;line-height:1.5;}
     table{width:100%;border-collapse:collapse;margin:18px 0;font-size:0.9rem;}
     th{background:var(--card);color:var(--blue);text-align:left;padding:11px 13px;border-bottom:2px solid var(--border);font-weight:600;font-size:0.84rem;}
@@ -43,15 +43,11 @@
     tr:hover td{background:rgba(96,165,250,0.03);}
     .t-green{color:var(--green);font-weight:600;}
     .t-red{color:var(--red);font-weight:600;}
-    .t-amber{color:var(--amber);font-weight:600;}
     .t-blue{color:var(--blue);font-weight:600;}
     .warn-box{background:var(--red-dim);border:1px solid var(--red);border-radius:12px;padding:16px 20px;margin:20px 0;font-size:0.93rem;}
-    .warn-box::before{content:"\26A0\FE0F ";}
     .tip-box{background:var(--green-dim);border:1px solid var(--green);border-radius:12px;padding:16px 20px;margin:20px 0;font-size:0.93rem;}
-    .tip-box::before{content:"\1F4A1 ";}
     .checklist{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:22px 26px;margin:22px 0;}
     .checklist li{margin:12px 0;padding-left:8px;list-style:none;color:var(--text-secondary);}
-    .checklist li::before{content:"\2610 ";color:var(--amber);font-weight:700;font-size:1.15em;}
     .checklist li strong{display:block;font-size:1rem;color:var(--text);}
     .checklist li span{font-size:0.86rem;color:var(--muted);}
     .footer{text-align:center;padding:24px;font-size:11.5px;color:var(--muted);border-top:1px solid var(--border);margin-top:32px;}
@@ -61,133 +57,181 @@
 <body>
   <div class="header">
     <div class="header-inner">
-      <h1><span>\270D\FE0F</span> Blog</h1>
+      <h1><span>✍️</span> Blog</h1>
       <div class="nav-links">
-        <a class="nav-btn" href="../pkb-homepage.html">\1F3E0 Home</a>
-        <a class="nav-btn" href="../project-knowledge-base.html">\1F4CB PKB</a>
-        <a class="nav-btn" href="../blog.html">\1F4DA All Posts</a>
+        <a class="nav-btn" href="../pkb-homepage.html">🏠 Home</a>
+        <a class="nav-btn" href="../project-knowledge-base.html">📋 PKB</a>
+        <a class="nav-btn" href="../blog.html">📚 All Posts</a>
       </div>
     </div>
   </div>
+
   <div class="article">
     <div class="article-meta-top">
-      <span class="tag date">\1F4C5 22 \u0E01.\u0E22. 2026</span>
-      <span>\u23F1\uFE0F ~8 \u0E19\u0E32\u0E17\u0E35</span>
-      <span>\u270D\uFE0F ~1,400 \u0E04\u0E33</span>
+      <span class="tag date">📅 13 ต.ค. 2026</span>
+      <span>⏱️ ~8 นาที</span>
+      <span>📝 ~1,400 คำ</span>
       <div style="display:flex;gap:6px;flex-wrap:wrap;">
         <span class="tag">GPU</span>
         <span class="tag alt">Local LLM</span>
         <span class="tag">Hardware</span>
       </div>
     </div>
-    <h1 class="title">\u0E04\u0E33\u0E19\u0E27\u0E13 Tokens/sec \u0E01\u0E48\u0E2D\u0E19\u0E0B\u0E37\u0E49\u0E2D GPU \u2014 \u0E44\u0E21\u0E48\u0E43\u0E2B\u0E49\u0E0B\u0E37\u0E49\u0E2D\u0E1C\u0E34\u0E14</h1>
-    <p>\u0E2A\u0E39\u0E15\u0E23\u0E07\u0E48\u0E32\u0E22\u0E46 \u0E17\u0E35\u0E48\u0E43\u0E0A\u0E49\u0E17\u0E33\u0E19\u0E32\u0E22\u0E04\u0E27\u0E32\u0E21\u0E40\u0E23\u0E47\u0E27 LLM inference \u0E08\u0E32\u0E01 spec hardware \u2014 bandwidth, wattage, overclock \u2014 \u0E01\u0E48\u0E2D\u0E15\u0E31\u0E14\u0E2A\u0E34\u0E19\u0E43\u0E08\u0E0B\u0E37\u0E49\u0E2D \u0E44\u0E21\u0E48\u0E27\u0E48\u0E32\u0E08\u0E30\u0E40\u0E1B\u0E47\u0E19 NVIDIA GPU \u0E2B\u0E23\u0E37\u0E2D Apple Silicon Mac</p>
 
-    <h2>1. \u0E2A\u0E39\u0E15\u0E23\u0E40\u0E14\u0E35\u0E22\u0E27\u0E17\u0E35\u0E48\u0E15\u0E49\u0E2D\u0E07\u0E23\u0E39\u0E49</h2>
-    <p>Token generation (decode) <strong>\u0E16\u0E39\u0E01\u0E08\u0E33\u0E01\u0E31\u0E14\u0E14\u0E49\u0E27\u0E22 memory bandwidth</strong> \u0E44\u0E21\u0E48\u0E43\u0E0A\u0E48 compute \u2014 \u0E17\u0E38\u0E01 token \u0E43\u0E2B\u0E21\u0E48\u0E15\u0E49\u0E2D\u0E07\u0E2D\u0E48\u0E32\u0E19 model weights \u0E17\u0E31\u0E49\u0E07\u0E2B\u0E21\u0E14 1 \u0E23\u0E2D\u0E1A \u0E14\u0E31\u0E07\u0E19\u0E31\u0E49\u0E19:</p>
+    <h1 class="title">คำนวณ Tokens/sec ก่อนซื้อ GPU — ไม่ให้ซื้อผิด</h1>
+    <p>สูตรง่ายๆ ที่ใช้ทำนายความเร็ว LLM inference จาก spec hardware — bandwidth, wattage, overclock — สำหรับทั้ง NVIDIA GPU และ Apple Silicon Mac</p>
+
+    <h2>1. สูตรเดียวที่ต้องรู้</h2>
+    <p>Token generation (decode) <strong>ถูกจำกัดด้วย memory bandwidth</strong> ไม่ใช่ compute — ทุก token ใหม่ต้องอ่าน model weights ทั้งหมด 1 รอบ ดังนั้น:</p>
+
     <div class="formula-box">
       <div class="label">Token Generation Rate</div>
-      <div class="math">tokens/sec \u2248 Memory Bandwidth (GB/s) \u00F7 Model Size (GB)</div>
-      <div class="sub">\u0E04\u0E48\u0E32\u0E08\u0E23\u0E34\u0E07 = 50\u201370% \u0E02\u0E2D\u0E07\u0E04\u0E48\u0E32\u0E19\u0E35\u0E49</div>
+      <div class="math">tokens/sec ≈ Memory Bandwidth (GB/s) ÷ Model Size (GB)</div>
+      <div class="sub">ความเร็วจริง = 50–70% ของค่านี้ (overhead จาก kernel launch, sampling, KV cache)</div>
     </div>
-    <p><strong>\u0E08\u0E1A.</strong> \u0E16\u0E49\u0E32\u0E08\u0E33\u0E44\u0E14\u0E49\u0E41\u0E04\u0E48\u0E2D\u0E22\u0E48\u0E32\u0E07\u0E40\u0E14\u0E35\u0E22\u0E27 \u0E08\u0E33\u0E2A\u0E39\u0E15\u0E23\u0E19\u0E35\u0E49 \u0E17\u0E35\u0E48\u0E40\u0E2B\u0E25\u0E37\u0E2D\u0E04\u0E37\u0E2D\u0E23\u0E32\u0E22\u0E30\u0E40\u0E25\u0E35\u0E22\u0E14</p>
-    <h3>\u0E15\u0E31\u0E27\u0E2D\u0E22\u0E48\u0E32\u0E07\u0E40\u0E23\u0E47\u0E27</h3>
+
+    <p><strong>จบ.</strong> ถ้าจำได้แค่อย่างเดียวจากบทความนี้ จำสูตรนี้ ที่เหลือคือรายละเอียด</p>
+
+    <h3>ตัวอย่างเร็ว</h3>
 <pre><code>RTX 4090 (1008 GB/s) + 7B Q4 (~4 GB)
-\u2192 1008 \u00F7 4 = 252 tok/s (theoretical) \u2192 ~120-150 tok/s (real)
+→ 1008 ÷ 4 = 252 tok/s (theoretical) → ~120-150 tok/s (real)
 
 M2 Ultra (800 GB/s) + 7B Q4 (~4 GB)
-\u2192 800 \u00F7 4 = 200 tok/s (theoretical) \u2192 ~60-90 tok/s (real)
+→ 800 ÷ 4 = 200 tok/s (theoretical) → ~60-90 tok/s (real)
 
 RTX 4060 Ti (288 GB/s) + 7B Q4 (~4 GB)
-\u2192 288 \u00F7 4 = 72 tok/s (theoretical) \u2192 ~35-50 tok/s (real)</code></pre>
-    <div class="tip-box"><strong>Rule of thumb:</strong> \u0E40\u0E2D\u0E32 bandwidth \u00F7 \u0E02\u0E19\u0E32\u0E14 model (GB) = tok/s ceiling \u0E41\u0E25\u0E49\u0E27 \u00D7 0.5\u20130.7 \u0E44\u0E14\u0E49\u0E04\u0E48\u0E32\u0E08\u0E23\u0E34\u0E07</div>
+→ 288 ÷ 4 = 72 tok/s (theoretical) → ~35-50 tok/s (real)</code></pre>
 
-    <h2>2. GPU Comparison \u2014 Spec \u0E43\u0E2B\u0E19\u0E2A\u0E33\u0E04\u0E31\u0E0D\u0E08\u0E23\u0E34\u0E07</h2>
-    <p>\u0E2A\u0E33\u0E2B\u0E23\u0E31\u0E1A single-stream decode <strong>memory bandwidth \u0E04\u0E37\u0E2D king</strong></p>
+    <div class="tip-box">
+      <strong>Rule of thumb:</strong> เอา bandwidth ÷ ขนาด model (GB) = tok/s ceiling แล้ว × 0.5–0.7 ได้ค่าจริง ใช้ได้ทั้ง NVIDIA และ Apple Silicon
+    </div>
+
+    <h2>2. GPU Comparison — Spec ไหนสำคัญจริง</h2>
+    <p>สำหรับ single-stream decode <strong>memory bandwidth คือ king</strong> — core clock, CUDA cores, tensor cores พวกนั้นสำคัญกับ training และ batch inference แต่ไม่ช่วย decode เท่าไหร่</p>
+
     <table>
       <thead><tr><th>Device</th><th>Bandwidth</th><th>VRAM / UMA</th><th>7B Q4 tok/s*</th><th>Power</th><th>tok/s per Watt</th></tr></thead>
       <tbody>
-        <tr><td>RTX 4090</td><td class="t-blue">1008 GB/s</td><td>24 GB</td><td class="t-green">120\u2013150</td><td>450W</td><td>0.27\u20130.33</td></tr>
-        <tr><td>RTX 4080</td><td class="t-blue">717 GB/s</td><td>16 GB</td><td class="t-green">80\u2013110</td><td>320W</td><td>0.25\u20130.34</td></tr>
-        <tr><td>RTX 4070 Ti</td><td class="t-blue">504 GB/s</td><td>12 GB</td><td>55\u201375</td><td>285W</td><td>0.19\u20130.26</td></tr>
-        <tr><td>RTX 4060 Ti</td><td class="t-blue">288 GB/s</td><td>16 GB</td><td>35\u201350</td><td>165W</td><td>0.21\u20130.30</td></tr>
-        <tr><td>RTX 3090 (used)</td><td class="t-blue">936 GB/s</td><td>24 GB</td><td class="t-green">100\u2013130</td><td>350W</td><td>0.29\u20130.37</td></tr>
-        <tr><td>M2 Ultra</td><td class="t-blue">800 GB/s</td><td>192 GB</td><td>60\u201390</td><td>60W</td><td class="t-green">1.0\u20131.5</td></tr>
-        <tr><td>M2 Max</td><td class="t-blue">400 GB/s</td><td>96 GB</td><td>35\u201355</td><td>40W</td><td class="t-green">0.88\u20131.38</td></tr>
-        <tr><td>M1 Ultra</td><td class="t-blue">800 GB/s</td><td>128 GB</td><td>55\u201380</td><td>60W</td><td class="t-green">0.92\u20131.33</td></tr>
+        <tr><td>RTX 4090</td><td class="t-blue">1008 GB/s</td><td>24 GB</td><td class="t-green">120–150</td><td>450W</td><td>0.27–0.33</td></tr>
+        <tr><td>RTX 4080</td><td class="t-blue">717 GB/s</td><td>16 GB</td><td class="t-green">80–110</td><td>320W</td><td>0.25–0.34</td></tr>
+        <tr><td>RTX 4070 Ti</td><td class="t-blue">504 GB/s</td><td>12 GB</td><td>55–75</td><td>285W</td><td>0.19–0.26</td></tr>
+        <tr><td>RTX 4060 Ti</td><td class="t-blue">288 GB/s</td><td>16 GB</td><td>35–50</td><td>165W</td><td>0.21–0.30</td></tr>
+        <tr><td>RTX 3090 (used)</td><td class="t-blue">936 GB/s</td><td>24 GB</td><td class="t-green">100–130</td><td>350W</td><td>0.29–0.37</td></tr>
+        <tr><td>M2 Ultra</td><td class="t-blue">800 GB/s</td><td>192 GB</td><td>60–90</td><td>60W</td><td class="t-green">1.0–1.5</td></tr>
+        <tr><td>M2 Max</td><td class="t-blue">400 GB/s</td><td>96 GB</td><td>35–55</td><td>40W</td><td class="t-green">0.88–1.38</td></tr>
+        <tr><td>M1 Ultra</td><td class="t-blue">800 GB/s</td><td>128 GB</td><td>55–80</td><td>60W</td><td class="t-green">0.92–1.33</td></tr>
       </tbody>
     </table>
+    <p style="font-size:0.82rem;color:var(--muted);margin-top:-8px;">* llama.cpp / MLX decode speed, single stream, Q4_K_M — ค่าจริง varies กับ context length และ batch size</p>
 
     <div class="grid-2">
-      <div class="stat-card"><div class="label">\u{1F3C6} \u0E40\u0E23\u0E47\u0E27\u0E2A\u0E38\u0E14</div><div class="value" style="color:var(--green)">RTX 4090</div><div class="desc">1008 GB/s \u2014 bandwidth \u0E2A\u0E39\u0E07\u0E2A\u0E38\u0E14\u0E43\u0E19 consumer</div></div>
-      <div class="stat-card"><div class="label">\u{1F3C6} Perf/Watt \u0E14\u0E35\u0E2A\u0E38\u0E14</div><div class="value" style="color:var(--green)">M2 Ultra</div><div class="desc">60W \u0E44\u0E14\u0E49 800 GB/s \u2014 \u0E1B\u0E23\u0E30\u0E2B\u0E22\u0E31\u0E14\u0E01\u0E27\u0E48\u0E32 3\u20135 \u0E40\u0E17\u0E48\u0E32</div></div>
-      <div class="stat-card"><div class="label">\u{1F3C6} \u0E04\u0E38\u0E49\u0E21\u0E40\u0E07\u0E34\u0E19\u0E2A\u0E38\u0E14</div><div class="value" style="color:var(--amber)">RTX 3090 \u0E21\u0E37\u0E2D\u0E2A\u0E2D\u0E07</div><div class="desc">936 GB/s \u0E23\u0E32\u0E04\u0E32 ~25,000-30,000 \u0E1A\u0E32\u0E17</div></div>
-      <div class="stat-card"><div class="label">\u{1F3C6} Model \u0E43\u0E2B\u0E0D\u0E48\u0E2A\u0E38\u0E14</div><div class="value" style="color:var(--purple)">M2 Ultra 192GB</div><div class="desc">70B Q4 (~40GB) \u0E23\u0E31\u0E19\u0E44\u0E14\u0E49\u0E44\u0E21\u0E48\u0E15\u0E49\u0E2D\u0E07 offload</div></div>
+      <div class="stat-card">
+        <div class="label">🏆 เร็วสุด (Raw Speed)</div>
+        <div class="value" style="color:var(--green)">RTX 4090</div>
+        <div class="desc">1008 GB/s — bandwidth สูงสุดใน consumer ถ้าไม่สนค่าไฟ</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">🏆 Perf/Watt ดีสุด</div>
+        <div class="value" style="color:var(--green)">M2 Ultra</div>
+        <div class="desc">60W ได้ 800 GB/s — ประหยัดกว่า NVIDIA 3–5 เท่า เงียบ ไม่มีพัดลม</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">🏆 คุ้มเงินสุด</div>
+        <div class="value" style="color:var(--amber)">RTX 3090 มือสอง</div>
+        <div class="desc">936 GB/s ราคา ~25,000-30,000 บาท — ได้ 93% ของ 4090 ในราคากึ่งหนึ่ง</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">🏆 รัน Model ใหญ่สุด</div>
+        <div class="value" style="color:var(--purple)">M2 Ultra 192GB</div>
+        <div class="desc">70B Q4 (~40GB) รันได้แบบไม่ต้อง offload — GPU ฝั่ง NVIDIA ทำไม่ได้</div>
+      </div>
     </div>
 
-    <h2>3. Overclock \u2014 \u0E2D\u0E31\u0E19\u0E43\u0E2B\u0E19\u0E0A\u0E48\u0E27\u0E22\u0E08\u0E23\u0E34\u0E07</h2>
-    <h3>GPU Core OC \u2014 \u274C \u0E41\u0E17\u0E1A\u0E44\u0E21\u0E48\u0E0A\u0E48\u0E27\u0E22</h3>
-    <p>Decode \u0E16\u0E39\u0E01\u0E08\u0E33\u0E01\u0E31\u0E14\u0E14\u0E49\u0E27\u0E22 memory \u2014 core OC \u0E44\u0E14\u0E49 ~<strong>2\u20135%</strong> \u0E40\u0E17\u0E48\u0E32\u0E19\u0E31\u0E49\u0E19</p>
-    <h3>VRAM Memory OC \u2014 \u2705 \u0E0A\u0E48\u0E27\u0E22\u0E08\u0E23\u0E34\u0E07</h3>
-    <p>OC memory clock \u0E15\u0E23\u0E07\u0E46 \u0E40\u0E1E\u0E34\u0E48\u0E21 bandwidth 10% = <strong>~7\u201310% tok/s</strong></p>
-<pre><code>RTX 4090:
-Stock:     21 Gbps \u2192 1008 GB/s \u2192 ~130 tok/s
-+10% OC:  23.1 Gbps \u2192 1108 GB/s \u2192 ~143 tok/s (+10%)
+    <h2>3. Overclock — อันไหนช่วยจริง</h2>
 
-Core OC:  +200 MHz \u2192 ~3% (noise)</code></pre>
-    <h3>Apple Silicon \u2014 \u274C OC \u0E44\u0E21\u0E48\u0E44\u0E14\u0E49</h3>
-    <p>Bandwidth \u0E16\u0E39\u0E01 fix \u0E42\u0E14\u0E22 SoC \u2014 \u0E0B\u0E37\u0E49\u0E2D\u0E21\u0E32\u0E40\u0E17\u0E48\u0E32\u0E44\u0E2B\u0E23\u0E48\u0E44\u0E14\u0E49\u0E40\u0E17\u0E48\u0E32\u0E19\u0E31\u0E49\u0E19</p>
-    <div class="warn-box"><strong>\u0E2D\u0E22\u0E48\u0E32\u0E0B\u0E37\u0E49\u0E2D GPU \u0E1B\u0E23\u0E30\u0E2B\u0E23\u0E2D OC headroom</strong> \u2014 \u0E0B\u0E37\u0E49\u0E2D\u0E08\u0E32\u0E01 stock bandwidth</div>
+    <h3>GPU Core Overclock — ❌ แทบไม่ช่วย decode</h3>
+    <p>Decode ถูกจำกัดด้วย memory — GPU core นั่งรอ weights มา Core OC จาก 2.5 → 2.8 GHz ได้ประมาณ <strong>2–5% เท่านั้น</strong> ไม่คุ้มกับความร้อนและความเสี่ยง</p>
 
-    <h2>4. GPU vs Mac</h2>
+    <h3>VRAM Memory Overclock — ✅ ช่วยจริง</h3>
+    <p>OC memory clock ตรงๆ เพิ่ม bandwidth ได้ 10% = ได้ <strong>~7–10% tok/s</strong> — นี่คือ overclock เดียวที่มีผลกับ inference</p>
+
+<pre><code>ตัวอย่าง RTX 4090:
+Stock:       21 Gbps → 1008 GB/s → ~130 tok/s
++10% mem OC: 23.1 Gbps → 1108 GB/s → ~143 tok/s (+10%)
+
+GPU core OC: +200 MHz → ได้แค่ ~3% (noise)</code></pre>
+
+    <h3>Apple Silicon — ❌ OC ไม่ได้</h3>
+    <p>Bandwidth ถูก fix โดย SoC design ไม่มี knob ให้ปรับ — ซื้อมาเท่าไหร่ได้เท่านั้น จริงๆ แล้วเป็น <em>feature</em> — ไม่ต้อง tune เสถียร</p>
+
+    <div class="warn-box">
+      <strong>อย่าซื้อ GPU เพราะ overclock headroom</strong> — ซื้อจาก stock bandwidth 10% ที่ได้จาก mem OC เป็น bonus ไม่ใช่เหตุผลเลือก GPU
+    </div>
+
+    <h2>4. GPU vs Mac — ซื้ออันไหน</h2>
+
     <table>
-      <thead><tr><th>\u0E1B\u0E31\u0E08\u0E08\u0E31\u0E22</th><th>NVIDIA GPU</th><th>Apple Silicon</th></tr></thead>
+      <thead><tr><th>ปัจจัย</th><th>NVIDIA GPU</th><th>Apple Silicon</th></tr></thead>
       <tbody>
-        <tr><td>tok/s \u0E2A\u0E39\u0E07\u0E2A\u0E38\u0E14</td><td class="t-green">\u0E0A\u0E19\u0E30 (4090: ~150)</td><td>M2 Ultra: ~90</td></tr>
-        <tr><td>Perf/Watt</td><td>0.25\u20130.37</td><td class="t-green">0.88\u20131.50 (3-5x)</td></tr>
-        <tr><td>Model \u0E43\u0E2B\u0E0D\u0E48</td><td>24GB VRAM</td><td class="t-green">192GB UMA</td></tr>
-        <tr><td>\u0E40\u0E2A\u0E35\u0E22\u0E07</td><td class="t-red">\u0E14\u0E31\u0E07\u0E15\u0E2D\u0E19 load</td><td class="t-green">\u0E40\u0E07\u0E35\u0E22\u0E1A</td></tr>
-        <tr><td>\u0E23\u0E32\u0E04\u0E32/\u0E04\u0E27\u0E32\u0E21\u0E40\u0E23\u0E47\u0E27</td><td class="t-green">4090: ~55,000 \u0E1A\u0E32\u0E17</td><td>M2 Ultra: ~130,000+ \u0E1A\u0E32\u0E17</td></tr>
-        <tr><td>\u0E2D\u0E31\u0E1B\u0E40\u0E01\u0E23\u0E14\u0E44\u0E14\u0E49</td><td class="t-green">\u0E40\u0E1B\u0E25\u0E35\u0E48\u0E22\u0E19\u0E01\u0E32\u0E23\u0E4C\u0E14</td><td class="t-red">\u0E0B\u0E37\u0E49\u0E2D\u0E40\u0E04\u0E23\u0E37\u0E48\u0E2D\u0E07\u0E43\u0E2B\u0E21\u0E48</td></tr>
+        <tr><td>tok/s สูงสุด</td><td class="t-green">ชนะ (4090: ~150)</td><td>M2 Ultra: ~90</td></tr>
+        <tr><td>Perf per Watt</td><td>0.25–0.37</td><td class="t-green">0.88–1.50 (3-5x)</td></tr>
+        <tr><td>Model ใหญ่สุด</td><td>24GB VRAM</td><td class="t-green">192GB UMA</td></tr>
+        <tr><td>เสียงรบกวน</td><td class="t-red">ดังตอน load</td><td class="t-green">เงียบ</td></tr>
+        <tr><td>Ecosystem</td><td class="t-green">CUDA — ใช้ได้ทุกอย่าง</td><td>MLX, llama.cpp (กำลังโต)</td></tr>
+        <tr><td>ราคา/ความแรง</td><td class="t-green">4090: ~55,000 บาท</td><td>M2 Ultra: ~130,000+ บาท</td></tr>
+        <tr><td>อัปเกรดได้</td><td class="t-green">เปลี่ยนการ์ด</td><td class="t-red">ซื้อเครื่องใหม่</td></tr>
+        <tr><td>Multi-GPU</td><td class="t-green">ได้ (2x4090 = 2x bandwidth)</td><td class="t-red">ไม่ได้</td></tr>
       </tbody>
     </table>
-    <div class="tip-box"><strong>\u0E0B\u0E37\u0E49\u0E2D NVIDIA ถ้า:</strong> \u0E2D\u0E22\u0E32\u0E01\u0E40\u0E23\u0E47\u0E27\u0E2A\u0E38\u0E14, CUDA, \u0E2D\u0E31\u0E1B\u0E40\u0E01\u0E23\u0E14\u0E17\u0E35\u0E2B\u0E25\u0E31\u0E07<br><strong>\u0E0B\u0E37\u0E49\u0E2D Mac ถ้า:</strong> model \u0E43\u0E2B\u0E0D\u0E48, \u0E40\u0E07\u0E35\u0E22\u0E1A, perf/watt \u0E14\u0E35\u0E2A\u0E38\u0E14</div>
 
-    <h2>5. Checklist \u0E01\u0E48\u0E2D\u0E19\u0E0B\u0E37\u0E49\u0E2D</h2>
+    <div class="tip-box">
+      <strong>ซื้อ NVIDIA GPU ถ้า:</strong> อยากได้ความเร็วสูงสุด, ใช้ CUDA ecosystem, หรือวางแผนอัปเกรดทีหลัง<br>
+      <strong>ซื้อ Mac ถ้า:</strong> รัน model ใหญ่ (70B+), อยากได้เงียบ, perf/watt ดีสุด, ไม่อยาก tune
+    </div>
+
+    <h2>5. Checklist ก่อนซื้อ</h2>
+
     <div class="checklist">
       <ul>
-        <li><strong>\u2610 \u0E15\u0E31\u0E49\u0E07\u0E40\u0E1B\u0E49\u0E32 tok/s</strong><span>Chat: 20+ | Batch: 50+ | Real-time: 100+</span></li>
-        <li><strong>\u2610 \u0E40\u0E25\u0E37\u0E2D\u0E01\u0E02\u0E19\u0E32\u0E14 model</strong><span>7B Q4 = ~4GB | 13B Q4 = ~7GB | 70B Q4 = ~40GB</span></li>
-        <li><strong>\u2610 \u0E04\u0E33\u0E19\u0E27\u0E13: bandwidth \u00F7 model size</strong><span>= tok/s ceiling \u0E04\u0E48\u0E32\u0E08\u0E23\u0E34\u0E07 = 50-70%</span></li>
-        <li><strong>\u2610 \u0E40\u0E0A\u0E47\u0E04 VRAM/UMA</strong><span>7B=4GB | 13B=7GB | 70B=40GB+</span></li>
-        <li><strong>\u2610 \u0E04\u0E33\u0E19\u0E27\u0E13 perf/watt</strong><span>tok/s \u00F7 TDP \u2014 \u0E23\u0E31\u0E19 24/7 \u0E04\u0E48\u0E32\u0E44\u0E1F\u0E2A\u0E33\u0E04\u0E31\u0E0D</span></li>
-        <li><strong>\u2610 \u0E1A\u0E23\u0E23\u0E14\u0E32\u0E20\u0E32\u0E13 \u0E15\u0E48\u0E2D bandwidth</strong><span>3090 \u0E21\u0E37\u0E2D\u0E2A\u0E2D\u0E07: ~33 GB/s/\u0E1E\u0E31\u0E19\u0E1A\u0E32\u0E17 | 4090: ~18 | M2 Ultra: ~6</span></li>
-        <li><strong>\u2610 \u0E2D\u0E22\u0E48\u0E32\u0E14\u0E39 core clock</strong><span>Memory bandwidth \u0E2A\u0E33\u0E04\u0E31\u0E0D\u0E01\u0E27\u0E48\u0E32</span></li>
+        <li><strong>☐ ตั้งเป้า tok/s</strong><span>Chat: 20+ พอ | Batch: 50+ | Real-time agent: 100+</span></li>
+        <li><strong>☐ เลือกขนาด model</strong><span>7B Q4 = ~4GB | 13B Q4 = ~7GB | 70B Q4 = ~40GB</span></li>
+        <li><strong>☐ คำนวณ: bandwidth ÷ model size = tok/s ceiling</strong><span>ใช้สูตรข้างบน ค่าจริง = 50-70%</span></li>
+        <li><strong>☐ เช็ค VRAM/UMA ใส่ model ได้</strong><span>7B ต้อง 4GB | 13B ต้อง 7GB | 70B ต้อง 40GB+</span></li>
+        <li><strong>☐ คำนวณ perf/watt</strong><span>tok/s ÷ TDP — ถ้ารัน 24/7 ค่าไฟสำคัญ Mac ชนะ</span></li>
+        <li><strong>☐ เช็คราคาต่อ bandwidth</strong><span>RTX 3090 มือสอง: ~33 GB/s/พันบาท | 4090: ~18 | M2 Ultra: ~6</span></li>
+        <li><strong>☐ อย่าดู core clock</strong><span>Memory bandwidth สำคัญกว่า — GPU ช้าแต่ VRAM เร็ว ชนะ GPU เร็วแต่ VRAM ช้า</span></li>
       </ul>
     </div>
 
-    <h2>6. \u0E02\u0E49\u0E2D\u0E1C\u0E34\u0E14\u0E1E\u0E25\u0E32\u0E14\u0E17\u0E35\u0E48\u0E1E\u0E1A\u0E1A\u0E48\u0E2D\u0E22</h2>
+    <h2>6. ข้อผิดพลาดที่พบบ่อย</h2>
+
     <table>
-      <thead><tr><th>\u0E40\u0E02\u0E49\u0E32\u0E43\u0E08\u0E1C\u0E34\u0E14</th><th>\u0E17\u0E33\u0E44\u0E21\u0E1C\u0E34\u0E14</th><th>\u0E04\u0E27\u0E23\u0E17\u0E33</th></tr></thead>
+      <thead><tr><th>เข้าใจผิด</th><th>ทำไมผิด</th><th>ควรทำอย่างไร</th></tr></thead>
       <tbody>
-        <tr><td>"\u0E15\u0E49\u0E2D\u0E07\u0E01\u0E32\u0E23 CUDA cores \u0E40\u0E22\u0E2D\u0E30"</td><td>Decode \u0E16\u0E39\u0E01\u0E08\u0E33\u0E01\u0E31\u0E14\u0E14\u0E49\u0E27\u0E22 bandwidth</td><td>\u0E14\u0E39 memory bandwidth \u0E41\u0E17\u0E19</td></tr>
-        <tr><td>"OC \u0E41\u0E25\u0E49\u0E27\u0E40\u0E23\u0E47\u0E27\u0E02\u0E36\u0E49\u0E19"</td><td>Core OC = ~3% \u2014 mem OC \u0E40\u0E17\u0E48\u0E32\u0E19\u0E31\u0E49\u0E19</td><td>\u0E0B\u0E37\u0E49\u0E2D stock bandwidth</td></tr>
-        <tr><td>"8GB VRAM \u0E1E\u0E2D"</td><td>7B Q4 \u0E41\u0E17\u0E1A\u0E44\u0E21\u0E48\u0E1E\u0E2D 13B \u0E44\u0E21\u0E48\u0E44\u0E14\u0E40\u0E25\u0E22</td><td>16GB \u0E02\u0E31\u0E49\u0E19\u0E15\u0E48\u0E33, 24GB \u0E2A\u0E1A\u0E32\u0E22</td></tr>
-        <tr><td>"Mac \u0E0A\u0E49\u0E32\u0E2A\u0E33\u0E2B\u0E23\u0E31\u0E1A AI"</td><td>M2 Ultra 800 GB/s \u2014 \u0E40\u0E23\u0E47\u0E27\u0E01\u0E27\u0E48\u0E32 GPU \u0E2A\u0E27\u0E19\u0E43\u0E2B\u0E0D\u0E48</td><td>\u0E40\u0E17\u0E35\u0E22\u0E1A bandwidth</td></tr>
-        <tr><td>"cloud API \u0E04\u0E38\u0E49\u0E21\u0E01\u0E27\u0E48\u0E32"</td><td>\u0E23\u0E32\u0E22\u0E40\u0E14\u0E37\u0E2D\u0E19\u0E2A\u0E30\u0E2A\u0E21</td><td>\u0E04\u0E33\u0E19\u0E27\u0E13 \u0E23\u0E32\u0E04\u0E32 GPU \u00F7 \u0E04\u0E48\u0E32 API/\u0E40\u0E14\u0E37\u0E2D\u0E19 = \u0E40\u0E14\u0E37\u0E2D\u0E19\u0E04\u0E37\u0E19\u0E17\u0E38\u0E19</td></tr>
+        <tr><td>"ต้องการ CUDA cores เยอะ"</td><td>Decode ถูกจำกัดด้วย bandwidth ไม่ใช่ compute</td><td>ดู memory bandwidth แทน</td></tr>
+        <tr><td>"OC แล้วจะเร็วขึ้น"</td><td>Core OC ได้ ~3% — มีแค่ mem OC ที่ช่วย</td><td>ซื้อจาก stock bandwidth</td></tr>
+        <tr><td>"8GB VRAM พอ"</td><td>7B Q4 แทบไม่พอ 13B ไม่ได้เลย</td><td>16GB ขั้นต่ำ, 24GB ใช้สบาย</td></tr>
+        <tr><td>"Mac ช้าสำหรับ AI"</td><td>M2 Ultra มี 800 GB/s — เร็วกว่า GPU ส่วนใหญ่</td><td>เทียบ bandwidth ไม่ใช่ "GPU vs Mac"</td></tr>
+        <tr><td>"cloud API คุ้มกว่า"</td><td>รายเดือนสะสม — ซื้อ hardware ครั้งเดียวจบ</td><td>คำนวณ: ราคา GPU ÷ ค่า API ต่อเดือน = เดือนคืนทุน</td></tr>
       </tbody>
     </table>
 
-    <h2>\u0E2A\u0E23\u0E38\u0E1B</h2>
+    <h2>สรุป</h2>
+
     <div class="formula-box">
-      <div class="math">tok/s = Bandwidth (GB/s) \u00F7 Model Size (GB)</div>
-      <div class="sub">\u0E04\u0E48\u0E32\u0E08\u0E23\u0E34\u0E07 \u00D7 0.5\u20130.7</div>
+      <div class="math">tok/s = Bandwidth (GB/s) ÷ Model Size (GB)</div>
+      <div class="sub">ค่าจริง × 0.5–0.7</div>
     </div>
-    <p>\u2192 <strong>Memory bandwidth</strong> = spec \u0E40\u0E14\u0E35\u0E22\u0E27\u0E17\u0E35\u0E48\u0E2A\u0E33\u0E04\u0E31\u0E0D\u0E2A\u0E33\u0E2B\u0E23\u0E31\u0E1A decode<br>
-    \u2192 <strong>Mem OC</strong> \u0E0A\u0E48\u0E27\u0E22 ~10% Core OC \u0E44\u0E21\u0E48<br>
-    \u2192 <strong>Mac \u0E0A\u0E19\u0E30 perf/watt</strong> NVIDIA \u0E0A\u0E19\u0E30 raw speed<br>
-    \u2192 <strong>RTX 3090 \u0E21\u0E37\u0E2D\u0E2A\u0E2D\u0E07</strong> \u0E04\u0E38\u0E49\u0E21\u0E2A\u0E38\u0E14 bandwidth/\u0E1A\u0E32\u0E17</p>
+
+    <p>นั่นคือ 80% ของสิ่งที่ต้องรู้ ที่เหลือ:</p>
+    <p>→ <strong>Memory bandwidth</strong> คือ spec เดียวที่สำคัญสำหรับ decode<br>
+    → <strong>Mem OC</strong> ช่วย ~10% Core OC ไม่ช่วย<br>
+    → <strong>Mac ชนะ perf/watt</strong> NVIDIA ชนะ raw speed และ ecosystem<br>
+    → <strong>VRAM size</strong> กำหนดว่ารัน model ไหนได้<br>
+    → <strong>RTX 3090 มือสอง</strong> คุ้มสุดในแง่ bandwidth ต่อราคา</p>
+
   </div>
-  <div class="footer">Ampas Industries Co., Ltd. \u2014 \u270D\uFE0F Blog</div>
+
+  <div class="footer">Ampas Industries Co., Ltd. — ✍️ Blog</div>
 </body>
 </html>
