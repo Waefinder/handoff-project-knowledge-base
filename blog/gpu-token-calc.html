@@ -93,14 +93,14 @@
     <p><strong>จบ.</strong> ถ้าจำได้แค่อย่างเดียวจากบทความนี้ จำสูตรนี้ ที่เหลือคือรายละเอียด</p>
 
     <h3>ตัวอย่างเร็ว</h3>
-<pre><code>RTX 4090 (1008 GB/s) + 7B Q4 (~4 GB)
-→ 1008 ÷ 4 = 252 tok/s (theoretical) → ~120-150 tok/s (real)
+<pre><code>RTX 4090 (1008 GB/s) + Qwen3.5-27B Q3_K_S (12.2 GB)
+→ 1008 ÷ 12.2 = 83 tok/s (theoretical) → ~40-60 tok/s (real)
 
-M2 Ultra (800 GB/s) + 7B Q4 (~4 GB)
-→ 800 ÷ 4 = 200 tok/s (theoretical) → ~60-90 tok/s (real)
+RTX 4090 (1008 GB/s) + Qwen3.5-27B Q4_K_M (16.6 GB)
+→ 1008 ÷ 16.6 = 61 tok/s (theoretical) → ~30-42 tok/s (real)
 
-RTX 4060 Ti (288 GB/s) + 7B Q4 (~4 GB)
-→ 288 ÷ 4 = 72 tok/s (theoretical) → ~35-50 tok/s (real)</code></pre>
+M2 Ultra (800 GB/s) + Qwen3.8-Flash-Next Q4 (~72 GB, 6B active)
+→ 800 ÷ 72 = 11 tok/s (theoretical) → ~6-8 tok/s (real)</code></pre>
 
     <div class="tip-box">
       <strong>Rule of thumb:</strong> เอา bandwidth ÷ ขนาด model (GB) = tok/s ceiling แล้ว × 0.5–0.7 ได้ค่าจริง ใช้ได้ทั้ง NVIDIA และ Apple Silicon
@@ -115,11 +115,15 @@ RTX 4060 Ti (288 GB/s) + 7B Q4 (~4 GB)
       <div class="sub">เวลาอ่าน prompt = prompt_tokens ÷ prefill tok/s — ยิ่ง prompt ยาว ยิ่งรอแรกนาน (TTFT)</div>
     </div>
 
-<pre><code>7B model (2×7B = 14 GFLOPs/token), prompt 1,000 tokens:
+<pre><code>Qwen3.5-27B dense (2×27B = 54 GFLOPs/token), prompt 1,000 tokens:
 
-RTX 4090  (~82 TFLOPS FP16) → 1000 ÷ 5,857 ≈ 0.17 วินาที
-M2 Ultra  (~27 TFLOPS FP16) → 1000 ÷ 1,928 ≈ 0.52 วินาที
-RTX 4060 Ti (~22 TFLOPS)    → 1000 ÷ 1,571 ≈ 0.64 วินาที</code></pre>
+RTX 4090  (~82 TFLOPS FP16) → 1000 ÷ 1,518 ≈ 0.66 วินาที
+M2 Ultra  (~27 TFLOPS FP16) → 1000 ÷ 500   ≈ 2.0 วินาที
+
+Qwen3.8-Flash-Next (MoE 125B แต่ active แค่ 6B → 12 GFLOPs/token):
+
+RTX 4090  (~82 TFLOPS) → 1000 ÷ 6,833 ≈ 0.15 วินาที  (MoE prefill เร็วมาก)
+M2 Ultra  (~27 TFLOPS) → 1000 ÷ 2,250 ≈ 0.44 วินาที</code></pre>
 
     <div class="formula-box">
       <div class="math">Decode → ดู Bandwidth | Prefill → ดู FLOPS</div>
@@ -130,16 +134,16 @@ RTX 4060 Ti (~22 TFLOPS)    → 1000 ÷ 1,571 ≈ 0.64 วินาที</code>
     <p>สำหรับ single-stream decode <strong>memory bandwidth คือ king</strong> — core clock, CUDA cores, tensor cores พวกนั้นสำคัญกับ training และ batch inference แต่ไม่ช่วย decode เท่าไหร่</p>
 
     <table>
-      <thead><tr><th>Device</th><th>Bandwidth</th><th>VRAM / UMA</th><th>7B Q4 tok/s*</th><th>Power</th><th>tok/s per Watt</th></tr></thead>
+      <thead><tr><th>Device</th><th>Bandwidth</th><th>VRAM / UMA</th><th>27B Q4 tok/s*</th><th>Power</th><th>tok/s per Watt</th></tr></thead>
       <tbody>
-        <tr><td>RTX 4090</td><td class="t-blue">1008 GB/s</td><td>24 GB</td><td class="t-green">120–150</td><td>450W</td><td>0.27–0.33</td></tr>
-        <tr><td>RTX 4080</td><td class="t-blue">717 GB/s</td><td>16 GB</td><td class="t-green">80–110</td><td>320W</td><td>0.25–0.34</td></tr>
-        <tr><td>RTX 4070 Ti</td><td class="t-blue">504 GB/s</td><td>12 GB</td><td>55–75</td><td>285W</td><td>0.19–0.26</td></tr>
-        <tr><td>RTX 4060 Ti</td><td class="t-blue">288 GB/s</td><td>16 GB</td><td>35–50</td><td>165W</td><td>0.21–0.30</td></tr>
-        <tr><td>RTX 3090 (used)</td><td class="t-blue">936 GB/s</td><td>24 GB</td><td class="t-green">100–130</td><td>350W</td><td>0.29–0.37</td></tr>
-        <tr><td>M2 Ultra</td><td class="t-blue">800 GB/s</td><td>192 GB</td><td>60–90</td><td>60W</td><td class="t-green">1.0–1.5</td></tr>
-        <tr><td>M2 Max</td><td class="t-blue">400 GB/s</td><td>96 GB</td><td>35–55</td><td>40W</td><td class="t-green">0.88–1.38</td></tr>
-        <tr><td>M1 Ultra</td><td class="t-blue">800 GB/s</td><td>128 GB</td><td>55–80</td><td>60W</td><td class="t-green">0.92–1.33</td></tr>
+        <tr><td>RTX 4090</td><td class="t-blue">1008 GB/s</td><td>24 GB</td><td class="t-green">30–42</td><td>450W</td><td>0.07–0.09</td></tr>
+        <tr><td>RTX 4080</td><td class="t-blue">717 GB/s</td><td>16 GB</td><td class="t-green">22–30</td><td>320W</td><td>0.07–0.09</td></tr>
+        <tr><td>RTX 4070 Ti</td><td class="t-blue">504 GB/s</td><td>12 GB</td><td>15–21</td><td>285W</td><td>0.05–0.07</td></tr>
+        <tr><td>RTX 4060 Ti</td><td class="t-blue">288 GB/s</td><td>16 GB</td><td>9–12</td><td>165W</td><td>0.05–0.07</td></tr>
+        <tr><td>RTX 3090 (used)</td><td class="t-blue">936 GB/s</td><td>24 GB</td><td class="t-green">28–40</td><td>350W</td><td>0.08–0.11</td></tr>
+        <tr><td>M2 Ultra</td><td class="t-blue">800 GB/s</td><td>192 GB</td><td>24–34</td><td>60W</td><td class="t-green">0.40–0.57</td></tr>
+        <tr><td>M2 Max</td><td class="t-blue">400 GB/s</td><td>96 GB</td><td>12–17</td><td>40W</td><td class="t-green">0.30–0.42</td></tr>
+        <tr><td>M1 Ultra</td><td class="t-blue">800 GB/s</td><td>128 GB</td><td>24–34</td><td>60W</td><td class="t-green">0.40–0.57</td></tr>
       </tbody>
     </table>
     <p style="font-size:0.82rem;color:var(--muted);margin-top:-8px;">* llama.cpp / MLX decode speed, single stream, Q4_K_M — ค่าจริง varies กับ context length และ batch size</p>
@@ -223,9 +227,9 @@ GPU core OC: +200 MHz → ได้แค่ ~3% (noise)</code></pre>
     <div class="checklist">
       <ul>
         <li><strong>☐ ตั้งเป้า tok/s</strong><span>Chat: 20+ พอ | Batch: 50+ | Real-time agent: 100+</span></li>
-        <li><strong>☐ เลือกขนาด model</strong><span>7B Q4 = ~4GB | 13B Q4 = ~7GB | 70B Q4 = ~40GB</span></li>
+        <li><strong>☐ เลือกขนาด model</strong><span>Qwen3.5-27B Q3_K_S = 12.2GB | Q4_K_M = 16.6GB | Flash-Next Q4 = ~72GB</span></li>
         <li><strong>☐ คำนวณ: bandwidth ÷ model size = tok/s ceiling</strong><span>ใช้สูตรข้างบน ค่าจริง = 50-70%</span></li>
-        <li><strong>☐ เช็ค VRAM/UMA ใส่ model ได้</strong><span>7B ต้อง 4GB | 13B ต้อง 7GB | 70B ต้อง 40GB+</span></li>
+        <li><strong>☐ เช็ค VRAM/UMA ใส่ model ได้</strong><span>27B Q3 = 12.2GB | 27B Q4 = 16.6GB | Flash-Next = 72GB+</span></li>
         <li><strong>☐ คำนวณ perf/watt</strong><span>tok/s ÷ TDP — ถ้ารัน 24/7 ค่าไฟสำคัญ Mac ชนะ</span></li>
         <li><strong>☐ เช็คราคาต่อ bandwidth</strong><span>RTX 3090 มือสอง: ~33 GB/s/พันบาท | 4090: ~18 | M2 Ultra: ~6</span></li>
         <li><strong>☐ อย่าดู core clock</strong><span>Memory bandwidth สำคัญกว่า — GPU ช้าแต่ VRAM เร็ว ชนะ GPU เร็วแต่ VRAM ช้า</span></li>
@@ -239,7 +243,7 @@ GPU core OC: +200 MHz → ได้แค่ ~3% (noise)</code></pre>
       <tbody>
         <tr><td>"ต้องการ CUDA cores เยอะ"</td><td>Decode ถูกจำกัดด้วย bandwidth ไม่ใช่ compute</td><td>ดู memory bandwidth แทน</td></tr>
         <tr><td>"OC แล้วจะเร็วขึ้น"</td><td>Core OC ได้ ~3% — มีแค่ mem OC ที่ช่วย</td><td>ซื้อจาก stock bandwidth</td></tr>
-        <tr><td>"8GB VRAM พอ"</td><td>7B Q4 แทบไม่พอ 13B ไม่ได้เลย</td><td>16GB ขั้นต่ำ, 24GB ใช้สบาย</td></tr>
+        <tr><td>"8GB VRAM พอ"</td><td>27B Q3 = 12.2GB — ใส่ไม่ได้เลย</td><td>16GB ขั้นต่ำ (Q3), 24GB ใช้ Q4 สบาย</td></tr>
         <tr><td>"Mac ช้าสำหรับ AI"</td><td>M2 Ultra มี 800 GB/s — เร็วกว่า GPU ส่วนใหญ่</td><td>เทียบ bandwidth ไม่ใช่ "GPU vs Mac"</td></tr>
         <tr><td>"cloud API คุ้มกว่า"</td><td>รายเดือนสะสม — ซื้อ hardware ครั้งเดียวจบ</td><td>คำนวณ: ราคา GPU ÷ ค่า API ต่อเดือน = เดือนคืนทุน</td></tr>
       </tbody>
