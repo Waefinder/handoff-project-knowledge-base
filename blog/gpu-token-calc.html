@@ -134,26 +134,35 @@ M2 Ultra  (~27 TFLOPS) → 1000 ÷ 2,250 ≈ 0.44 วินาที</code></pre
     <p>สำหรับ single-stream decode <strong>memory bandwidth คือ king</strong> — core clock, CUDA cores, tensor cores พวกนั้นสำคัญกับ training และ batch inference แต่ไม่ช่วย decode เท่าไหร่</p>
 
     <table>
-      <thead><tr><th>Device</th><th>Bandwidth</th><th>VRAM / UMA</th><th>27B Q4 tok/s*</th><th>Power</th><th>tok/s per Watt</th></tr></thead>
+      <thead><tr><th>Device</th><th>Bandwidth</th><th>VRAM / UMA</th><th>27B Q4 tok/s*</th><th>Power</th><th>tok/s/W</th><th>MSRP</th></tr></thead>
       <tbody>
-        <tr><td>RTX 4090</td><td class="t-blue">1008 GB/s</td><td>24 GB</td><td class="t-green">30–42</td><td>450W</td><td>0.07–0.09</td></tr>
-        <tr><td>RTX 4080</td><td class="t-blue">717 GB/s</td><td>16 GB</td><td class="t-green">22–30</td><td>320W</td><td>0.07–0.09</td></tr>
-        <tr><td>RTX 4070 Ti</td><td class="t-blue">504 GB/s</td><td>12 GB</td><td>15–21</td><td>285W</td><td>0.05–0.07</td></tr>
-        <tr><td>RTX 4060 Ti</td><td class="t-blue">288 GB/s</td><td>16 GB</td><td>9–12</td><td>165W</td><td>0.05–0.07</td></tr>
-        <tr><td>RTX 3090 (used)</td><td class="t-blue">936 GB/s</td><td>24 GB</td><td class="t-green">28–40</td><td>350W</td><td>0.08–0.11</td></tr>
-        <tr><td>M2 Ultra</td><td class="t-blue">800 GB/s</td><td>192 GB</td><td>24–34</td><td>60W</td><td class="t-green">0.40–0.57</td></tr>
-        <tr><td>M2 Max</td><td class="t-blue">400 GB/s</td><td>96 GB</td><td>12–17</td><td>40W</td><td class="t-green">0.30–0.42</td></tr>
-        <tr><td>M1 Ultra</td><td class="t-blue">800 GB/s</td><td>128 GB</td><td>24–34</td><td>60W</td><td class="t-green">0.40–0.57</td></tr>
+        <tr><td colspan="7" style="color:var(--blue);font-weight:600;background:var(--bg3);">RTX 50-series (GDDR7, Blackwell)</td></tr>
+        <tr><td>RTX 5090</td><td class="t-blue">1792 GB/s</td><td>32 GB</td><td class="t-green">54–76</td><td>575W</td><td>0.09–0.13</td><td>$1,999</td></tr>
+        <tr><td>RTX 5080</td><td class="t-blue">960 GB/s</td><td>16 GB</td><td class="t-green">29–40</td><td>360W</td><td>0.08–0.11</td><td>$999</td></tr>
+        <tr><td>RTX 5070 Ti</td><td class="t-blue">896 GB/s</td><td>16 GB</td><td>27–38</td><td>300W</td><td>0.09–0.13</td><td>$749</td></tr>
+        <tr><td>RTX 5070</td><td class="t-blue">672 GB/s</td><td>12 GB</td><td>20–28</td><td>250W</td><td>0.08–0.11</td><td>$549</td></tr>
+        <tr><td colspan="7" style="color:var(--blue);font-weight:600;background:var(--bg3);">RTX 40/30-series (GDDR6X)</td></tr>
+        <tr><td>RTX 4090</td><td class="t-blue">1008 GB/s</td><td>24 GB</td><td class="t-green">30–42</td><td>450W</td><td>0.07–0.09</td><td>$1,599</td></tr>
+        <tr><td>RTX 4080</td><td class="t-blue">717 GB/s</td><td>16 GB</td><td class="t-green">22–30</td><td>320W</td><td>0.07–0.09</td><td>$1,199</td></tr>
+        <tr><td>RTX 4070 Ti</td><td class="t-blue">504 GB/s</td><td>12 GB</td><td>15–21</td><td>285W</td><td>0.05–0.07</td><td>$799</td></tr>
+        <tr><td>RTX 4060 Ti</td><td class="t-blue">288 GB/s</td><td>16 GB</td><td>9–12</td><td>165W</td><td>0.05–0.07</td><td>$499</td></tr>
+        <tr><td>RTX 3090 (มือสอง)</td><td class="t-blue">936 GB/s</td><td>24 GB</td><td class="t-green">28–40</td><td>350W</td><td>0.08–0.11</td><td>~$700-900</td></tr>
+        <tr><td colspan="7" style="color:var(--blue);font-weight:600;background:var(--bg3);">AMD RDNA3</td></tr>
+        <tr><td>RX 7900 XTX</td><td class="t-blue">960 GB/s</td><td>24 GB</td><td>29–40</td><td>355W</td><td>0.08–0.11</td><td>$999</td></tr>
+        <tr><td colspan="7" style="color:var(--blue);font-weight:600;background:var(--bg3);">Apple Silicon (Unified Memory)</td></tr>
+        <tr><td>M2 Ultra</td><td class="t-blue">800 GB/s</td><td>192 GB</td><td>24–34</td><td>60W</td><td class="t-green">0.40–0.57</td><td>$3,999+</td></tr>
+        <tr><td>M2 Max</td><td class="t-blue">400 GB/s</td><td>96 GB</td><td>12–17</td><td>40W</td><td class="t-green">0.30–0.42</td><td>$1,999+</td></tr>
+        <tr><td>M1 Ultra</td><td class="t-blue">800 GB/s</td><td>128 GB</td><td>24–34</td><td>60W</td><td class="t-green">0.40–0.57</td><td>$3,999+</td></tr>
       </tbody>
     </table>
-    <p style="font-size:0.82rem;color:var(--muted);margin-top:-8px;">* llama.cpp / MLX decode speed, single stream, Q4_K_M — ค่าจริง varies กับ context length และ batch size</p>
+    <p style="font-size:0.82rem;color:var(--muted);margin-top:-8px;">* llama.cpp / MLX decode speed สำหรับ Qwen3.5-27B Q4_K_M (16.6 GB), single stream — ค่าจริง varies กับ context length และ batch size. MSRP = ราคาเปิดตัว (ไม่รวม tax/markup ไทย)</p>
 
     <h3>มือหนึ่ง (New)</h3>
     <div class="grid-2">
       <div class="stat-card">
         <div class="label">🏆 เร็วสุด (Raw Speed)</div>
-        <div class="value" style="color:var(--green)">RTX 4090</div>
-        <div class="desc">1008 GB/s — bandwidth สูงสุดใน consumer ถ้าไม่สนค่าไฟ</div>
+        <div class="value" style="color:var(--green)">RTX 5090</div>
+        <div class="desc">1792 GB/s + 32GB GDDR7 — เร็วสุดแต่กิน 575W ค่าไฟสูง</div>
       </div>
       <div class="stat-card">
         <div class="label">🏆 Perf/Watt ดีสุด</div>
@@ -161,9 +170,14 @@ M2 Ultra  (~27 TFLOPS) → 1000 ÷ 2,250 ≈ 0.44 วินาที</code></pre
         <div class="desc">60W ได้ 800 GB/s — ประหยัดกว่า NVIDIA 3–5 เท่า เงียบ ไม่มีพัดลม</div>
       </div>
       <div class="stat-card">
+        <div class="label">🏆 คุ้มสุด (bandwidth/$)</div>
+        <div class="value" style="color:var(--amber)">RTX 5080</div>
+        <div class="desc">960 GB/s ที่ $999 — bandwidth ใกล้ 4090 แต่ราคาถูกกว่า</div>
+      </div>
+      <div class="stat-card">
         <div class="label">🏆 รัน Model ใหญ่สุด</div>
         <div class="value" style="color:var(--purple)">M2 Ultra 192GB</div>
-        <div class="desc">Qwen3.8-Flash-Next Q4 (~72GB) รันได้แบบไม่ต้อง offload — GPU ฝั่ง NVIDIA ทำไม่ได้</div>
+        <div class="desc">Qwen3.8-Flash-Next Q4 (~72GB) รันได้แบบไม่ต้อง offload — GPU NVIDIA ทำไม่ได้</div>
       </div>
     </div>
 
@@ -172,12 +186,16 @@ M2 Ultra  (~27 TFLOPS) → 1000 ÷ 2,250 ≈ 0.44 วินาที</code></pre
       <div class="stat-card">
         <div class="label">🏆 คุ้มเงินสุด</div>
         <div class="value" style="color:var(--amber)">RTX 3090 มือสอง</div>
-        <div class="desc">936 GB/s ราคา ~25,000-30,000 บาท — ได้ 93% ของ 4090 ในราคากึ่งหนึ่ง</div>
+        <div class="desc">936 GB/s ราคา ~25,000-30,000 บาท — ได้ 98% ของ 5080 ในราคาครึ่งเดียว</div>
       </div>
       <div class="stat-card">
         <div class="label">⚠️ สิ่งที่ต้องเช็คก่อนซื้อมือสอง</div>
-        <div class="desc" style="margin-top:2px;">• อายุการ์ด / ขุด mining มาก่อนไหม<br>• VRAM error test (matmulf32 30 นาที)<br>• Warranty เหลือไหม<br>• เทียบราคามือหนึ่ง — 4060 Ti 16GB ใหม่ ~15,000 บาท</div>
+        <div class="desc" style="margin-top:2px;">• อายุการ์ด / ขุด mining มาก่อนไหม<br>• VRAM error test (matmulf32 30 นาที)<br>• Warranty เหลือไหม<br>• เทียบราคามือหนึ่ง — 5070 ใหม่ ~$549</div>
       </div>
+    </div>
+
+    <div class="warn-box">
+      <strong>AMD RX 7900 XTX:</strong> bandwidth 960 GB/s เท่า 5080 แต่ ecosystem ยังเป็นรอง — ROCm บน Windows จำกัด, llama.cpp/llama-cpp-python ต้อง compile เอง ถ้าไม่ชินเครื่องมือแนะนำ NVIDIA หรือ Mac มากกว่า
     </div>
 
     <h2>3. Overclock — อันไหนช่วยจริง</h2>
@@ -231,7 +249,7 @@ GPU core OC: +200 MHz → ได้แค่ ~3% (noise)</code></pre>
         <li><strong>☐ คำนวณ: bandwidth ÷ model size = tok/s ceiling</strong><span>ใช้สูตรข้างบน ค่าจริง = 50-70%</span></li>
         <li><strong>☐ เช็ค VRAM/UMA ใส่ model ได้</strong><span>27B Q3 = 12.2GB | 27B Q4 = 16.6GB | Flash-Next = 72GB+</span></li>
         <li><strong>☐ คำนวณ perf/watt</strong><span>tok/s ÷ TDP — ถ้ารัน 24/7 ค่าไฟสำคัญ Mac ชนะ</span></li>
-        <li><strong>☐ เช็คราคาต่อ bandwidth</strong><span>RTX 3090 มือสอง: ~33 GB/s/พันบาท | 4090: ~18 | M2 Ultra: ~6</span></li>
+        <li><strong>☐ เช็คราคาต่อ bandwidth</strong><span>RTX 3090 มือสอง ~33 GB/s/พันบาท > 5080 ~32 | 5090 ~26 | 4090 ~18 | M2 Ultra ~6</span></li>
         <li><strong>☐ อย่าดู core clock</strong><span>Memory bandwidth สำคัญกว่า — GPU ช้าแต่ VRAM เร็ว ชนะ GPU เร็วแต่ VRAM ช้า</span></li>
       </ul>
     </div>
