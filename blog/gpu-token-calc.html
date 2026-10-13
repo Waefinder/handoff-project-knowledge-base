@@ -164,32 +164,32 @@ M2 Ultra        29 tok/s →  23 tok/s   -20%</code></pre>
     <p>สำหรับ single-stream decode <strong>memory bandwidth คือ king</strong> — core clock, CUDA cores, tensor cores พวกนั้นสำคัญกับ training และ batch inference แต่ไม่ช่วย decode เท่าไหร่</p>
 
     <table>
-      <thead><tr><th>Device</th><th>Bandwidth</th><th>VRAM / UMA</th><th>27B Q4 tok/s*</th><th>Power</th><th>tok/s/W</th><th>MSRP</th></tr></thead>
+      <thead><tr><th>Device</th><th>Bandwidth</th><th>VRAM / UMA</th><th>27B Q4 tok/s*</th><th>Power</th><th>tok/s/W</th></tr></thead>
       <tbody>
-        <tr><td colspan="7" style="color:var(--blue);font-weight:600;background:var(--bg3);">RTX 50-series (GDDR7, Blackwell)</td></tr>
-        <tr><td>RTX 5090</td><td class="t-blue">1792 GB/s</td><td>32 GB</td><td class="t-green">54–76</td><td>575W</td><td>0.09–0.13</td><td>$1,999</td></tr>
-        <tr><td>RTX 5080</td><td class="t-blue">960 GB/s</td><td>16 GB</td><td class="t-green">29–40</td><td>360W</td><td>0.08–0.11</td><td>$999</td></tr>
-        <tr><td>RTX 5070 Ti</td><td class="t-blue">896 GB/s</td><td>16 GB</td><td>27–38</td><td>300W</td><td>0.09–0.13</td><td>$749</td></tr>
-        <tr><td>RTX 5070</td><td class="t-blue">672 GB/s</td><td>12 GB</td><td>20–28</td><td>250W</td><td>0.08–0.11</td><td>$549</td></tr>
-        <tr><td colspan="7" style="color:var(--blue);font-weight:600;background:var(--bg3);">RTX 40/30-series (GDDR6X)</td></tr>
-        <tr><td>RTX 4090</td><td class="t-blue">1008 GB/s</td><td>24 GB</td><td class="t-green">30–42</td><td>450W</td><td>0.07–0.09</td><td>$1,599</td></tr>
-        <tr><td>RTX 4080</td><td class="t-blue">717 GB/s</td><td>16 GB</td><td class="t-green">22–30</td><td>320W</td><td>0.07–0.09</td><td>$1,199</td></tr>
-        <tr><td>RTX 4070 Ti</td><td class="t-blue">504 GB/s</td><td>12 GB</td><td>15–21</td><td>285W</td><td>0.05–0.07</td><td>$799</td></tr>
-        <tr><td>RTX 4060 Ti</td><td class="t-blue">288 GB/s</td><td>16 GB</td><td>9–12</td><td>165W</td><td>0.05–0.07</td><td>$499</td></tr>
-        <tr><td>RTX 3090 (มือสอง)</td><td class="t-blue">936 GB/s</td><td>24 GB</td><td class="t-green">28–40</td><td>350W</td><td>0.08–0.11</td><td>~$700-900</td></tr>
-        <tr><td colspan="7" style="color:var(--blue);font-weight:600;background:var(--bg3);">NVIDIA Workstation (RTX PRO, ECC)</td></tr>
-        <tr><td>RTX PRO 6000 Blackwell</td><td class="t-blue">1792 GB/s</td><td>96 GB</td><td class="t-green">54–76</td><td>600W</td><td>0.09–0.13</td><td>~$8,000+</td></tr>
-        <tr><td>RTX PRO 4000 Blackwell</td><td class="t-blue">672 GB/s</td><td>24 GB</td><td>20–28</td><td>145W</td><td class="t-green">0.14–0.20</td><td>~$1,500</td></tr>
-        <tr><td>RTX 1000 (4GB)</td><td class="t-blue">192 GB/s</td><td class="t-red">4 GB</td><td class="t-red">ใส่ไม่ได้</td><td>30W</td><td>—</td><td>~$400</td></tr>
-        <tr><td colspan="7" style="color:var(--blue);font-weight:600;background:var(--bg3);">AMD RDNA3</td></tr>
-        <tr><td>RX 7900 XTX</td><td class="t-blue">960 GB/s</td><td>24 GB</td><td>29–40</td><td>355W</td><td>0.08–0.11</td><td>$999</td></tr>
-        <tr><td colspan="7" style="color:var(--blue);font-weight:600;background:var(--bg3);">Apple Silicon (Unified Memory)</td></tr>
-        <tr><td>M2 Ultra</td><td class="t-blue">800 GB/s</td><td>192 GB</td><td>24–34</td><td>60W</td><td class="t-green">0.40–0.57</td><td>$3,999+</td></tr>
-        <tr><td>M2 Max</td><td class="t-blue">400 GB/s</td><td>96 GB</td><td>12–17</td><td>40W</td><td class="t-green">0.30–0.42</td><td>$1,999+</td></tr>
-        <tr><td>M1 Ultra</td><td class="t-blue">800 GB/s</td><td>128 GB</td><td>24–34</td><td>60W</td><td class="t-green">0.40–0.57</td><td>$3,999+</td></tr>
+        <tr><td colspan="6" style="color:var(--blue);font-weight:600;background:var(--bg3);">RTX 50-series (GDDR7, Blackwell)</td></tr>
+        <tr><td>RTX 5090</td><td class="t-blue">1792 GB/s</td><td>32 GB</td><td class="t-green">54–76</td><td>575W</td><td>0.09–0.13</td></tr>
+        <tr><td>RTX 5080</td><td class="t-blue">960 GB/s</td><td>16 GB</td><td class="t-green">29–40</td><td>360W</td><td>0.08–0.11</td></tr>
+        <tr><td>RTX 5070 Ti</td><td class="t-blue">896 GB/s</td><td>16 GB</td><td>27–38</td><td>300W</td><td>0.09–0.13</td></tr>
+        <tr><td>RTX 5070</td><td class="t-blue">672 GB/s</td><td>12 GB</td><td>20–28</td><td>250W</td><td>0.08–0.11</td></tr>
+        <tr><td colspan="6" style="color:var(--blue);font-weight:600;background:var(--bg3);">RTX 40/30-series (GDDR6X)</td></tr>
+        <tr><td>RTX 4090</td><td class="t-blue">1008 GB/s</td><td>24 GB</td><td class="t-green">30–42</td><td>450W</td><td>0.07–0.09</td></tr>
+        <tr><td>RTX 4080</td><td class="t-blue">717 GB/s</td><td>16 GB</td><td class="t-green">22–30</td><td>320W</td><td>0.07–0.09</td></tr>
+        <tr><td>RTX 4070 Ti</td><td class="t-blue">504 GB/s</td><td>12 GB</td><td>15–21</td><td>285W</td><td>0.05–0.07</td></tr>
+        <tr><td>RTX 4060 Ti</td><td class="t-blue">288 GB/s</td><td>16 GB</td><td>9–12</td><td>165W</td><td>0.05–0.07</td></tr>
+        <tr><td>RTX 3090 (มือสอง)</td><td class="t-blue">936 GB/s</td><td>24 GB</td><td class="t-green">28–40</td><td>350W</td><td>0.08–0.11</td></tr>
+        <tr><td colspan="6" style="color:var(--blue);font-weight:600;background:var(--bg3);">NVIDIA Workstation (RTX PRO, ECC)</td></tr>
+        <tr><td>RTX PRO 6000 Blackwell</td><td class="t-blue">1792 GB/s</td><td>96 GB</td><td class="t-green">54–76</td><td>600W</td><td>0.09–0.13</td></tr>
+        <tr><td>RTX PRO 4000 Blackwell</td><td class="t-blue">672 GB/s</td><td>24 GB</td><td>20–28</td><td>145W</td><td class="t-green">0.14–0.20</td></tr>
+        <tr><td>RTX 1000 (4GB)</td><td class="t-blue">192 GB/s</td><td class="t-red">4 GB</td><td class="t-red">ใส่ไม่ได้</td><td>30W</td><td>—</td></tr>
+        <tr><td colspan="6" style="color:var(--blue);font-weight:600;background:var(--bg3);">AMD RDNA3</td></tr>
+        <tr><td>RX 7900 XTX</td><td class="t-blue">960 GB/s</td><td>24 GB</td><td>29–40</td><td>355W</td><td>0.08–0.11</td></tr>
+        <tr><td colspan="6" style="color:var(--blue);font-weight:600;background:var(--bg3);">Apple Silicon (Unified Memory)</td></tr>
+        <tr><td>M2 Ultra</td><td class="t-blue">800 GB/s</td><td>192 GB</td><td>24–34</td><td>60W</td><td class="t-green">0.40–0.57</td></tr>
+        <tr><td>M2 Max</td><td class="t-blue">400 GB/s</td><td>96 GB</td><td>12–17</td><td>40W</td><td class="t-green">0.30–0.42</td></tr>
+        <tr><td>M1 Ultra</td><td class="t-blue">800 GB/s</td><td>128 GB</td><td>24–34</td><td>60W</td><td class="t-green">0.40–0.57</td></tr>
       </tbody>
     </table>
-    <p style="font-size:0.82rem;color:var(--muted);margin-top:-8px;">* llama.cpp / MLX decode speed สำหรับ Qwen3.5-27B Q4_K_M (16.6 GB), single stream — ค่าจริง varies กับ context length และ batch size. MSRP = ราคาเปิดตัว (ไม่รวม tax/markup ไทย)</p>
+    <p style="font-size:0.82rem;color:var(--muted);margin-top:-8px;">* llama.cpp / MLX decode speed สำหรับ Qwen3.5-27B Q4_K_M (16.6 GB), single stream — ค่าจริง varies กับ context length และ batch size</p>
 
     <h3>มือหนึ่ง (New)</h3>
     <div class="grid-2">
