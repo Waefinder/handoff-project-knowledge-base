@@ -130,6 +130,36 @@ M2 Ultra  (~27 TFLOPS) → 1000 ÷ 2,250 ≈ 0.44 วินาที</code></pre
       <div class="sub">2 phase คนละ bottleneck — GPU แรงแต่ VRAM ช้า = prefill เร็ว decode ช้า</div>
     </div>
 
+    <h3>Context Length = 65,000 tokens — ผลคืออะไร</h3>
+    <p>context ยาว 2 อย่าง: <strong>prefill ช้าลง</strong> (ต้องคูณ matrix ทุก token) และ <strong>decode ช้าลงนิดหน่อย</strong> (ต้องอ่าน KV cache เพิ่มจาก VRAM) แต่ Qwen3.5-27B ใช้ <strong>hybrid attention (3:1 linear : full)</strong> — มีแค่ 16 จาก 64 layer ที่เก็บ KV แบบปกติ ที่เหลือเป็น linear state ขนาดคงที่ KV cache เลยเล็กมาก</p>
+
+    <div class="formula-box">
+      <div class="label">KV Cache สำหรับ Qwen3.5-27B ที่ 65K context</div>
+      <div class="math">2 × 4 (KV heads) × 256 (head_dim) × 2B × 16 (full layers) = 64 KB/token</div>
+      <div class="sub">65,000 tokens → 4.26 GB — เล็กกว่า model (16.6 GB) เยอะ เพราะ linear attention ไม่โตตาม context</div>
+    </div>
+
+<pre><code>Prefill 65,000 tokens (2×27B = 54 GFLOPs/token):
+
+RTX 5090 (~170 TFLOPS) → 21 วินาที
+RTX 5080 (~120 TFLOPS) → 29 วินาที
+RTX 4090 (~82 TFLOPS)  → 43 วินาที
+RTX 3090 (~70 TFLOPS)  → 50 วินาที
+M2 Ultra (~27 TFLOPS)  → 130 วินาที (2 นาที)</code></pre>
+
+<pre><code>Decode ที่ 65K context (weights 16.6GB + KV 4.26GB = 20.9GB ต่อ token):
+
+                สั้น ctx    65K ctx    ต่าง
+RTX 5090        65 tok/s →  52 tok/s   -20%
+RTX 5080        35 tok/s →  28 tok/s   -20%
+RTX 4090        36 tok/s →  29 tok/s   -20%
+RTX 3090        34 tok/s →  27 tok/s   -20%
+M2 Ultra        29 tok/s →  23 tok/s   -20%</code></pre>
+
+    <div class="tip-box">
+      <strong>ข้อดีของ hybrid attention:</strong> context 65K ทำให้ decode ช้าลงแค่ ~20% และกิน VRAM เพิ่มแค่ 4.26GB — ถ้าเป็น transformer ธรรมดา (เก็บ KV ทุก layer) KV cache จะใหญ่กว่านี้ 4 เท่า (~17GB) decode ช้าลง ~50% และ 16GB VRAM ไม่พอเลย
+    </div>
+
     <h2>2. GPU Comparison — Spec ไหนสำคัญจริง</h2>
     <p>สำหรับ single-stream decode <strong>memory bandwidth คือ king</strong> — core clock, CUDA cores, tensor cores พวกนั้นสำคัญกับ training และ batch inference แต่ไม่ช่วย decode เท่าไหร่</p>
 
@@ -248,6 +278,7 @@ GPU core OC: +200 MHz → ได้แค่ ~3% (noise)</code></pre>
         <li><strong>☐ เลือกขนาด model</strong><span>Qwen3.5-27B Q3_K_S = 12.2GB | Q4_K_M = 16.6GB | Flash-Next Q4 = ~72GB</span></li>
         <li><strong>☐ คำนวณ: bandwidth ÷ model size = tok/s ceiling</strong><span>ใช้สูตรข้างบน ค่าจริง = 50-70%</span></li>
         <li><strong>☐ เช็ค VRAM/UMA ใส่ model ได้</strong><span>27B Q3 = 12.2GB | 27B Q4 = 16.6GB | Flash-Next = 72GB+</span></li>
+        <li><strong>☐ บวก KV cache ด้วย</strong><span>Qwen3.5-27B @65K ctx = +4.26GB (hybrid attn เล็ก) — transformer ปกติ +17GB</span></li>
         <li><strong>☐ คำนวณ perf/watt</strong><span>tok/s ÷ TDP — ถ้ารัน 24/7 ค่าไฟสำคัญ Mac ชนะ</span></li>
         <li><strong>☐ เช็คราคาต่อ bandwidth</strong><span>RTX 3090 มือสอง ~33 GB/s/พันบาท > 5080 ~32 | 5090 ~26 | 4090 ~18 | M2 Ultra ~6</span></li>
         <li><strong>☐ อย่าดู core clock</strong><span>Memory bandwidth สำคัญกว่า — GPU ช้าแต่ VRAM เร็ว ชนะ GPU เร็วแต่ VRAM ช้า</span></li>
