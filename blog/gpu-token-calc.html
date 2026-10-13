@@ -84,6 +84,17 @@
     <h2>1. สูตรเดียวที่ต้องรู้</h2>
     <p>Token generation (decode) <strong>ถูกจำกัดด้วย memory bandwidth</strong> ไม่ใช่ compute — ทุก token ใหม่ต้องอ่าน model weights ทั้งหมด 1 รอบ ดังนั้น:</p>
 
+    <h3>3 Model ที่ใช้ — หลัก + ทางเลือก</h3>
+    <table>
+      <thead><tr><th>Model</th><th>Quant</th><th>ขนาดไฟล์</th><th>Decode (4090)</th><th>Prefill 65K (4090)</th><th>จุดเด่น</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Qwen3.8-27B</strong> (หลัก)</td><td>Q4_K_M</td><td class="t-blue">17.4 GB</td><td class="t-green">29–40 tok/s</td><td>43 วิ</td><td>คุณภาพดีสุด สมดุล size/quality</td></tr>
+        <tr><td>Qwen3.8-27B (เร็ว)</td><td>GSQ-RCO Q3</td><td class="t-blue">10.1 GB</td><td class="t-green">50–70 tok/s</td><td>43 วิ</td><td>เร็วกว่า 1.7× ใส่ 16GB VRAM ได้</td></tr>
+        <tr><td>Qwen3.6-35B-A3B</td><td>Q4_K_M (MoE)</td><td class="t-blue">22.3 GB</td><td>23–32 tok/s</td><td class="t-green">5 วิ</td><td>MoE active 3B — prefill เร็วมาก 24GB พอดี</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:0.82rem;color:var(--muted);margin-top:-8px;">* GSQ-RCO = non-uniform quantization (ISTA-DASLab) คุณภาพดีกว่า Q3_K ปกติที่ขนาดเท่ากัน — decode เร็วเพราะไฟล์เล็ก, prefill เท่าเดิมเพราะ FLOPs ขึ้นกับ params ไม่ใช่ quant</p>
+
     <div class="formula-box">
       <div class="label">Token Generation Rate</div>
       <div class="math">tokens/sec ≈ Memory Bandwidth (GB/s) ÷ Model Size (GB)</div>
@@ -93,14 +104,17 @@
     <p><strong>จบ.</strong> ถ้าจำได้แค่อย่างเดียวจากบทความนี้ จำสูตรนี้ ที่เหลือคือรายละเอียด</p>
 
     <h3>ตัวอย่างเร็ว</h3>
-<pre><code>RTX 4090 (1008 GB/s) + Qwen3.5-27B Q3_K_S (12.2 GB)
-→ 1008 ÷ 12.2 = 83 tok/s (theoretical) → ~40-60 tok/s (real)
+<pre><code>RTX 4090 (1008 GB/s) + Qwen3.8-27B Q4_K_M (17.4 GB) — หลัก
+→ 1008 ÷ 17.4 = 58 tok/s (theoretical) → ~29-40 tok/s (real)
 
-RTX 4090 (1008 GB/s) + Qwen3.5-27B Q4_K_M (16.6 GB)
-→ 1008 ÷ 16.6 = 61 tok/s (theoretical) → ~30-42 tok/s (real)
+RTX 4090 (1008 GB/s) + Qwen3.8-27B GSQ-RCO Q3 (10.1 GB) — เร็วขึ้น
+→ 1008 ÷ 10.1 = 100 tok/s (theoretical) → ~50-70 tok/s (real)
 
-M2 Ultra (800 GB/s) + Qwen3.8-Flash-Next Q4 (~72 GB, 6B active)
-→ 800 ÷ 72 = 11 tok/s (theoretical) → ~6-8 tok/s (real)</code></pre>
+RTX 4090 (1008 GB/s) + Qwen3.6-35B-A3B Q4 (22.3 GB, MoE active 3B) — ทางเลือก
+→ 1008 ÷ 22.3 = 45 tok/s (theoretical) → ~23-32 tok/s (real)
+
+M2 Ultra (800 GB/s) + Qwen3.8-27B Q4_K_M (17.4 GB)
+→ 800 ÷ 17.4 = 46 tok/s (theoretical) → ~23-32 tok/s (real)</code></pre>
 
     <div class="tip-box">
       <strong>Rule of thumb:</strong> เอา bandwidth ÷ ขนาด model (GB) = tok/s ceiling แล้ว × 0.5–0.7 ได้ค่าจริง ใช้ได้ทั้ง NVIDIA และ Apple Silicon
@@ -115,15 +129,17 @@ M2 Ultra (800 GB/s) + Qwen3.8-Flash-Next Q4 (~72 GB, 6B active)
       <div class="sub">เวลาอ่าน prompt = prompt_tokens ÷ prefill tok/s — ยิ่ง prompt ยาว ยิ่งรอแรกนาน (TTFT)</div>
     </div>
 
-<pre><code>Qwen3.5-27B dense (2×27B = 54 GFLOPs/token), prompt 1,000 tokens:
+<pre><code>Qwen3.8-27B dense (2×27B = 54 GFLOPs/token), prompt 65,000 tokens:
 
-RTX 4090  (~82 TFLOPS FP16) → 1000 ÷ 1,518 ≈ 0.66 วินาที
-M2 Ultra  (~27 TFLOPS FP16) → 1000 ÷ 500   ≈ 2.0 วินาที
+RTX 5090 (~170 TFLOPS) → 21 วินาที
+RTX 4090 (~82 TFLOPS)  → 43 วินาที
+M2 Ultra (~27 TFLOPS)  → 130 วินาที
 
-Qwen3.8-Flash-Next (MoE 125B แต่ active แค่ 6B → 12 GFLOPs/token):
+Qwen3.6-35B-A3B (MoE 35B แต่ active แค่ 3B → 6 GFLOPs/token):
 
-RTX 4090  (~82 TFLOPS) → 1000 ÷ 6,833 ≈ 0.15 วินาที  (MoE prefill เร็วมาก)
-M2 Ultra  (~27 TFLOPS) → 1000 ÷ 2,250 ≈ 0.44 วินาที</code></pre>
+RTX 5090 → 2 วินาที   (MoE prefill เร็วมาก เพราะ active น้อย)
+RTX 4090 → 5 วินาที
+M2 Ultra → 14 วินาที</code></pre>
 
     <div class="formula-box">
       <div class="math">Decode → ดู Bandwidth | Prefill → ดู FLOPS</div>
@@ -131,12 +147,12 @@ M2 Ultra  (~27 TFLOPS) → 1000 ÷ 2,250 ≈ 0.44 วินาที</code></pre
     </div>
 
     <h3>Context Length = 65,000 tokens — ผลคืออะไร</h3>
-    <p>context ยาว 2 อย่าง: <strong>prefill ช้าลง</strong> (ต้องคูณ matrix ทุก token) และ <strong>decode ช้าลงนิดหน่อย</strong> (ต้องอ่าน KV cache เพิ่มจาก VRAM) แต่ Qwen3.5-27B ใช้ <strong>hybrid attention (3:1 linear : full)</strong> — มีแค่ 16 จาก 64 layer ที่เก็บ KV แบบปกติ ที่เหลือเป็น linear state ขนาดคงที่ KV cache เลยเล็กมาก</p>
+    <p>context ยาว 2 อย่าง: <strong>prefill ช้าลง</strong> (ต้องคูณ matrix ทุก token) และ <strong>decode ช้าลงนิดหน่อย</strong> (ต้องอ่าน KV cache เพิ่มจาก VRAM) แต่ Qwen3.8-27B ใช้ <strong>hybrid attention (3:1 linear : full)</strong> — มีแค่ 16 จาก 64 layer ที่เก็บ KV แบบปกติ ที่เหลือเป็น linear state ขนาดคงที่ KV cache เลยเล็กมาก</p>
 
     <div class="formula-box">
-      <div class="label">KV Cache สำหรับ Qwen3.5-27B ที่ 65K context</div>
+      <div class="label">KV Cache สำหรับ Qwen3.8-27B ที่ 65K context</div>
       <div class="math">2 × 4 (KV heads) × 256 (head_dim) × 2B × 16 (full layers) = 64 KB/token</div>
-      <div class="sub">65,000 tokens → 4.26 GB — เล็กกว่า model (16.6 GB) เยอะ เพราะ linear attention ไม่โตตาม context</div>
+      <div class="sub">65,000 tokens → 4.26 GB — เล็กกว่า model (17.4 GB) เยอะ เพราะ linear attention ไม่โตตาม context</div>
     </div>
 
 <pre><code>Prefill 65,000 tokens (2×27B = 54 GFLOPs/token):
@@ -147,7 +163,7 @@ RTX 4090 (~82 TFLOPS)  → 43 วินาที
 RTX 3090 (~70 TFLOPS)  → 50 วินาที
 M2 Ultra (~27 TFLOPS)  → 130 วินาที (2 นาที)</code></pre>
 
-<pre><code>Decode ที่ 65K context (weights 16.6GB + KV 4.26GB = 20.9GB ต่อ token):
+<pre><code>Decode ที่ 65K context (weights 17.4GB + KV 4.26GB = 21.7GB ต่อ token):
 
                 สั้น ctx    65K ctx    ต่าง
 RTX 5090        65 tok/s →  52 tok/s   -20%
@@ -189,7 +205,7 @@ M2 Ultra        29 tok/s →  23 tok/s   -20%</code></pre>
         <tr><td>M1 Ultra</td><td class="t-blue">800 GB/s</td><td>128 GB</td><td>24–34</td><td>60W</td><td class="t-green">0.40–0.57</td></tr>
       </tbody>
     </table>
-    <p style="font-size:0.82rem;color:var(--muted);margin-top:-8px;">* llama.cpp / MLX decode speed สำหรับ Qwen3.5-27B Q4_K_M (16.6 GB), single stream — ค่าจริง varies กับ context length และ batch size</p>
+    <p style="font-size:0.82rem;color:var(--muted);margin-top:-8px;">* llama.cpp / MLX decode speed สำหรับ Qwen3.8-27B Q4_K_M (17.4 GB), single stream — ค่าจริง varies กับ context length และ batch size</p>
 
     <h3>มือหนึ่ง (New)</h3>
     <div class="grid-2">
@@ -230,7 +246,7 @@ M2 Ultra        29 tok/s →  23 tok/s   -20%</code></pre>
 
     <div class="warn-box">
       <strong>Workstation (RTX PRO):</strong> ECC VRAM เสถียรกว่า long-running inference, ราคาแพงกว่า GeForce 2-5 เท่า ที่ bandwidth เท่ากัน — คุ้มเฉพาะตอนต้องการ ECC + 96GB VRAM (PRO 6000 ใส่ Flash-Next ได้)<br><br>
-      <strong>RTX 1000 (4GB):</strong> bandwidth 192 GB/s กับ VRAM 4GB = รัน 27B ไม่ได้เลย (ต้อง 12.2GB+) เหมาะแค่ inference เล็ก (7B Q3 ≈ 4GB) หรือเป็น display card<br><br>
+      <strong>RTX 1000 (4GB):</strong> bandwidth 192 GB/s กับ VRAM 4GB = รัน 27B ไม่ได้เลย (ต่ำสุด GSQ-RCO Q3 = 10.1GB) เหมาะแค่ inference เล็ก (model 7B Q3 ≈ 4GB) หรือเป็น display card<br><br>
       <strong>AMD RX 7900 XTX:</strong> bandwidth 960 GB/s เท่า 5080 แต่ ecosystem ยังเป็นรอง — ROCm บน Windows จำกัด, llama.cpp/llama-cpp-python ต้อง compile เอง ถ้าไม่ชินเครื่องมือแนะนำ NVIDIA หรือ Mac มากกว่า
     </div>
 
@@ -281,10 +297,10 @@ GPU core OC: +200 MHz → ได้แค่ ~3% (noise)</code></pre>
     <div class="checklist">
       <ul>
         <li><strong>☐ ตั้งเป้า tok/s</strong><span>Chat: 20+ พอ | Batch: 50+ | Real-time agent: 100+</span></li>
-        <li><strong>☐ เลือกขนาด model</strong><span>Qwen3.5-27B Q3_K_S = 12.2GB | Q4_K_M = 16.6GB | Flash-Next Q4 = ~72GB</span></li>
+        <li><strong>☐ เลือกขนาด model</strong><span>27B Q4 = 17.4GB (หลัก) | 27B GSQ-RCO Q3 = 10.1GB | 35B-A3B Q4 = 22.3GB</span></li>
         <li><strong>☐ คำนวณ: bandwidth ÷ model size = tok/s ceiling</strong><span>ใช้สูตรข้างบน ค่าจริง = 50-70%</span></li>
-        <li><strong>☐ เช็ค VRAM/UMA ใส่ model ได้</strong><span>27B Q3 = 12.2GB | 27B Q4 = 16.6GB | Flash-Next = 72GB+</span></li>
-        <li><strong>☐ บวก KV cache ด้วย</strong><span>Qwen3.5-27B @65K ctx = +4.26GB (hybrid attn เล็ก) — transformer ปกติ +17GB</span></li>
+        <li><strong>☐ เช็ค VRAM/UMA ใส่ model ได้</strong><span>27B Q4 = 17.4GB | GSQ-RCO Q3 = 10.1GB | 35B-A3B = 22.3GB</span></li>
+        <li><strong>☐ บวก KV cache ด้วย</strong><span>Qwen3.8-27B @65K ctx = +4.26GB (hybrid attn เล็ก) — transformer ปกติ +17GB</span></li>
         <li><strong>☐ คำนวณ perf/watt</strong><span>tok/s ÷ TDP — ถ้ารัน 24/7 ค่าไฟสำคัญ Mac ชนะ</span></li>
         <li><strong>☐ เช็คราคาต่อ bandwidth</strong><span>RTX 3090 มือสอง ~33 GB/s/พันบาท > 5080 ~32 | 5090 ~26 | 4090 ~18 | M2 Ultra ~6</span></li>
         <li><strong>☐ อย่าดู core clock</strong><span>Memory bandwidth สำคัญกว่า — GPU ช้าแต่ VRAM เร็ว ชนะ GPU เร็วแต่ VRAM ช้า</span></li>
@@ -298,7 +314,7 @@ GPU core OC: +200 MHz → ได้แค่ ~3% (noise)</code></pre>
       <tbody>
         <tr><td>"ต้องการ CUDA cores เยอะ"</td><td>Decode ถูกจำกัดด้วย bandwidth ไม่ใช่ compute</td><td>ดู memory bandwidth แทน</td></tr>
         <tr><td>"OC แล้วจะเร็วขึ้น"</td><td>Core OC ได้ ~3% — มีแค่ mem OC ที่ช่วย</td><td>ซื้อจาก stock bandwidth</td></tr>
-        <tr><td>"8GB VRAM พอ"</td><td>27B Q3 = 12.2GB — ใส่ไม่ได้เลย</td><td>16GB ขั้นต่ำ (Q3), 24GB ใช้ Q4 สบาย</td></tr>
+        <tr><td>"8GB VRAM พอ"</td><td>27B ต่ำสุด (GSQ-RCO Q3) = 10.1GB — 4GB ใส่ไม่ได้เลย</td><td>16GB ขั้นต่ำ (Q3), 24GB ใช้ Q4/35B-A3B สบาย</td></tr>
         <tr><td>"Mac ช้าสำหรับ AI"</td><td>M2 Ultra มี 800 GB/s — เร็วกว่า GPU ส่วนใหญ่</td><td>เทียบ bandwidth ไม่ใช่ "GPU vs Mac"</td></tr>
         <tr><td>"cloud API คุ้มกว่า"</td><td>รายเดือนสะสม — ซื้อ hardware ครั้งเดียวจบ</td><td>คำนวณ: ราคา GPU ÷ ค่า API ต่อเดือน = เดือนคืนทุน</td></tr>
       </tbody>
