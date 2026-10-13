@@ -177,6 +177,10 @@ M2 Ultra        29 tok/s →  23 tok/s   -20%</code></pre>
         <tr><td>RTX 4070 Ti</td><td class="t-blue">504 GB/s</td><td>12 GB</td><td>15–21</td><td>285W</td><td>0.05–0.07</td><td>$799</td></tr>
         <tr><td>RTX 4060 Ti</td><td class="t-blue">288 GB/s</td><td>16 GB</td><td>9–12</td><td>165W</td><td>0.05–0.07</td><td>$499</td></tr>
         <tr><td>RTX 3090 (มือสอง)</td><td class="t-blue">936 GB/s</td><td>24 GB</td><td class="t-green">28–40</td><td>350W</td><td>0.08–0.11</td><td>~$700-900</td></tr>
+        <tr><td colspan="7" style="color:var(--blue);font-weight:600;background:var(--bg3);">NVIDIA Workstation (RTX PRO, ECC)</td></tr>
+        <tr><td>RTX PRO 6000 Blackwell</td><td class="t-blue">1792 GB/s</td><td>96 GB</td><td class="t-green">54–76</td><td>600W</td><td>0.09–0.13</td><td>~$8,000+</td></tr>
+        <tr><td>RTX PRO 4000 Blackwell</td><td class="t-blue">672 GB/s</td><td>24 GB</td><td>20–28</td><td>145W</td><td class="t-green">0.14–0.20</td><td>~$1,500</td></tr>
+        <tr><td>RTX 1000 (4GB)</td><td class="t-blue">192 GB/s</td><td class="t-red">4 GB</td><td class="t-red">ใส่ไม่ได้</td><td>30W</td><td>—</td><td>~$400</td></tr>
         <tr><td colspan="7" style="color:var(--blue);font-weight:600;background:var(--bg3);">AMD RDNA3</td></tr>
         <tr><td>RX 7900 XTX</td><td class="t-blue">960 GB/s</td><td>24 GB</td><td>29–40</td><td>355W</td><td>0.08–0.11</td><td>$999</td></tr>
         <tr><td colspan="7" style="color:var(--blue);font-weight:600;background:var(--bg3);">Apple Silicon (Unified Memory)</td></tr>
@@ -225,6 +229,8 @@ M2 Ultra        29 tok/s →  23 tok/s   -20%</code></pre>
     </div>
 
     <div class="warn-box">
+      <strong>Workstation (RTX PRO):</strong> ECC VRAM เสถียรกว่า long-running inference, ราคาแพงกว่า GeForce 2-5 เท่า ที่ bandwidth เท่ากัน — คุ้มเฉพาะตอนต้องการ ECC + 96GB VRAM (PRO 6000 ใส่ Flash-Next ได้)<br><br>
+      <strong>RTX 1000 (4GB):</strong> bandwidth 192 GB/s กับ VRAM 4GB = รัน 27B ไม่ได้เลย (ต้อง 12.2GB+) เหมาะแค่ inference เล็ก (7B Q3 ≈ 4GB) หรือเป็น display card<br><br>
       <strong>AMD RX 7900 XTX:</strong> bandwidth 960 GB/s เท่า 5080 แต่ ecosystem ยังเป็นรอง — ROCm บน Windows จำกัด, llama.cpp/llama-cpp-python ต้อง compile เอง ถ้าไม่ชินเครื่องมือแนะนำ NVIDIA หรือ Mac มากกว่า
     </div>
 
